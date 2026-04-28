@@ -1,0 +1,53 @@
+<div class="modal-backdrop" [class.open]="isOpen" (click)="close.emit()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ 'ADD_NEW_ADDRESS' | translate }}</h3>
+      <button class="modal-close" (click)="close.emit()"><i class="uil uil-times"></i></button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="modal-body">
+      <div class="form-group">
+        <label class="form-label">{{ 'GOVERNORATE' | translate }}</label>
+        <select class="form-select" formControlName="governorate_id"
+          (change)="onGovChange(+$any($event.target).value)">
+          <option [value]="null">---</option>
+          <option *ngFor="let g of governorates" [value]="g.id">{{ getName(g) }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="cities.length > 0">
+        <label class="form-label">{{ 'CITY' | translate }}</label>
+        <select class="form-select" formControlName="city_id"
+          (change)="onCityChange(+$any($event.target).value)">
+          <option [value]="null">---</option>
+          <option *ngFor="let c of cities" [value]="c.id">{{ getName(c) }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="villages.length > 0">
+        <label class="form-label">{{ 'VILLAGE' | translate }}</label>
+        <select class="form-select" formControlName="village_id">
+          <option [value]="null">---</option>
+          <option *ngFor="let v of villages" [value]="v.id">{{ getName(v) }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">{{ 'ADDRESS_TYPE' | translate }}</label>
+        <input type="text" class="form-control" formControlName="address_type" />
+      </div>
+
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="is_default" />
+        {{ 'SET_AS_DEFAULT' | translate }}
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" (click)="close.emit()">{{ 'CANCEL' | translate }}</button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving">
+          {{ saving ? ('LOADING' | translate) : ('SAVE' | translate) }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

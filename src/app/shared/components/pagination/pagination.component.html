@@ -1,0 +1,18 @@
+<nav class="pagination" *ngIf="lastPage > 1">
+  <button class="pagination__btn" (click)="prev()" [disabled]="currentPage === 1">
+    <i class="icon-chevron-start"></i>
+  </button>
+
+  <button
+    class="pagination__btn"
+    *ngFor="let page of pages"
+    [class.pagination__btn--active]="page === currentPage"
+    [class.pagination__btn--ellipsis]="page === '...'"
+    (click)="go(page)"
+    [disabled]="page === '...'"
+  >{{ page }}</button>
+
+  <button class="pagination__btn" (click)="next()" [disabled]="currentPage === lastPage">
+    <i class="icon-chevron-end"></i>
+  </button>
+</nav>

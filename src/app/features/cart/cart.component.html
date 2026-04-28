@@ -1,0 +1,84 @@
+<app-breadcrumb [items]="[
+  { label: ('HOME' | translate), route: '/' },
+  { label: ('TITLE' | translate) }
+]"></app-breadcrumb>
+
+<div class="container cart-page">
+  <h1 class="cart-page__title">{{ 'TITLE' | translate }}</h1>
+
+  <app-loading-spinner *ngIf="loading" [fullPage]="true"></app-loading-spinner>
+
+  <app-empty-state
+    *ngIf="!loading && cart.items.length === 0"
+    icon="uil uil-shopping-cart"
+    [title]="'EMPTY' | translate"
+    [description]="'EMPTY_DESC' | translate"
+  >
+    <a routerLink="/products" class="btn btn-primary">{{ 'CONTINUE_SHOPPING' | translate }}</a>
+  </app-empty-state>
+
+  <div class="cart-layout" *ngIf="!loading && cart.items.length > 0">
+    <!-- Items -->
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of cart.items">
+        <img
+          [src]="item.product?.image"
+          [alt]="getProductName(item)"
+          class="cart-item__img"
+          onerror="this.src='assets/images/placeholder.png'"
+        />
+        <div class="cart-item__info">
+          <a [routerLink]="['/products', item.product_id]" class="cart-item__name">
+            {{ getProductName(item) }}
+          </a>
+          <div class="cart-item__meta" *ngIf="item.color_name">
+            {{ 'COLOR' | translate }}: {{ item.color_name }}
+          </div>
+          <div class="cart-item__meta" *ngIf="item.type_name">
+            {{ 'TYPE' | translate }}: {{ item.type_name }}
+          </div>
+          <p class="cart-item__price">
+            {{ item.price | number:'1.3-3' }} {{ 'OMR' | translate }}
+          </p>
+        </div>
+        <div class="cart-item__controls">
+          <div class="qty-control">
+            <button class="qty-control__btn" (click)="updateQty(item, item.quantity - 1)" [disabled]="item.quantity <= 1">−</button>
+            <span class="qty-control__val">{{ item.quantity }}</span>
+            <button class="qty-control__btn" (click)="updateQty(item, item.quantity + 1)">+</button>
+          </div>
+          <button class="cart-item__remove" (click)="remove(item)">
+            <i class="uil uil-trash-alt"></i>
+            {{ 'REMOVE' | translate }}
+          </button>
+        </div>
+        <p class="cart-item__total">
+          {{ (item.price * item.quantity) | number:'1.3-3' }} {{ 'OMR' | translate }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="cart-summary">
+      <h3 class="cart-summary__title">{{ 'TOTAL' | translate }}</h3>
+      <div class="cart-summary__row">
+        <span>{{ 'PRICE' | translate }}</span>
+        <span>{{ cart.total | number:'1.3-3' }} {{ 'OMR' | translate }}</span>
+      </div>
+      <div class="cart-summary__row">
+        <span>{{ 'SHIPPING' | translate }}</span>
+        <span class="cart-summary__shipping">{{ 'SHIPPING_NOT_CALCULATED' | translate }}</span>
+      </div>
+      <div class="cart-summary__total">
+        <span>{{ 'TOTAL' | translate }}</span>
+        <span>{{ cart.total | number:'1.3-3' }} {{ 'OMR' | translate }}</span>
+      </div>
+      <a routerLink="/checkout" class="btn btn-primary btn-block btn-lg">
+        {{ 'PROCEED' | translate }}
+      </a>
+      <a routerLink="/products" class="btn btn-outline btn-block">
+        {{ 'CONTINUE_SHOPPING' | translate }}
+      </a>
+    </div>
+  </div>
+</div>

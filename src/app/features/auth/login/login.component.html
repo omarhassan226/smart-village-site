@@ -1,0 +1,53 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__header">
+      <img src="assets/images/logo.png" alt="Smart Village" class="auth-card__logo"
+        onerror="this.style.display='none'" />
+      <h1 class="auth-card__title">{{ 'LOGIN_TITLE' | translate }}</h1>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card__form" novalidate>
+      <!-- Phone -->
+      <div class="form-group">
+        <label class="form-label">{{ 'PHONE' | translate }}</label>
+        <div class="input-wrap">
+          <i class="input-icon uil uil-phone"></i>
+          <input type="tel" formControlName="phone" class="form-control"
+            [class.invalid]="phoneControl?.invalid && phoneControl?.touched" [placeholder]="'PHONE' | translate"
+            dir="ltr" />
+        </div>
+        <span class="form-error" *ngIf="phoneControl?.invalid && phoneControl?.touched">
+          {{ 'PHONE' | translate }} {{ 'ERROR' | translate }}
+        </span>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">{{ 'PASSWORD' | translate }}</label>
+        <div class="input-wrap">
+          <i class="input-icon uil uil-lock"></i>
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control" dir="ltr"
+            [class.invalid]="passwordControl?.invalid && passwordControl?.touched"
+            [placeholder]="'PASSWORD' | translate" />
+          <button type="button" class="input-toggle" (click)="showPassword = !showPassword">
+            <i [class]="showPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
+          </button>
+        </div>
+        <span class="form-error" *ngIf="passwordControl?.invalid && passwordControl?.touched">
+          {{ 'PASSWORD' | translate }} {{ 'ERROR' | translate }}
+        </span>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="loading">
+        <span *ngIf="!loading">{{ 'LOGIN_BTN' | translate }}</span>
+        <span *ngIf="loading">{{ 'LOADING' | translate }}</span>
+      </button>
+    </form>
+
+    <div class="auth-card__footer">
+      <span>{{ 'NO_ACCOUNT' | translate }}</span>
+      <a routerLink="/auth/register" class="auth-card__link">{{ 'REGISTER' | translate }}</a>
+    </div>
+  </div>
+</div>

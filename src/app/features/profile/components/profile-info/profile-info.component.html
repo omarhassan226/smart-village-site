@@ -1,0 +1,30 @@
+<div class="profile-section">
+  <h2 class="profile-section__title">{{ 'EDIT_DATA' | translate }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="info-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">{{ 'FIRST_NAME' | translate }}</label>
+        <input type="text" class="form-control" formControlName="first_name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">{{ 'LAST_NAME' | translate }}</label>
+        <input type="text" class="form-control" formControlName="last_name" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">{{ 'PHONE' | translate }}</label>
+      <input type="tel" class="form-control" [value]="auth.user?.phone" readonly dir="ltr" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">{{ 'EMAIL' | translate }}</label>
+      <input type="email" class="form-control" formControlName="email" dir="ltr" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="saving">
+      {{ saving ? ('LOADING' | translate) : ('UPDATE_BTN' | translate) }}
+    </button>
+  </form>
+</div>

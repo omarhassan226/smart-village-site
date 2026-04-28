@@ -1,0 +1,26 @@
+.product-section {
+  padding: 2.5rem 0;
+
+  &:nth-child(odd) { background: var(--bg-secondary); }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 480px) { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+.product-skeleton {
+  height: 300px;
+  border-radius: 16px;
+}

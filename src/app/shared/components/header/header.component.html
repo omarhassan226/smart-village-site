@@ -1,0 +1,170 @@
+<header class="header" [class.scrolled]="isScrolled">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <div class="topbar__left">
+        <span class="topbar__item">
+          <i class="icon-truck"></i>
+          {{ 'SHIPPING' | translate }}
+        </span>
+        <span class="topbar__item">
+          <i class="icon-headset"></i>
+          {{ 'SUPPORT' | translate }}
+        </span>
+      </div>
+      <div class="topbar__right">
+        <button class="topbar__lang" (click)="toggleLanguage()">
+          <i class="icon-globe"></i>
+          {{ lang.current === 'ar' ? ('ENGLISH' | translate) : ('ARABIC' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <div class="header__main">
+    <div class="container header__inner">
+      <!-- Logo -->
+      <a routerLink="/" class="header__logo">
+        <img src="assets/images/logo.png" alt="Smart Village" class="header__logo-img" />
+      </a>
+
+      <!-- Search Bar -->
+      <div class="header__search">
+        <input type="text" class="header__search-input" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+          [(ngModel)]="searchQuery" (keyup.enter)="search()" />
+        <button class="header__search-btn" (click)="search()">
+          <i class="icon-search"></i>
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="header__actions">
+        <!-- Language toggle (mobile) -->
+        <button class="header__action header__action--lang d-md-none" (click)="toggleLanguage()">
+          <i class="icon-globe"></i>
+        </button>
+
+        <!-- Wishlist -->
+        <a routerLink="/wishlist" class="header__action">
+          <i class="icon-heart"></i>
+          <span class="header__action-label">{{ 'WISHLIST' | translate }}</span>
+        </a>
+
+        <!-- Cart -->
+        <a routerLink="/cart" class="header__action header__action--cart">
+          <i class="icon-cart"></i>
+          <span class="header__action-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+          <span class="header__action-label">{{ 'CART' | translate }}</span>
+        </a>
+
+        <!-- Auth -->
+        <div class="header__auth" *ngIf="!isLoggedIn">
+          <a routerLink="/auth/login" class="header__action">
+            <i class="icon-user"></i>
+            <span class="header__action-label">{{ 'LOGIN' | translate }}</span>
+          </a>
+        </div>
+        <div class="header__user" *ngIf="isLoggedIn">
+          <button class="header__action header__user-btn">
+            <i class="icon-user"></i>
+            <span class="header__action-label">{{ auth.user?.first_name }}</span>
+            <i class="icon-chevron-down"></i>
+          </button>
+          <div class="header__user-dropdown">
+            <a routerLink="/profile" class="header__user-item">
+              <i class="icon-user"></i>
+              {{ 'MY_ACCOUNT' | translate }}
+            </a>
+            <a routerLink="/profile/orders" class="header__user-item">
+              <i class="icon-box"></i>
+              {{ 'MY_ORDERS' | translate }}
+            </a>
+            <button class="header__user-item header__user-item--danger" (click)="logout()">
+              <i class="icon-logout"></i>
+              {{ 'LOGOUT' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile menu toggle -->
+        <button class="header__hamburger d-lg-none" (click)="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="header__nav d-none d-lg-block">
+    <div class="container">
+      <ul class="nav__list">
+        <li class="nav__item">
+          <a routerLink="/" class="nav__link" routerLinkActive="nav__link--active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            {{ 'HOME' | translate }}
+          </a>
+        </li>
+        <li class="nav__item nav__item--dropdown" *ngFor="let cat of categories" (mouseenter)="setDropdown(cat.id)"
+          (mouseleave)="setDropdown(null)">
+          <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="nav__link">
+            {{ getCategoryName(cat) }}
+            <i class="icon-chevron-down" *ngIf="cat.sub_categories?.length"></i>
+          </a>
+          <div class="nav__dropdown" *ngIf="cat.sub_categories?.length && activeDropdown === cat.id">
+            <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || [])" [routerLink]="['/products']"
+              [queryParams]="{ category_id: sub.id }">
+              {{ getCategoryName(sub) }}
+            </a>
+          </div>
+        </li>
+        <li class="nav__item">
+          <a routerLink="/products" [queryParams]="{ status: 'offers' }" class="nav__link nav__link--highlight">
+            {{ 'DEALS' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-menu" [class.mobile-menu--open]="mobileMenuOpen">
+    <div class="mobile-menu__overlay" (click)="toggleMobileMenu()"></div>
+    <div class="mobile-menu__drawer">
+      <div class="mobile-menu__header">
+        <img src="assets/images/logo.png" alt="Smart Village" class="mobile-menu__logo" />
+        <button class="mobile-menu__close" (click)="toggleMobileMenu()">
+          <i class="icon-x"></i>
+        </button>
+      </div>
+      <div class="mobile-menu__search">
+        <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+          (keyup.enter)="search(); toggleMobileMenu()" class="mobile-menu__search-input" />
+      </div>
+      <ul class="mobile-menu__list">
+        <li><a routerLink="/" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'HOME' | translate }}</a>
+        </li>
+        <li *ngFor="let cat of categories">
+          <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="mobile-menu__link"
+            (click)="toggleMobileMenu()">{{ getCategoryName(cat) }}</a>
+        </li>
+        <li>
+          <a routerLink="/wishlist" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'WISHLIST' |
+            translate }}</a>
+        </li>
+        <li *ngIf="!isLoggedIn">
+          <a routerLink="/auth/login" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'LOGIN' |
+            translate }}</a>
+        </li>
+        <li *ngIf="isLoggedIn">
+          <a routerLink="/profile" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'MY_ACCOUNT' |
+            translate }}</a>
+        </li>
+        <li *ngIf="isLoggedIn">
+          <button class="mobile-menu__link mobile-menu__link--danger" (click)="logout(); toggleMobileMenu()">{{
+            'LOGOUT' | translate }}</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>

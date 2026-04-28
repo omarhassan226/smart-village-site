@@ -1,0 +1,68 @@
+<app-breadcrumb [items]="[
+  { label: ('HOME' | translate), route: '/' },
+  { label: ('FILTER' | translate) }
+]"></app-breadcrumb>
+
+<div class="products-page">
+  <div class="container products-page__inner">
+    <!-- Sidebar -->
+    <app-filter-sidebar
+      class="products-page__sidebar"
+      [class.open]="filterOpen"
+      [categories]="categories"
+      [filter]="filter"
+      (categorySelect)="onCategorySelect($event)"
+      (priceFilter)="onPriceFilter($event[0], $event[1])"
+      (close)="filterOpen = false"
+    ></app-filter-sidebar>
+
+    <!-- Main -->
+    <div class="products-page__main">
+      <!-- Toolbar -->
+      <div class="products-toolbar">
+        <button class="btn btn-outline btn-sm d-lg-none" (click)="filterOpen = !filterOpen">
+          <i class="uil uil-filter"></i>
+          {{ 'FILTER' | translate }}
+        </button>
+
+        <p class="products-toolbar__count" *ngIf="!loading">
+          {{ 'SHOWING_PAGE' | translate }} {{ currentPage }}
+          ({{ totalProducts }})
+        </p>
+
+        <div class="products-toolbar__right">
+          <select class="toolbar-select" (change)="onSortChange($any($event.target).value)">
+            <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="product-grid" *ngIf="!loading">
+        <app-product-card *ngFor="let p of products" [product]="p"></app-product-card>
+      </div>
+
+      <!-- Skeletons -->
+      <div class="product-grid" *ngIf="loading">
+        <div class="skeleton product-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
+      </div>
+
+      <!-- Empty -->
+      <app-empty-state
+        *ngIf="!loading && products.length === 0"
+        icon="uil uil-box"
+        [title]="'NO_PRODUCTS' | translate"
+      ></app-empty-state>
+
+      <!-- Pagination -->
+      <app-pagination
+        [currentPage]="currentPage"
+        [lastPage]="lastPage"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile overlay -->
+<div class="filter-overlay" [class.active]="filterOpen" (click)="filterOpen = false"></div>

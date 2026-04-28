@@ -1,0 +1,18 @@
+<div class="toast-container">
+  <div
+    class="toast"
+    *ngFor="let n of (notify.notifications$ | async) || []"
+    [class]="'toast toast--' + n.type"
+  >
+    <i class="toast__icon" [ngClass]="{
+      'icon-check-circle': n.type === 'success',
+      'icon-alert-circle': n.type === 'error',
+      'icon-info': n.type === 'info',
+      'icon-alert-triangle': n.type === 'warning'
+    }"></i>
+    <span class="toast__msg">{{ n.message }}</span>
+    <button class="toast__close" (click)="notify.dismiss(n.id)">
+      <i class="icon-x"></i>
+    </button>
+  </div>
+</div>

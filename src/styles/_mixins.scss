@@ -1,0 +1,121 @@
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+$breakpoints: (
+  'xs': 0,
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+  'xxl': 1400px,
+);
+
+@mixin respond-to($breakpoint) {
+  $value: map-get($breakpoints, $breakpoint);
+
+  @if $value {
+    @media (min-width: $value) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  $value: map-get($breakpoints, $breakpoint);
+
+  @if $value {
+    @media (max-width: #{$value - 1px}) {
+      @content;
+    }
+  }
+}
+
+/* ===== FLEX MIXINS ===== */
+@mixin flex($dir: row, $align: center, $justify: flex-start) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== GRID ===== */
+@mixin grid($cols, $gap: 16px) {
+  display: grid;
+  grid-template-columns: repeat($cols, 1fr);
+  gap: $gap;
+}
+
+/* ===== TRUNCATE TEXT ===== */
+@mixin truncate($lines: 1) {
+  @if $lines ==1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ===== CARD ===== */
+@mixin card($padding: 16px) {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: $padding;
+}
+
+/* ===== HOVER LIFT ===== */
+@mixin hover-lift {
+  transition: transform var(--transition), box-shadow var(--transition);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* ===== POSITION COVER ===== */
+@mixin cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* ===== OVERLAY ===== */
+@mixin overlay($opacity: 0.5) {
+  @include cover;
+  background: rgba(0, 0, 0, $opacity);
+}
+
+/* ===== SCROLLABLE ===== */
+@mixin scrollable($direction: y) {
+  overflow-#{$direction}: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 2px;
+  }
+}
+
+/* ===== TRANSITION ===== */
+@mixin transition($props...) {
+  transition-property: $props;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}

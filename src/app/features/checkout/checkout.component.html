@@ -1,0 +1,93 @@
+<app-breadcrumb [items]="[
+  { label: ('HOME' | translate), route: '/' },
+  { label: ('TITLE' | translate), route: '/cart' },
+  { label: ('TITLE' | translate) }
+]"></app-breadcrumb>
+
+<div class="container checkout-page" *ngIf="!loading">
+  <h1 class="checkout-page__title">{{ 'TITLE' | translate }}</h1>
+
+  <div class="checkout-layout">
+    <!-- Left -->
+    <div class="checkout-main">
+      <!-- Shipping Address -->
+      <div class="checkout-card">
+        <div class="checkout-card__header">
+          <i class="uil uil-map-marker"></i>
+          <h3>{{ 'SHIPPING_ADDRESS' | translate }}</h3>
+        </div>
+
+        <div class="address-list" *ngIf="addresses.length > 0">
+          <label
+            class="address-option"
+            *ngFor="let addr of addresses"
+            [class.selected]="selectedAddressId === addr.id"
+          >
+            <input type="radio" name="address" [value]="addr.id" [(ngModel)]="selectedAddressId" />
+            <div class="address-option__info">
+              <p class="address-option__name">
+                {{ addr.governorate?.name }} - {{ addr.city?.name }} - {{ addr.village?.name }}
+              </p>
+              <span class="address-option__type" *ngIf="addr.address_type">{{ addr.address_type }}</span>
+              <span class="address-option__default" *ngIf="addr.is_default">✓ Default</span>
+            </div>
+            <span class="address-option__cost" *ngIf="addr.village?.shipping_cost">
+              {{ addr.village?.shipping_cost }} {{ 'OMR' | translate }}
+            </span>
+          </label>
+        </div>
+
+        <button class="btn btn-outline btn-sm" (click)="addressModalOpen = true">
+          <i class="uil uil-plus"></i>
+          {{ 'ADD_NEW_ADDRESS' | translate }}
+        </button>
+      </div>
+
+      <!-- Payment -->
+      <div class="checkout-card">
+        <div class="checkout-card__header">
+          <i class="uil uil-credit-card"></i>
+          <h3>{{ 'PAYMENT_METHOD' | translate }}</h3>
+        </div>
+        <div class="payment-options">
+          <label class="payment-option" [class.selected]="paymentMethod === 'cash_on_delivery'">
+            <input type="radio" name="payment" value="cash_on_delivery" [(ngModel)]="paymentMethod" />
+            <i class="uil uil-money-bill"></i>
+            {{ 'CASH_ON_DELIVERY' | translate }}
+          </label>
+          <label class="payment-option" [class.selected]="paymentMethod === 'online'">
+            <input type="radio" name="payment" value="online" [(ngModel)]="paymentMethod" />
+            <i class="uil uil-credit-card"></i>
+            {{ 'ONLINE_PAYMENT' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="checkout-card">
+        <textarea
+          class="notes-input"
+          [(ngModel)]="notes"
+          [placeholder]="lang.current === 'ar' ? 'ملاحظات...' : 'Notes...'"
+          rows="3"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <app-order-summary
+      [cart]="cart"
+      [placing]="placing"
+      (placeOrder)="placeOrder()"
+    ></app-order-summary>
+  </div>
+</div>
+
+<app-loading-spinner *ngIf="loading" [fullPage]="true"></app-loading-spinner>
+
+<!-- Address Modal -->
+<app-address-modal
+  [isOpen]="addressModalOpen"
+  (close)="addressModalOpen = false"
+  (saved)="onAddressAdded()"
+></app-address-modal>

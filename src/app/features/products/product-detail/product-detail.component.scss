@@ -1,0 +1,300 @@
+@use 'styles/mixins' as *;
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  padding: 2rem 0;
+
+  @include respond-below(lg) { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+// Gallery
+.detail-gallery {
+  display: flex;
+  gap: 12px;
+
+  #{&}__thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 72px;
+    flex-shrink: 0;
+
+    @include respond-below(sm) { display: none; }
+  }
+
+  #{&}__thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    padding: 4px;
+    background: #fff;
+    transition: border-color 0.2s;
+
+    &.active { border-color: var(--primary); }
+    img { width: 100%; height: 100%; object-fit: contain; }
+  }
+
+  #{&}__main {
+    flex: 1;
+    position: relative;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+
+  #{&}__badges {
+    position: absolute;
+    top: 12px;
+    inset-inline-start: 12px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  #{&}__wishlist {
+    position: absolute;
+    top: 12px;
+    inset-inline-end: 12px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: all 0.2s;
+
+    &.active, &:hover { color: var(--danger); border-color: var(--danger); background: #fef2f2; }
+    i { font-size: 1rem; }
+  }
+
+  #{&}__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+  }
+}
+
+// Info
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  #{&}__name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  #{&}__rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    .star i { color: var(--warning); font-size: 0.9rem; }
+  }
+
+  #{&}__reviews { font-size: 0.8rem; color: var(--text-light); margin-inline-start: 4px; }
+
+  #{&}__price {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+
+    &-current {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    &-old {
+      font-size: 1rem;
+      color: var(--text-light);
+      text-decoration: line-through;
+    }
+  }
+
+  #{&}__currency { font-size: 1rem; font-weight: 500; }
+
+  #{&}__stock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--success);
+
+    &.out { color: var(--danger); }
+    i { font-size: 1rem; }
+  }
+
+  #{&}__option { display: flex; flex-direction: column; gap: 8px; }
+
+  #{&}__option-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  #{&}__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  #{&}__desc {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  #{&}__no-desc { color: var(--text-light); font-size: 0.875rem; }
+}
+
+// Color swatches
+.color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--border);
+  transition: box-shadow 0.2s;
+
+  &.active { box-shadow: 0 0 0 3px var(--primary); }
+  &:hover { box-shadow: 0 0 0 2px var(--primary); }
+}
+
+// Type options
+.type-options { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.type-option {
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+
+  &.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
+  &:hover { border-color: var(--primary); }
+}
+
+// Qty control
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+
+  #{&}__btn {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-secondary);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: var(--text);
+    &:hover { background: var(--primary-light); color: var(--primary); }
+  }
+
+  #{&}__val {
+    min-width: 48px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+}
+
+// Tabs
+.detail-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  gap: 0;
+  margin-top: 0.5rem;
+
+  #{&}__tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-light);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    font-family: inherit;
+
+    &.active { color: var(--primary); border-bottom-color: var(--primary); }
+  }
+
+  #{&}__content {
+    padding-top: 1rem;
+    color: var(--text);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+}
+
+// Similar
+.similar-section {
+  padding: 2rem 0 3rem;
+  background: var(--bg-secondary);
+}
+
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+// Skeleton
+.detail-skeleton {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  padding: 2rem 0;
+
+  #{&}__gallery { height: 440px; border-radius: 20px; }
+  #{&}__info { display: flex; flex-direction: column; gap: 12px; }
+
+  @include respond-below(lg) { grid-template-columns: 1fr; }
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  #{&}--new { background: var(--primary); }
+  #{&}--sale { background: var(--danger); }
+}
+
+.spin { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.link { color: var(--primary); text-decoration: none; font-size: 0.875rem; &:hover { text-decoration: underline; } }

@@ -1,0 +1,93 @@
+@use 'styles/mixins' as *;
+
+.checkout-page {
+  padding: 2rem 0 3rem;
+
+  #{&}__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  align-items: flex-start;
+
+  @include respond-below(lg) { grid-template-columns: 1fr; }
+}
+
+.checkout-main { display: flex; flex-direction: column; gap: 1rem; }
+
+.checkout-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  #{&}__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+
+    i { font-size: 1.3rem; color: var(--primary); }
+    h3 { margin: 0; font-size: 1rem; font-weight: 700; }
+  }
+}
+
+.address-list { display: flex; flex-direction: column; gap: 8px; }
+
+.address-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+
+  input[type="radio"] { margin-top: 2px; accent-color: var(--primary); }
+
+  &.selected { border-color: var(--primary); background: var(--primary-light); }
+
+  #{&}__info { flex: 1; }
+  #{&}__name { font-size: 0.875rem; font-weight: 600; margin: 0 0 4px; }
+  #{&}__type { font-size: 0.75rem; background: var(--bg-secondary); padding: 2px 8px; border-radius: 4px; }
+  #{&}__default { font-size: 0.75rem; color: var(--success); margin-inline-start: 6px; }
+  #{&}__cost { font-size: 0.875rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+}
+
+.payment-options { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+
+  input[type="radio"] { accent-color: var(--primary); }
+  i { font-size: 1.1rem; color: var(--text-light); }
+  &.selected { border-color: var(--primary); background: var(--primary-light); i { color: var(--primary); } }
+}
+
+.notes-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+  &:focus { border-color: var(--primary); }
+}

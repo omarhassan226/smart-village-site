@@ -1,0 +1,58 @@
+/* ===== RTL / LTR SUPPORT ===== */
+
+/* Default is RTL (Arabic) */
+[dir="rtl"] {
+  text-align: right;
+
+  .ms-auto {
+    margin-right: auto !important;
+    margin-left: unset !important;
+  }
+
+  .me-auto {
+    margin-left: auto !important;
+    margin-right: unset !important;
+  }
+
+  /* Flip directional icons */
+  .icon-arrow-left {
+    transform: scaleX(-1);
+  }
+
+  .icon-arrow-right {
+    transform: scaleX(-1);
+  }
+
+  /* Nav & dropdowns open to the right */
+  .dropdown-menu {
+    left: unset;
+    right: 0;
+  }
+
+  /* Price range slider */
+  .ngx-slider {
+    direction: ltr;
+  }
+}
+
+[dir="ltr"] {
+  text-align: left;
+
+  .dropdown-menu {
+    right: unset;
+    left: 0;
+  }
+}
+
+/* ===== RESPONSIVE VISIBILITY ===== */
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}

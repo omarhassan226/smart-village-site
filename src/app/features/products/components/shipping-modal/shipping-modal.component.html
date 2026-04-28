@@ -1,0 +1,52 @@
+<div class="modal-backdrop" [class.open]="isOpen" (click)="close.emit()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ 'SHIPPING_DELIVERY' | translate }}</h3>
+      <button class="modal-close" (click)="close.emit()"><i class="uil uil-times"></i></button>
+    </div>
+
+    <div class="modal-body" *ngIf="auth.isLoggedIn">
+      <p class="modal-subtitle">{{ 'SHIPPING_POLICY' | translate }}</p>
+
+      <div class="form-group">
+        <label class="form-label">{{ 'GOVERNORATE' | translate }}</label>
+        <select class="form-select" (change)="onGovChange(+$any($event.target).value)">
+          <option value="">---</option>
+          <option *ngFor="let g of governorates" [value]="g.id">{{ getName(g) }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="cities.length > 0">
+        <label class="form-label">{{ 'CITY' | translate }}</label>
+        <select class="form-select" (change)="onCityChange(+$any($event.target).value)">
+          <option value="">---</option>
+          <option *ngFor="let c of cities" [value]="c.id">{{ getName(c) }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="villages.length > 0">
+        <label class="form-label">{{ 'VILLAGE' | translate }}</label>
+        <select class="form-select" (change)="onVillageChange(+$any($event.target).value)">
+          <option value="">---</option>
+          <option *ngFor="let v of villages" [value]="v.id">{{ getName(v) }}</option>
+        </select>
+      </div>
+
+      <div class="shipping-result" *ngIf="loadingCost">
+        <div class="spinner-sm"></div>
+      </div>
+
+      <div class="shipping-result shipping-result--found" *ngIf="shippingCost !== null && !loadingCost">
+        <i class="uil uil-truck"></i>
+        <span>{{ 'SHIPPING' | translate }}: <strong>{{ shippingCost }} {{ 'OMR' | translate }}</strong></span>
+      </div>
+    </div>
+
+    <div class="modal-body modal-body--guest" *ngIf="!auth.isLoggedIn">
+      <p>{{ 'LOGIN_TO_CALCULATE' | translate }}</p>
+      <a routerLink="/auth/login" class="btn btn-primary btn-sm" (click)="close.emit()">
+        {{ 'LOGIN_BTN' | translate }}
+      </a>
+    </div>
+  </div>
+</div>

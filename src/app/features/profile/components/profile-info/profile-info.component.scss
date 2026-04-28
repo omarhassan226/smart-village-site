@@ -1,0 +1,37 @@
+@use 'styles/mixins' as *;
+
+.profile-section {
+  padding: 1.5rem;
+
+  #{&}__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+.info-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  @include respond-below(sm) { grid-template-columns: 1fr; }
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+.form-control {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  &:focus { border-color: var(--primary); }
+  &[readonly] { background: var(--bg-secondary); cursor: not-allowed; }
+}

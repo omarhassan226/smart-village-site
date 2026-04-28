@@ -1,0 +1,190 @@
+<app-breadcrumb [items]="[
+  { label: ('HOME' | translate), route: '/' },
+  { label: ('FILTER' | translate), route: '/products' },
+  { label: name }
+]"></app-breadcrumb>
+
+<!-- Loading -->
+<div class="container detail-skeleton" *ngIf="loading">
+  <div class="skeleton detail-skeleton__gallery"></div>
+  <div class="detail-skeleton__info">
+    <div class="skeleton" style="height:28px;width:70%;margin-bottom:12px"></div>
+    <div class="skeleton" style="height:20px;width:40%;margin-bottom:24px"></div>
+    <div class="skeleton" style="height:48px;width:50%"></div>
+  </div>
+</div>
+
+<!-- Product Detail -->
+<div class="container product-detail" *ngIf="!loading && product">
+  <!-- Gallery -->
+  <div class="detail-gallery">
+    <div class="detail-gallery__thumbnails">
+      <button
+        class="detail-gallery__thumb"
+        *ngFor="let img of allImages"
+        [class.active]="img === selectedImage"
+        (click)="selectImage(img)"
+      >
+        <img [src]="img" [alt]="name" onerror="this.src='assets/images/placeholder.png'" />
+      </button>
+    </div>
+
+    <div class="detail-gallery__main">
+      <div class="detail-gallery__badges">
+        <span class="badge badge--new" *ngIf="product.is_new">{{ 'NEW' | translate }}</span>
+        <span class="badge badge--sale" *ngIf="discount > 0">-{{ discount }}%</span>
+      </div>
+      <button
+        class="detail-gallery__wishlist"
+        (click)="toggleWishlist()"
+        [class.active]="isWishlisted"
+      >
+        <i [class]="isWishlisted ? 'uil uil-heart' : 'uil uil-heart'"></i>
+        {{ (isWishlisted ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST') | translate }}
+      </button>
+      <img
+        [src]="selectedImage"
+        [alt]="name"
+        class="detail-gallery__img"
+        onerror="this.src='assets/images/placeholder.png'"
+      />
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="detail-info">
+    <h1 class="detail-info__name">{{ name }}</h1>
+
+    <!-- Rating -->
+    <div class="detail-info__rating" *ngIf="product.rating">
+      <span class="star" *ngFor="let s of [1,2,3,4,5]">
+        <i [class]="s <= (product.rating || 0) ? 'uil uil-star' : 'uil uil-star'"></i>
+      </span>
+      <span class="detail-info__reviews">({{ product.reviews_count }})</span>
+    </div>
+
+    <!-- Price -->
+    <div class="detail-info__price">
+      <span class="detail-info__price-current">
+        {{ currentPrice | number:'1.3-3' }}
+        <span class="detail-info__currency">{{ 'OMR' | translate }}</span>
+      </span>
+      <span class="detail-info__price-old" *ngIf="product.original_price && product.original_price > product.price">
+        {{ product.original_price | number:'1.3-3' }} {{ 'OMR' | translate }}
+      </span>
+    </div>
+
+    <!-- Stock -->
+    <div class="detail-info__stock" [class.out]="!product.in_stock">
+      <i [class]="product.in_stock ? 'uil uil-check-circle' : 'uil uil-times-circle'"></i>
+      {{ (product.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK') | translate }}
+    </div>
+
+    <!-- Color -->
+    <div class="detail-info__option" *ngIf="product.colors && product.colors.length > 0">
+      <label class="detail-info__option-label">
+        {{ 'COLOR' | translate }}:
+        <strong>{{ selectedColor?.name }}</strong>
+      </label>
+      <div class="color-swatches">
+        <button
+          class="color-swatch"
+          *ngFor="let color of product.colors"
+          [class.active]="selectedColor?.id === color.id"
+          [style.background]="color.hex || '#ccc'"
+          [title]="color.name"
+          (click)="selectedColor = color"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Type -->
+    <div class="detail-info__option" *ngIf="product.types && product.types.length > 0">
+      <label class="detail-info__option-label">{{ 'TYPE' | translate }}</label>
+      <div class="type-options">
+        <button
+          class="type-option"
+          *ngFor="let type of product.types"
+          [class.active]="selectedType?.id === type.id"
+          (click)="selectedType = type"
+        >
+          {{ type.name }}
+          <span *ngIf="type.extra_price"> (+{{ type.extra_price }})</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="detail-info__option">
+      <label class="detail-info__option-label">{{ 'QUANTITY' | translate }}</label>
+      <div class="qty-control">
+        <button class="qty-control__btn" (click)="decrement()">−</button>
+        <span class="qty-control__val">{{ quantity }}</span>
+        <button class="qty-control__btn" (click)="increment()">+</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="detail-info__actions">
+      <button
+        class="btn btn-primary btn-lg"
+        (click)="addToCart()"
+        [disabled]="!product.in_stock || addingToCart"
+      >
+        <i class="uil uil-cart" *ngIf="!addingToCart"></i>
+        <i class="uil uil-spinner-alt spin" *ngIf="addingToCart"></i>
+        {{ 'ADD_TO_CART' | translate }}
+      </button>
+
+      <button
+        class="btn btn-outline"
+        (click)="shippingModalOpen = true"
+      >
+        <i class="uil uil-truck"></i>
+        {{ 'SHIPPING_DELIVERY' | translate }}
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="detail-tabs">
+      <button
+        class="detail-tabs__tab"
+        [class.active]="activeTab === 'details'"
+        (click)="activeTab = 'details'"
+      >{{ 'DETAILS' | translate }}</button>
+      <button
+        class="detail-tabs__tab"
+        [class.active]="activeTab === 'shipping'"
+        (click)="activeTab = 'shipping'"
+      >{{ 'SHIPPING_DELIVERY' | translate }}</button>
+    </div>
+
+    <div class="detail-tabs__content">
+      <div *ngIf="activeTab === 'details'">
+        <p class="detail-info__desc" *ngIf="description">{{ description }}</p>
+        <p class="detail-info__no-desc" *ngIf="!description">{{ 'DETAILS' | translate }}</p>
+      </div>
+      <div *ngIf="activeTab === 'shipping'">
+        <p>{{ 'SHIPPING_POLICY' | translate }}</p>
+        <a routerLink="/auth/login" class="link" *ngIf="false">{{ 'LOGIN_TO_CALCULATE' | translate }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Similar Products -->
+<div class="similar-section" *ngIf="similarProducts.length > 0">
+  <div class="container">
+    <h2 class="section-title">{{ 'SIMILAR_PRODUCTS' | translate }}</h2>
+    <div class="similar-grid">
+      <app-product-card *ngFor="let p of similarProducts" [product]="p"></app-product-card>
+    </div>
+  </div>
+</div>
+
+<!-- Shipping Modal -->
+<app-shipping-modal
+  [isOpen]="shippingModalOpen"
+  [product]="product"
+  (close)="shippingModalOpen = false"
+></app-shipping-modal>

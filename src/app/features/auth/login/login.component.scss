@@ -1,0 +1,115 @@
+@use 'styles/mixins' as *;
+
+.auth-page {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--bg-secondary);
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+
+  #{&}__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  #{&}__logo {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+
+  #{&}__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+
+  #{&}__form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  #{&}__footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  #{&}__link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  font-size: 1.1rem;
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.form-control {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px 12px 44px;
+  font-size: 0.9rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: #fff;
+
+  [dir="rtl"] & { padding: 12px 44px 12px 14px; }
+
+  &:focus { border-color: var(--primary); }
+  &.invalid { border-color: var(--danger); }
+}
+
+.input-toggle {
+  position: absolute;
+  inset-inline-end: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  padding: 4px;
+  &:hover { color: var(--primary); }
+}
+
+.form-error {
+  font-size: 0.78rem;
+  color: var(--danger);
+}

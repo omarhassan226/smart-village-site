@@ -1,0 +1,19 @@
+@use 'styles/mixins' as *;
+
+.wishlist-page {
+  padding: 2rem 0 3rem;
+
+  #{&}__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+
+  @include respond-below(sm) { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}

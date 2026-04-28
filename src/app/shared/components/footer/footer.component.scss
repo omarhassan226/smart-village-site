@@ -1,0 +1,126 @@
+@use 'styles/mixins' as *;
+
+.footer {
+  background: var(--secondary);
+  color: rgba(255,255,255,0.85);
+  margin-top: auto;
+
+  #{&}__top {
+    padding: 48px 0 32px;
+  }
+
+  #{&}__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem;
+
+    @include respond-below(lg) { grid-template-columns: 1fr 1fr; }
+    @include respond-below(sm) { grid-template-columns: 1fr; }
+  }
+
+  #{&}__brand {
+    padding-inline-end: 2rem;
+  }
+
+  #{&}__logo {
+    height: 50px;
+    margin-bottom: 12px;
+  }
+
+  #{&}__brand-name {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  #{&}__about {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    opacity: 0.75;
+  }
+
+  #{&}__social {
+    display: flex;
+    gap: 0.5rem;
+
+    &-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s;
+
+      &:hover { background: var(--primary); }
+    }
+  }
+
+  #{&}__col {}
+
+  #{&}__heading {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+  }
+
+  #{&}__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #{&}__link {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+
+    &:hover { color: var(--primary); }
+  }
+
+  #{&}__bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 16px 0;
+
+    &-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  }
+
+  #{&}__copyright {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  #{&}__payment {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    img {
+      height: 28px;
+      border-radius: 4px;
+      background: #fff;
+      padding: 2px 4px;
+    }
+  }
+}

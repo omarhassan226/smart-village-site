@@ -1,0 +1,50 @@
+<div class="sidebar">
+  <div class="sidebar__head">
+    <h3 class="sidebar__title">{{ 'FILTER' | translate }}</h3>
+    <button class="sidebar__close d-lg-none" (click)="close.emit()">
+      <i class="uil uil-times"></i>
+    </button>
+  </div>
+
+  <!-- Categories -->
+  <div class="sidebar__section">
+    <h4 class="sidebar__section-title">{{ 'CHOOSE_CATEGORY' | translate }}</h4>
+    <ul class="sidebar__list">
+      <li class="sidebar__item">
+        <button
+          class="sidebar__btn"
+          [class.active]="!filter.category_id"
+          (click)="categorySelect.emit(null)"
+        >{{ lang.current === 'ar' ? 'الكل' : 'All' }}</button>
+      </li>
+      <li class="sidebar__item" *ngFor="let cat of categories">
+        <button
+          class="sidebar__btn"
+          [class.active]="isSelected(cat.id)"
+          (click)="categorySelect.emit(cat.id)"
+        >{{ getCatName(cat) }}</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Price Range -->
+  <div class="sidebar__section">
+    <h4 class="sidebar__section-title">{{ 'PRICE_RANGE' | translate }}</h4>
+    <div class="price-range">
+      <div class="price-range__inputs">
+        <div class="price-input">
+          <label>{{ 'PRICE' | translate }}</label>
+          <input type="number" [(ngModel)]="priceFrom" min="0" class="price-input__field" />
+        </div>
+        <span class="price-range__sep">-</span>
+        <div class="price-input">
+          <label>{{ 'PRICE' | translate }}</label>
+          <input type="number" [(ngModel)]="priceTo" min="0" class="price-input__field" />
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm btn-block" (click)="applyPrice()">
+        {{ 'FILTER' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

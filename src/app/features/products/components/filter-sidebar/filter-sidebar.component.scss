@@ -1,0 +1,105 @@
+@use 'styles/mixins' as *;
+
+.sidebar {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+
+  #{&}__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+
+  #{&}__title { font-size: 1rem; font-weight: 700; margin: 0; }
+
+  #{&}__close {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-light);
+  }
+
+  #{&}__section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  #{&}__section-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 10px;
+  }
+
+  #{&}__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  #{&}__btn {
+    width: 100%;
+    text-align: start;
+    background: none;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: inherit;
+
+    &:hover { background: var(--primary-light); color: var(--primary); }
+    &.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+  }
+}
+
+.price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  #{&}__inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #{&}__sep { color: var(--text-light); font-weight: 600; }
+}
+
+.price-input {
+  flex: 1;
+
+  label { display: block; font-size: 0.72rem; color: var(--text-light); margin-bottom: 4px; }
+
+  #{&}__field {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus { border-color: var(--primary); }
+  }
+}
+
+.d-lg-none {
+  @include respond-to(lg) { display: none !important; }
+}

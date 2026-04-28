@@ -1,0 +1,27 @@
+<app-breadcrumb [items]="[
+  { label: ('HOME' | translate), route: '/' },
+  { label: ('TITLE' | translate) }
+]"></app-breadcrumb>
+
+<div class="container wishlist-page">
+  <h1 class="wishlist-page__title">{{ 'TITLE' | translate }}</h1>
+
+  <app-loading-spinner *ngIf="loading" [fullPage]="true"></app-loading-spinner>
+
+  <app-empty-state
+    *ngIf="!loading && products.length === 0"
+    icon="uil uil-heart"
+    [title]="'EMPTY' | translate"
+    [description]="'EMPTY_DESC' | translate"
+  >
+    <a routerLink="/products" class="btn btn-primary">{{ 'CONTINUE_SHOPPING' | translate }}</a>
+  </app-empty-state>
+
+  <div class="wishlist-grid" *ngIf="!loading && products.length > 0">
+    <app-product-card
+      *ngFor="let product of products"
+      [product]="product"
+      (wishlistToggled)="onWishlistToggled($event)"
+    ></app-product-card>
+  </div>
+</div>

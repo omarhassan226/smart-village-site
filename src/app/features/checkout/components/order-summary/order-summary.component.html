@@ -1,0 +1,43 @@
+<div class="order-summary">
+  <h3 class="order-summary__title">{{ 'ORDER_SUMMARY' | translate }}</h3>
+
+  <div class="order-summary__items">
+    <div class="order-item" *ngFor="let item of cart.items">
+      <div class="order-item__img-wrap">
+        <img
+          [src]="item.product?.image"
+          class="order-item__img"
+          onerror="this.src='assets/images/placeholder.png'"
+        />
+        <span class="order-item__qty">{{ item.quantity }}</span>
+      </div>
+      <span class="order-item__name">{{ item.product?.name }}</span>
+      <span class="order-item__price">{{ item.price * item.quantity | number:'1.3-3' }}</span>
+    </div>
+  </div>
+
+  <div class="order-summary__rows">
+    <div class="order-summary__row">
+      <span>{{ 'PRICE' | translate }}</span>
+      <span>{{ cart.total | number:'1.3-3' }} {{ 'OMR' | translate }}</span>
+    </div>
+    <div class="order-summary__row">
+      <span>{{ 'SHIPPING' | translate }}</span>
+      <span class="text-warning">{{ 'SHIPPING_NOT_CALCULATED' | translate }}</span>
+    </div>
+    <div class="order-summary__total">
+      <span>{{ 'TOTAL' | translate }}</span>
+      <span>{{ cart.total | number:'1.3-3' }} {{ 'OMR' | translate }}</span>
+    </div>
+  </div>
+
+  <button
+    class="btn btn-primary btn-block btn-lg"
+    (click)="placeOrder.emit()"
+    [disabled]="placing"
+  >
+    <i class="uil uil-check" *ngIf="!placing"></i>
+    <i class="uil uil-spinner-alt spin" *ngIf="placing"></i>
+    {{ 'PLACE_ORDER' | translate }}
+  </button>
+</div>

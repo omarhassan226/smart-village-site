@@ -1,0 +1,57 @@
+<div class="product-card" [class.product-card--compact]="compact" (click)="navigate()">
+  <!-- Badges -->
+  <div class="product-card__badges">
+    <span class="badge badge--new" *ngIf="product.is_new">{{ 'NEW' | translate }}</span>
+    <span class="badge badge--sale" *ngIf="discount > 0">-{{ discount }}%</span>
+  </div>
+
+  <!-- Wishlist -->
+  <button class="product-card__wishlist" (click)="toggleWishlist($event)"
+    [class.product-card__wishlist--active]="isWishlisted"
+    [title]="(isWishlisted ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST') | translate">
+    <i [class]="isWishlisted ? 'icon-heart-filled' : 'icon-heart'"></i>
+  </button>
+
+  <!-- Image -->
+  <div class="product-card__img-wrap">
+    <img class="product-card__img" [src]="product.image" [alt]="name" loading="lazy"
+      onerror="this.src='assets/images/placeholder.png'" />
+  </div>
+
+  <!-- Info -->
+  <div class="product-card__body">
+    <p class="product-card__name" [title]="name">{{ name | truncate:50 }}</p>
+
+    <!-- Rating -->
+    <div class="product-card__rating" *ngIf="product.rating">
+      <span class="star" *ngFor="let s of [1,2,3,4,5]">
+        <i [class]="s <= (product.rating || 0) ? 'icon-star-filled' : 'icon-star'"></i>
+      </span>
+      <span class="product-card__reviews" *ngIf="product.reviews_count">({{ product.reviews_count }})</span>
+    </div>
+
+    <!-- Price -->
+    <div class="product-card__price">
+      <span class="product-card__price-current">
+        {{ product.price | number:'1.3-3' }}
+        <span class="product-card__currency">{{ 'OMR' | translate }}</span>
+      </span>
+      <span class="product-card__price-old" *ngIf="product.original_price && product.original_price > product.price">
+        {{ product.original_price | number:'1.3-3' }}
+      </span>
+    </div>
+
+    <!-- Stock -->
+    <p class="product-card__stock" [class.product-card__stock--out]="!product.in_stock">
+      {{ (product.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK') | translate }}
+    </p>
+
+    <!-- Add to cart -->
+    <button class="btn btn-primary btn-block product-card__add" (click)="addToCart($event)"
+      [disabled]="!product.in_stock || addingToCart">
+      <i class="icon-cart" *ngIf="!addingToCart"></i>
+      <i class="icon-loader spin" *ngIf="addingToCart"></i>
+      {{ 'ADD_TO_CART' | translate }}
+    </button>
+  </div>
+</div>

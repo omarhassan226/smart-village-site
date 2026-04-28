@@ -1,0 +1,48 @@
+<section class="hero">
+  <!-- Loading skeleton -->
+  <div class="hero__skeleton" *ngIf="loading">
+    <div class="skeleton hero__skeleton-img"></div>
+  </div>
+
+  <!-- Slider -->
+  <div class="hero__slider" *ngIf="!loading && banners.length > 0">
+    <div class="hero__track" [style.transform]="'translateX(' + (lang.isRtl ? activeIndex : -activeIndex) * 100 + '%)'">
+      <div class="hero__slide" *ngFor="let banner of banners">
+        <a [href]="banner.link || '#'" class="hero__slide-link">
+          <img [src]="getBannerImage(banner)" [alt]="banner.title || ''" class="hero__img" />
+          <div class="hero__overlay" *ngIf="banner.title">
+            <div class="container">
+              <h2 class="hero__title">{{ banner.title }}</h2>
+              <p class="hero__subtitle" *ngIf="banner.subtitle">{{ banner.subtitle }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Arrows -->
+    <button class="hero__arrow hero__arrow--prev" (click)="prev()" *ngIf="banners.length > 1">
+      <i class="uil uil-angle-left"></i>
+    </button>
+    <button class="hero__arrow hero__arrow--next" (click)="next()" *ngIf="banners.length > 1">
+      <i class="uil uil-angle-right"></i>
+    </button>
+
+    <!-- Dots -->
+    <div class="hero__dots" *ngIf="banners.length > 1">
+      <button
+        class="hero__dot"
+        *ngFor="let b of banners; let i = index"
+        [class.hero__dot--active]="i === activeIndex"
+        (click)="goTo(i)"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Fallback when no banners -->
+  <div class="hero__fallback" *ngIf="!loading && banners.length === 0">
+    <div class="container hero__fallback-inner">
+      <h1 class="hero__fallback-title">{{ lang.current === 'ar' ? 'القرية الذكية' : 'Smart Village' }}</h1>
+    </div>
+  </div>
+</section>
