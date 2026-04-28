@@ -28,6 +28,10 @@ export interface RegisterRequest {
   last_name: string;
   phone: string;
   email?: string;
+  address?: string;
+  governorate_id?: number;
+  city_id?: number;
+  village_id?: number;
   password: string;
   password_confirmation: string;
 }

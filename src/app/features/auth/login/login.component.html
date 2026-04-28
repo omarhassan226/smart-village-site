@@ -1,53 +1,119 @@
 <div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-card__header">
-      <img src="assets/images/logo.png" alt="Smart Village" class="auth-card__logo"
-        onerror="this.style.display='none'" />
-      <h1 class="auth-card__title">{{ 'LOGIN_TITLE' | translate }}</h1>
+  <!-- Decorative elements -->
+  <div class="auth-page__decor auth-page__decor--1"></div>
+  <div class="auth-page__decor auth-page__decor--2"></div>
+  <div class="auth-page__decor auth-page__decor--3"></div>
+
+  <div class="auth-container">
+    <!-- Left Panel - Branding -->
+    <div class="auth-brand">
+      <div class="auth-brand__content">
+        <div class="auth-brand__logo-wrap">
+          <img src="assets/images/smart-village.png" alt="Smart Village" class="auth-brand__logo"
+            onerror="this.style.display='none'" />
+        </div>
+        <h2 class="auth-brand__title">{{ 'WELCOME_BACK' | translate }}</h2>
+        <p class="auth-brand__desc">{{ 'LOGIN_BRAND_DESC' | translate }}</p>
+        <div class="auth-brand__features">
+          <div class="auth-brand__feature">
+            <i class="uil uil-shield-check"></i>
+            <span>{{ 'SECURE_LOGIN' | translate }}</span>
+          </div>
+          <div class="auth-brand__feature">
+            <i class="uil uil-truck"></i>
+            <span>{{ 'FAST_SHIPPING' | translate }}</span>
+          </div>
+          <div class="auth-brand__feature">
+            <i class="uil uil-tag-alt"></i>
+            <span>{{ 'BEST_PRICES' | translate }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card__form" novalidate>
-      <!-- Phone -->
-      <div class="form-group">
-        <label class="form-label">{{ 'PHONE' | translate }}</label>
-        <div class="input-wrap">
-          <i class="input-icon uil uil-phone"></i>
-          <input type="tel" formControlName="phone" class="form-control"
-            [class.invalid]="phoneControl?.invalid && phoneControl?.touched" [placeholder]="'PHONE' | translate"
-            dir="ltr" />
-        </div>
-        <span class="form-error" *ngIf="phoneControl?.invalid && phoneControl?.touched">
-          {{ 'PHONE' | translate }} {{ 'ERROR' | translate }}
-        </span>
-      </div>
-
-      <!-- Password -->
-      <div class="form-group">
-        <label class="form-label">{{ 'PASSWORD' | translate }}</label>
-        <div class="input-wrap">
-          <i class="input-icon uil uil-lock"></i>
-          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control" dir="ltr"
-            [class.invalid]="passwordControl?.invalid && passwordControl?.touched"
-            [placeholder]="'PASSWORD' | translate" />
-          <button type="button" class="input-toggle" (click)="showPassword = !showPassword">
-            <i [class]="showPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
-          </button>
-        </div>
-        <span class="form-error" *ngIf="passwordControl?.invalid && passwordControl?.touched">
-          {{ 'PASSWORD' | translate }} {{ 'ERROR' | translate }}
-        </span>
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="loading">
-        <span *ngIf="!loading">{{ 'LOGIN_BTN' | translate }}</span>
-        <span *ngIf="loading">{{ 'LOADING' | translate }}</span>
+    <!-- Right Panel - Form -->
+    <div class="auth-card">
+      <!-- Language Toggle -->
+      <button class="auth-lang-toggle" (click)="toggleLanguage()">
+        <i class="uil uil-globe"></i>
+        {{ lang.current === 'ar' ? ('ENGLISH' | translate) : ('ARABIC' | translate) }}
       </button>
-    </form>
 
-    <div class="auth-card__footer">
-      <span>{{ 'NO_ACCOUNT' | translate }}</span>
-      <a routerLink="/auth/register" class="auth-card__link">{{ 'REGISTER' | translate }}</a>
+      <!-- Header -->
+      <div class="auth-card__header">
+        <div class="auth-card__icon-wrap">
+          <i class="uil uil-signin auth-card__icon"></i>
+        </div>
+        <h1 class="auth-card__title">{{ 'LOGIN_TITLE' | translate }}</h1>
+        <p class="auth-card__subtitle">{{ 'LOGIN_SUBTITLE' | translate }}</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card__form" novalidate>
+
+        <!-- Section: Credentials -->
+        <div class="form-section">
+          <div class="form-section__header">
+            <i class="uil uil-user-circle form-section__icon"></i>
+            <span class="form-section__title">{{ 'LOGIN_CREDENTIALS' | translate }}</span>
+          </div>
+
+          <!-- Phone -->
+          <div class="form-group">
+            <label class="form-label">{{ 'PHONE' | translate }} <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i class="input-icon uil uil-phone"></i>
+              <input type="tel" formControlName="phone" class="form-control"
+                [class.invalid]="phoneControl?.invalid && phoneControl?.touched" [placeholder]="'PHONE' | translate"
+                dir="ltr" />
+            </div>
+            <span class="form-error" *ngIf="phoneControl?.invalid && phoneControl?.touched">
+              {{ 'FIELD_REQUIRED' | translate }}
+            </span>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label">{{ 'PASSWORD' | translate }} <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i class="input-icon uil uil-lock"></i>
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control"
+                dir="ltr" [class.invalid]="passwordControl?.invalid && passwordControl?.touched"
+                [placeholder]="'PASSWORD' | translate" />
+              <button type="button" class="input-toggle" (click)="showPassword = !showPassword">
+                <i [class]="showPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
+              </button>
+            </div>
+            <span class="form-error" *ngIf="passwordControl?.hasError('required') && passwordControl?.touched">
+              {{ 'FIELD_REQUIRED' | translate }}
+            </span>
+            <span class="form-error" *ngIf="passwordControl?.hasError('minlength') && passwordControl?.touched">
+              {{ 'PASSWORD_MIN_LENGTH' | translate }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="auth-card__forgot">
+          <a routerLink="/auth/forgot-password" class="auth-card__link">{{ 'FORGOT_PASSWORD' | translate }}</a>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg btn-submit" [disabled]="loading">
+          <span *ngIf="!loading">
+            <i class="uil uil-signin"></i>
+            {{ 'LOGIN_BTN' | translate }}
+          </span>
+          <span *ngIf="loading" class="btn-loading">
+            <div class="spinner-btn"></div>
+            {{ 'LOADING' | translate }}
+          </span>
+        </button>
+      </form>
+
+      <div class="auth-card__footer">
+        <span>{{ 'NO_ACCOUNT' | translate }}</span>
+        <a routerLink="/auth/register" class="auth-card__link">{{ 'REGISTER' | translate }}</a>
+      </div>
     </div>
   </div>
 </div>

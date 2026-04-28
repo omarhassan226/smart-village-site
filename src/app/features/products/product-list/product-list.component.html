@@ -10,8 +10,12 @@
       class="products-page__sidebar"
       [class.open]="filterOpen"
       [categories]="categories"
+      [brands]="brands"
+      [keywords]="keywords"
       [filter]="filter"
       (categorySelect)="onCategorySelect($event)"
+      (brandSelect)="onBrandSelect($event)"
+      (keywordSelect)="onKeywordSelect($event)"
       (priceFilter)="onPriceFilter($event[0], $event[1])"
       (close)="filterOpen = false"
     ></app-filter-sidebar>
@@ -20,25 +24,43 @@
     <div class="products-page__main">
       <!-- Toolbar -->
       <div class="products-toolbar">
-        <button class="btn btn-outline btn-sm d-lg-none" (click)="filterOpen = !filterOpen">
-          <i class="uil uil-filter"></i>
-          {{ 'FILTER' | translate }}
-        </button>
+        <div class="products-toolbar__left">
+          <button class="products-toolbar__filter-btn d-lg-none" (click)="filterOpen = !filterOpen">
+            <i class="uil uil-filter"></i>
+            {{ 'FILTER' | translate }}
+          </button>
 
-        <p class="products-toolbar__count" *ngIf="!loading">
-          {{ 'SHOWING_PAGE' | translate }} {{ currentPage }}
-          ({{ totalProducts }})
-        </p>
+          <p class="products-toolbar__count" *ngIf="!loading">
+            <span class="products-toolbar__count-num">{{ totalProducts }}</span>
+            {{ lang.current === 'ar' ? 'منتج' : 'Products' }}
+          </p>
+        </div>
 
         <div class="products-toolbar__right">
+          <!-- Clear Filters -->
+          <button class="products-toolbar__clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
+            <i class="uil uil-times-circle"></i>
+            {{ lang.current === 'ar' ? 'مسح الفلتر' : 'Clear' }}
+          </button>
+
           <select class="toolbar-select" (change)="onSortChange($any($event.target).value)">
             <option *ngFor="let opt of sortOptions" [value]="opt.value">{{ opt.label }}</option>
           </select>
         </div>
       </div>
 
+      <!-- Active Filter Tags -->
+      <div class="products-toolbar__tags" *ngIf="hasActiveFilters">
+        <span class="products-toolbar__tag" *ngIf="filter.key_word">
+          <i class="uil uil-search"></i> "{{ filter.key_word }}"
+          <button class="products-toolbar__tag-close" (click)="updateQueryParam('key_word', null)">
+            <i class="uil uil-times"></i>
+          </button>
+        </span>
+      </div>
+
       <!-- Grid -->
-      <div class="product-grid" *ngIf="!loading">
+      <div class="product-grid" *ngIf="!loading && products.length > 0">
         <app-product-card *ngFor="let p of products" [product]="p"></app-product-card>
       </div>
 
@@ -56,6 +78,7 @@
 
       <!-- Pagination -->
       <app-pagination
+        *ngIf="lastPage > 1"
         [currentPage]="currentPage"
         [lastPage]="lastPage"
         (pageChange)="onPageChange($event)"

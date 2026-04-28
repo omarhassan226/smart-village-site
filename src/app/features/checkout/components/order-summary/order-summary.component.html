@@ -7,7 +7,7 @@
         <img
           [src]="item.product?.image"
           class="order-item__img"
-          onerror="this.src='assets/images/placeholder.png'"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
         />
         <span class="order-item__qty">{{ item.quantity }}</span>
       </div>

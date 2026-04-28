@@ -1,6 +1,9 @@
 <div class="sidebar">
   <div class="sidebar__head">
-    <h3 class="sidebar__title">{{ 'FILTER' | translate }}</h3>
+    <h3 class="sidebar__title">
+      <i class="uil uil-sliders-v-alt"></i>
+      {{ 'FILTER' | translate }}
+    </h3>
     <button class="sidebar__close d-lg-none" (click)="close.emit()">
       <i class="uil uil-times"></i>
     </button>
@@ -8,42 +11,100 @@
 
   <!-- Categories -->
   <div class="sidebar__section">
-    <h4 class="sidebar__section-title">{{ 'CHOOSE_CATEGORY' | translate }}</h4>
+    <h4 class="sidebar__section-title">
+      <i class="uil uil-list-ul"></i>
+      {{ 'CHOOSE_CATEGORY' | translate }}
+    </h4>
     <ul class="sidebar__list">
       <li class="sidebar__item">
-        <button
-          class="sidebar__btn"
-          [class.active]="!filter.category_id"
-          (click)="categorySelect.emit(null)"
-        >{{ lang.current === 'ar' ? 'الكل' : 'All' }}</button>
+        <button class="sidebar__btn" [class.active]="!filter.category_id" (click)="categorySelect.emit(null)">
+          <i class="uil uil-apps"></i>
+          {{ lang.current === 'ar' ? 'الكل' : 'All' }}
+        </button>
       </li>
       <li class="sidebar__item" *ngFor="let cat of categories">
-        <button
-          class="sidebar__btn"
-          [class.active]="isSelected(cat.id)"
-          (click)="categorySelect.emit(cat.id)"
-        >{{ getCatName(cat) }}</button>
+        <button class="sidebar__btn" [class.active]="isSelected(cat.id)" (click)="categorySelect.emit(cat.id)">
+          <i class="uil uil-tag-alt"></i>
+          {{ getCatName(cat) }}
+          <span class="sidebar__badge" *ngIf="cat.products_count">{{ cat.products_count }}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Brands -->
+  <div class="sidebar__section" *ngIf="brands.length > 0">
+    <h4 class="sidebar__section-title">
+      <i class="uil uil-award"></i>
+      {{ 'BRAND' | translate }}
+    </h4>
+
+    <!-- Brand Search -->
+    <div class="sidebar__search" *ngIf="brands.length > 6">
+      <i class="uil uil-search sidebar__search-icon"></i>
+      <input type="text" [(ngModel)]="brandSearch" class="sidebar__search-input"
+        [placeholder]="lang.current === 'ar' ? 'ابحث عن علامة تجارية...' : 'Search brands...'" />
+    </div>
+
+    <ul class="sidebar__list sidebar__list--brands">
+      <li class="sidebar__item">
+        <button class="sidebar__btn" [class.active]="!filter.brand_id" (click)="brandSelect.emit(null)">
+          <i class="uil uil-apps"></i>
+          {{ lang.current === 'ar' ? 'الكل' : 'All' }}
+        </button>
+      </li>
+      <li class="sidebar__item" *ngFor="let brand of filteredBrands">
+        <button class="sidebar__btn" [class.active]="isBrandSelected(brand.id)"
+          (click)="brandSelect.emit(brand.id)">
+          <i class="uil uil-pricetag-alt"></i>
+          {{ getBrandName(brand) }}
+        </button>
       </li>
     </ul>
   </div>
 
   <!-- Price Range -->
   <div class="sidebar__section">
-    <h4 class="sidebar__section-title">{{ 'PRICE_RANGE' | translate }}</h4>
+    <h4 class="sidebar__section-title">
+      <i class="uil uil-dollar-sign-alt"></i>
+      {{ 'PRICE_RANGE' | translate }}
+    </h4>
     <div class="price-range">
       <div class="price-range__inputs">
         <div class="price-input">
-          <label>{{ 'PRICE' | translate }}</label>
-          <input type="number" [(ngModel)]="priceFrom" min="0" class="price-input__field" />
+          <label>{{ lang.current === 'ar' ? 'من' : 'From' }}</label>
+          <div class="price-input__wrap">
+            <input type="number" [(ngModel)]="priceFrom" min="0" class="price-input__field" />
+            <span class="price-input__unit">{{ 'OMR' | translate }}</span>
+          </div>
         </div>
-        <span class="price-range__sep">-</span>
+        <span class="price-range__sep">
+          <i class="uil uil-exchange"></i>
+        </span>
         <div class="price-input">
-          <label>{{ 'PRICE' | translate }}</label>
-          <input type="number" [(ngModel)]="priceTo" min="0" class="price-input__field" />
+          <label>{{ lang.current === 'ar' ? 'إلى' : 'To' }}</label>
+          <div class="price-input__wrap">
+            <input type="number" [(ngModel)]="priceTo" min="0" class="price-input__field" />
+            <span class="price-input__unit">{{ 'OMR' | translate }}</span>
+          </div>
         </div>
       </div>
-      <button class="btn btn-primary btn-sm btn-block" (click)="applyPrice()">
-        {{ 'FILTER' | translate }}
+      <button class="sidebar__apply-btn" (click)="applyPrice()">
+        <i class="uil uil-filter"></i>
+        {{ lang.current === 'ar' ? 'تطبيق السعر' : 'Apply Price' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Keywords / Tags -->
+  <div class="sidebar__section" *ngIf="keywords.length > 0">
+    <h4 class="sidebar__section-title">
+      <i class="uil uil-tag"></i>
+      {{ lang.current === 'ar' ? 'كلمات مفتاحية' : 'Keywords' }}
+    </h4>
+    <div class="sidebar__tags">
+      <button class="sidebar__tag" *ngFor="let kw of keywords" (click)="keywordSelect.emit(kw)">
+        {{ kw }}
       </button>
     </div>
   </div>

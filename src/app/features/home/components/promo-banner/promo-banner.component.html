@@ -1,0 +1,44 @@
+<section class="promo" *ngIf="loading || products.length > 0">
+  <div class="container">
+    <!-- Loading -->
+    <div class="promo__grid" *ngIf="loading">
+      <div class="skeleton promo__skeleton" *ngFor="let i of [1,2,3]"></div>
+    </div>
+
+    <!-- Product Banner Cards -->
+    <div class="promo__grid" *ngIf="!loading">
+      <a class="promo__card" *ngFor="let product of products; let i = index"
+        [routerLink]="['/products', product.id]"
+        [ngClass]="'promo__card--theme-' + (i % 3)">
+
+        <!-- Text Content -->
+        <div class="promo__content">
+          <span class="promo__tag" *ngIf="getDiscount(product) > 0">
+            <i class="uil uil-tag-alt"></i>
+            -{{ getDiscount(product) }}%
+          </span>
+          <h3 class="promo__title">{{ getProductName(product) | truncate:60 }}</h3>
+          <div class="promo__price-row">
+            <span class="promo__price" *ngIf="product.discount_price && product.discount_price > 0">
+              {{ product.discount_price | number:'1.3-3' }}
+              <small>{{ 'OMR' | translate }}</small>
+            </span>
+            <span class="promo__price-old" *ngIf="product.discount_price && product.discount_price < product.price">
+              {{ product.price | number:'1.3-3' }}
+            </span>
+          </div>
+          <span class="promo__cta">
+            {{ lang.current === 'ar' ? 'تسوق الآن' : 'Shop Now' }}
+            <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
+          </span>
+        </div>
+
+        <!-- Image -->
+        <div class="promo__img-wrap">
+          <img [src]="getProductImage(product)" [alt]="getProductName(product)"
+            class="promo__img" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" loading="lazy" />
+        </div>
+      </a>
+    </div>
+  </div>
+</section>

@@ -25,7 +25,7 @@
         [class.active]="img === selectedImage"
         (click)="selectImage(img)"
       >
-        <img [src]="img" [alt]="name" onerror="this.src='assets/images/placeholder.png'" />
+        <img [src]="img" [alt]="name" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
       </button>
     </div>
 
@@ -46,7 +46,7 @@
         [src]="selectedImage"
         [alt]="name"
         class="detail-gallery__img"
-        onerror="this.src='assets/images/placeholder.png'"
+        onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
       />
     </div>
   </div>

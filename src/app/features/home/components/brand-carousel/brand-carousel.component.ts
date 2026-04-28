@@ -14,6 +14,7 @@ import { LanguageService } from '../../../../core/services/language.service';
 export class BrandCarouselComponent implements OnInit {
   brands: Brand[] = [];
   loading = true;
+  private storageBase = 'https://smartvillageapp.com/app';
 
   constructor(private bannerService: BannerService, public lang: LanguageService) { }
 
@@ -25,6 +26,13 @@ export class BrandCarouselComponent implements OnInit {
   }
 
   getBrandName(brand: Brand): string {
-    return (this.lang.current === 'ar' ? brand.name_ar : brand.name_en) || brand.name;
+    return (this.lang.current === 'ar' ? brand.name_ar : brand.name_en) || brand.name || '';
+  }
+
+  getBrandLogo(brand: Brand): string {
+    const logo = brand.logo || brand.image || '';
+    if (!logo) return 'assets/images/placeholder.svg';
+    if (logo.startsWith('http')) return logo;
+    return `${this.storageBase}/${logo}`;
   }
 }

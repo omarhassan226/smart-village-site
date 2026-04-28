@@ -3,6 +3,7 @@ export interface Banner {
   image: string;
   image_ar?: string;
   image_en?: string;
+  banner_type?: string;
   title?: string;
   title_ar?: string;
   title_en?: string;
@@ -22,4 +23,13 @@ export interface Brand {
   image?: string;
   logo?: string;
   products_count?: number;
+}
+
+export interface SocialLinks {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  whatsapp?: string;
+  youtube?: string;
+  phone?: string;
 }

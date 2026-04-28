@@ -15,7 +15,7 @@
   <!-- Image -->
   <div class="product-card__img-wrap">
     <img class="product-card__img" [src]="product.image" [alt]="name" loading="lazy"
-      onerror="this.src='assets/images/placeholder.png'" />
+      onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
   </div>
 
   <!-- Info -->

@@ -3,18 +3,63 @@
   <div class="topbar">
     <div class="container topbar__inner">
       <div class="topbar__left">
+        <!-- Social Media -->
+        <div class="topbar__social">
+          <a [href]="socialLinks.facebook || '#'" target="_blank" rel="noopener" class="topbar__social-link"
+            aria-label="Facebook" *ngIf="socialLinks.facebook">
+            <i class="uil uil-facebook-f"></i>
+          </a>
+          <a [href]="socialLinks.instagram || '#'" target="_blank" rel="noopener" class="topbar__social-link"
+            aria-label="Instagram" *ngIf="socialLinks.instagram">
+            <i class="uil uil-instagram"></i>
+          </a>
+          <a [href]="socialLinks.twitter || '#'" target="_blank" rel="noopener" class="topbar__social-link"
+            aria-label="Twitter" *ngIf="socialLinks.twitter">
+            <i class="uil uil-twitter-alt"></i>
+          </a>
+          <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener" class="topbar__social-link"
+            aria-label="WhatsApp" *ngIf="socialLinks.whatsapp">
+            <i class="uil uil-whatsapp"></i>
+          </a>
+          <a [href]="socialLinks.youtube || '#'" target="_blank" rel="noopener" class="topbar__social-link"
+            aria-label="YouTube" *ngIf="socialLinks.youtube">
+            <i class="uil uil-youtube"></i>
+          </a>
+        </div>
+        <span class="topbar__divider"></span>
         <span class="topbar__item">
-          <i class="icon-truck"></i>
+          <i class="uil uil-truck"></i>
           {{ 'SHIPPING' | translate }}
         </span>
         <span class="topbar__item">
-          <i class="icon-headset"></i>
+          <i class="uil uil-headphones"></i>
           {{ 'SUPPORT' | translate }}
         </span>
       </div>
       <div class="topbar__right">
+        <!-- Auth Links (when NOT logged in) -->
+        <div class="topbar__auth" *ngIf="!isLoggedIn">
+          <a routerLink="/auth/login" class="topbar__auth-link">
+            <i class="uil uil-signin"></i>
+            {{ 'LOGIN' | translate }}
+          </a>
+          <span class="topbar__divider"></span>
+          <a routerLink="/auth/register" class="topbar__auth-link">
+            <i class="uil uil-user-plus"></i>
+            {{ 'REGISTER' | translate }}
+          </a>
+          <span class="topbar__divider"></span>
+        </div>
+
+        <!-- User Greeting (when logged in) -->
+        <span class="topbar__greeting" *ngIf="isLoggedIn">
+          <i class="uil uil-user-circle"></i>
+          {{ 'WELCOME_USER' | translate }} {{ auth.user?.first_name }}
+        </span>
+        <span class="topbar__divider" *ngIf="isLoggedIn"></span>
+
         <button class="topbar__lang" (click)="toggleLanguage()">
-          <i class="icon-globe"></i>
+          <i class="uil uil-globe"></i>
           {{ lang.current === 'ar' ? ('ENGLISH' | translate) : ('ARABIC' | translate) }}
         </button>
       </div>
@@ -26,7 +71,7 @@
     <div class="container header__inner">
       <!-- Logo -->
       <a routerLink="/" class="header__logo">
-        <img src="assets/images/logo.png" alt="Smart Village" class="header__logo-img" />
+        <img src="assets/images/smart-village.png" alt="Smart Village" class="header__logo-img" />
       </a>
 
       <!-- Search Bar -->
@@ -34,7 +79,7 @@
         <input type="text" class="header__search-input" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
           [(ngModel)]="searchQuery" (keyup.enter)="search()" />
         <button class="header__search-btn" (click)="search()">
-          <i class="icon-search"></i>
+          <i class="uil uil-search"></i>
         </button>
       </div>
 
@@ -42,53 +87,72 @@
       <div class="header__actions">
         <!-- Language toggle (mobile) -->
         <button class="header__action header__action--lang d-md-none" (click)="toggleLanguage()">
-          <i class="icon-globe"></i>
+          <i class="uil uil-globe"></i>
         </button>
 
-        <!-- Wishlist -->
-        <a routerLink="/wishlist" class="header__action">
-          <i class="icon-heart"></i>
+        <!-- Wishlist (show always when logged in, or as action) -->
+        <a routerLink="/wishlist" class="header__action" *ngIf="isLoggedIn">
+          <i class="uil uil-heart"></i>
           <span class="header__action-label">{{ 'WISHLIST' | translate }}</span>
         </a>
 
         <!-- Cart -->
         <a routerLink="/cart" class="header__action header__action--cart">
-          <i class="icon-cart"></i>
+          <i class="uil uil-shopping-cart"></i>
           <span class="header__action-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
           <span class="header__action-label">{{ 'CART' | translate }}</span>
         </a>
 
-        <!-- Auth -->
-        <div class="header__auth" *ngIf="!isLoggedIn">
+        <!-- Auth: Login/Register (when NOT logged in, desktop) -->
+        <div class="header__auth-desktop" *ngIf="!isLoggedIn">
           <a routerLink="/auth/login" class="header__action">
-            <i class="icon-user"></i>
+            <i class="uil uil-user"></i>
             <span class="header__action-label">{{ 'LOGIN' | translate }}</span>
           </a>
         </div>
+
+        <!-- Logged In: Profile Dropdown -->
         <div class="header__user" *ngIf="isLoggedIn">
-          <button class="header__action header__user-btn">
-            <i class="icon-user"></i>
+          <button class="header__action header__user-btn" (click)="toggleUserDropdown()">
+            <div class="header__user-avatar">
+              <i class="uil uil-user"></i>
+            </div>
             <span class="header__action-label">{{ auth.user?.first_name }}</span>
-            <i class="icon-chevron-down"></i>
+            <i class="uil uil-angle-down header__user-chevron" [class.rotated]="userDropdownOpen"></i>
           </button>
-          <div class="header__user-dropdown">
-            <a routerLink="/profile" class="header__user-item">
-              <i class="icon-user"></i>
+          <div class="header__user-dropdown" [class.open]="userDropdownOpen">
+            <div class="header__user-dropdown-header">
+              <div class="header__user-dropdown-avatar">
+                <i class="uil uil-user"></i>
+              </div>
+              <div class="header__user-dropdown-info">
+                <span class="header__user-dropdown-name">{{ auth.user?.first_name }} {{ auth.user?.last_name }}</span>
+                <span class="header__user-dropdown-phone">{{ auth.user?.phone }}</span>
+              </div>
+            </div>
+            <div class="header__user-dropdown-divider"></div>
+            <a routerLink="/profile" class="header__user-item" (click)="userDropdownOpen = false">
+              <i class="uil uil-user-circle"></i>
               {{ 'MY_ACCOUNT' | translate }}
             </a>
-            <a routerLink="/profile/orders" class="header__user-item">
-              <i class="icon-box"></i>
+            <a routerLink="/profile/orders" class="header__user-item" (click)="userDropdownOpen = false">
+              <i class="uil uil-box"></i>
               {{ 'MY_ORDERS' | translate }}
             </a>
-            <button class="header__user-item header__user-item--danger" (click)="logout()">
-              <i class="icon-logout"></i>
+            <a routerLink="/wishlist" class="header__user-item" (click)="userDropdownOpen = false">
+              <i class="uil uil-heart"></i>
+              {{ 'WISHLIST' | translate }}
+            </a>
+            <div class="header__user-dropdown-divider"></div>
+            <button class="header__user-item header__user-item--danger" (click)="logout(); userDropdownOpen = false">
+              <i class="uil uil-signout"></i>
               {{ 'LOGOUT' | translate }}
             </button>
           </div>
         </div>
 
         <!-- Mobile menu toggle -->
-        <button class="header__hamburger d-lg-none" (click)="toggleMobileMenu()">
+        <button class="header__hamburger d-lg-none" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -102,6 +166,7 @@
         <li class="nav__item">
           <a routerLink="/" class="nav__link" routerLinkActive="nav__link--active"
             [routerLinkActiveOptions]="{ exact: true }">
+            <i class="uil uil-home-alt nav__link-icon"></i>
             {{ 'HOME' | translate }}
           </a>
         </li>
@@ -109,10 +174,10 @@
           (mouseleave)="setDropdown(null)">
           <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="nav__link">
             {{ getCategoryName(cat) }}
-            <i class="icon-chevron-down" *ngIf="cat.sub_categories?.length"></i>
+            <i class="uil uil-angle-down" *ngIf="(cat.sub_categories || cat.categories)?.length"></i>
           </a>
-          <div class="nav__dropdown" *ngIf="cat.sub_categories?.length && activeDropdown === cat.id">
-            <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || [])" [routerLink]="['/products']"
+          <div class="nav__dropdown" *ngIf="(cat.sub_categories || cat.categories)?.length && activeDropdown === cat.id">
+            <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || cat.categories || [])" [routerLink]="['/products']"
               [queryParams]="{ category_id: sub.id }">
               {{ getCategoryName(sub) }}
             </a>
@@ -120,6 +185,7 @@
         </li>
         <li class="nav__item">
           <a routerLink="/products" [queryParams]="{ status: 'offers' }" class="nav__link nav__link--highlight">
+            <i class="uil uil-percentage nav__link-icon"></i>
             {{ 'DEALS' | translate }}
           </a>
         </li>
@@ -131,40 +197,146 @@
   <div class="mobile-menu" [class.mobile-menu--open]="mobileMenuOpen">
     <div class="mobile-menu__overlay" (click)="toggleMobileMenu()"></div>
     <div class="mobile-menu__drawer">
+      <!-- Mobile Header -->
       <div class="mobile-menu__header">
-        <img src="assets/images/logo.png" alt="Smart Village" class="mobile-menu__logo" />
+        <img src="assets/images/smart-village.png" alt="Smart Village" class="mobile-menu__logo" />
         <button class="mobile-menu__close" (click)="toggleMobileMenu()">
-          <i class="icon-x"></i>
+          <i class="uil uil-times"></i>
         </button>
       </div>
-      <div class="mobile-menu__search">
-        <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
-          (keyup.enter)="search(); toggleMobileMenu()" class="mobile-menu__search-input" />
+
+      <!-- Mobile User Info (when logged in) -->
+      <div class="mobile-menu__user" *ngIf="isLoggedIn">
+        <div class="mobile-menu__user-avatar">
+          <i class="uil uil-user"></i>
+        </div>
+        <div class="mobile-menu__user-info">
+          <span class="mobile-menu__user-name">{{ auth.user?.first_name }} {{ auth.user?.last_name }}</span>
+          <span class="mobile-menu__user-phone">{{ auth.user?.phone }}</span>
+        </div>
       </div>
-      <ul class="mobile-menu__list">
-        <li><a routerLink="/" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'HOME' | translate }}</a>
-        </li>
-        <li *ngFor="let cat of categories">
-          <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="mobile-menu__link"
-            (click)="toggleMobileMenu()">{{ getCategoryName(cat) }}</a>
-        </li>
-        <li>
-          <a routerLink="/wishlist" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'WISHLIST' |
-            translate }}</a>
-        </li>
-        <li *ngIf="!isLoggedIn">
-          <a routerLink="/auth/login" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'LOGIN' |
-            translate }}</a>
-        </li>
-        <li *ngIf="isLoggedIn">
-          <a routerLink="/profile" class="mobile-menu__link" (click)="toggleMobileMenu()">{{ 'MY_ACCOUNT' |
-            translate }}</a>
-        </li>
-        <li *ngIf="isLoggedIn">
-          <button class="mobile-menu__link mobile-menu__link--danger" (click)="logout(); toggleMobileMenu()">{{
-            'LOGOUT' | translate }}</button>
-        </li>
-      </ul>
+
+      <!-- Mobile Auth Buttons (when NOT logged in) -->
+      <div class="mobile-menu__auth-buttons" *ngIf="!isLoggedIn">
+        <a routerLink="/auth/login" class="mobile-menu__auth-btn mobile-menu__auth-btn--login"
+          (click)="toggleMobileMenu()">
+          <i class="uil uil-signin"></i>
+          {{ 'LOGIN' | translate }}
+        </a>
+        <a routerLink="/auth/register" class="mobile-menu__auth-btn mobile-menu__auth-btn--register"
+          (click)="toggleMobileMenu()">
+          <i class="uil uil-user-plus"></i>
+          {{ 'REGISTER' | translate }}
+        </a>
+      </div>
+
+      <!-- Mobile Search -->
+      <div class="mobile-menu__search">
+        <div class="mobile-menu__search-wrap">
+          <i class="uil uil-search mobile-menu__search-icon"></i>
+          <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+            (keyup.enter)="search(); toggleMobileMenu()" class="mobile-menu__search-input" />
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="mobile-menu__section">
+        <span class="mobile-menu__section-title">{{ 'NAV_MENU' | translate }}</span>
+        <ul class="mobile-menu__list">
+          <li>
+            <a routerLink="/" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-home-alt"></i>
+              {{ 'HOME' | translate }}
+            </a>
+          </li>
+          <li *ngFor="let cat of categories">
+            <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="mobile-menu__link"
+              (click)="toggleMobileMenu()">
+              <i class="uil uil-tag-alt"></i>
+              {{ getCategoryName(cat) }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/products" [queryParams]="{ status: 'offers' }"
+              class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
+              <i class="uil uil-percentage"></i>
+              {{ 'DEALS' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Quick Actions (when logged in) -->
+      <div class="mobile-menu__section" *ngIf="isLoggedIn">
+        <span class="mobile-menu__section-title">{{ 'QUICK_ACTIONS' | translate }}</span>
+        <ul class="mobile-menu__list">
+          <li>
+            <a routerLink="/wishlist" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-heart"></i>
+              {{ 'WISHLIST' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/cart" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-shopping-cart"></i>
+              {{ 'CART' | translate }}
+              <span class="mobile-menu__badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/profile" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-user-circle"></i>
+              {{ 'MY_ACCOUNT' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/profile/orders" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-box"></i>
+              {{ 'MY_ORDERS' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Language Toggle -->
+      <div class="mobile-menu__section">
+        <ul class="mobile-menu__list">
+          <li>
+            <button class="mobile-menu__link" (click)="toggleLanguage()">
+              <i class="uil uil-globe"></i>
+              {{ lang.current === 'ar' ? ('ENGLISH' | translate) : ('ARABIC' | translate) }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Logout -->
+      <div class="mobile-menu__section mobile-menu__section--bottom" *ngIf="isLoggedIn">
+        <button class="mobile-menu__logout" (click)="logout(); toggleMobileMenu()">
+          <i class="uil uil-signout"></i>
+          {{ 'LOGOUT' | translate }}
+        </button>
+      </div>
+
+      <!-- Mobile Social Links -->
+      <div class="mobile-menu__social">
+        <a [href]="socialLinks.facebook || '#'" target="_blank" rel="noopener" class="mobile-menu__social-link"
+          *ngIf="socialLinks.facebook">
+          <i class="uil uil-facebook-f"></i>
+        </a>
+        <a [href]="socialLinks.instagram || '#'" target="_blank" rel="noopener" class="mobile-menu__social-link"
+          *ngIf="socialLinks.instagram">
+          <i class="uil uil-instagram"></i>
+        </a>
+        <a [href]="socialLinks.twitter || '#'" target="_blank" rel="noopener" class="mobile-menu__social-link"
+          *ngIf="socialLinks.twitter">
+          <i class="uil uil-twitter-alt"></i>
+        </a>
+        <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener"
+          class="mobile-menu__social-link" *ngIf="socialLinks.whatsapp">
+          <i class="uil uil-whatsapp"></i>
+        </a>
+      </div>
     </div>
   </div>
 </header>

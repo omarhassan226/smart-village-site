@@ -10,16 +10,16 @@ export class LocationService {
 
   constructor(private http: HttpClient) {}
 
-  getGovernorates(): Observable<{ data: Governorate[] }> {
-    return this.http.get<{ data: Governorate[] }>(`${this.base}/governorates`);
+  getGovernorates(lang: string = 'en'): Observable<{ governorates: any[] }> {
+    return this.http.get<{ governorates: any[] }>(`${this.base}/get/governorates/${lang}`);
   }
 
-  getCities(governorateId: number): Observable<{ data: City[] }> {
-    return this.http.get<{ data: City[] }>(`${this.base}/cities?governorate_id=${governorateId}`);
+  getCities(stateId: number): Observable<{ cities: any[] }> {
+    return this.http.get<{ cities: any[] }>(`${this.base}/get/state/city?state_id=${stateId}`);
   }
 
-  getVillages(cityId: number): Observable<{ data: Village[] }> {
-    return this.http.get<{ data: Village[] }>(`${this.base}/villages?city_id=${cityId}`);
+  getVillages(cityId: number): Observable<{ villages: any[] }> {
+    return this.http.get<{ villages: any[] }>(`${this.base}/get/city/village?city_id=${cityId}`);
   }
 
   getShippingCost(villageId: number): Observable<{ cost: number }> {

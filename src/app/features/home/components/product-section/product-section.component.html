@@ -1,10 +1,15 @@
-<section class="product-section">
+<section class="product-section" [ngClass]="'product-section--' + sectionColor">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">{{ titleKey | translate }}</h2>
-      <button class="btn btn-outline btn-sm" (click)="viewAll()">
+      <div class="section-header__left">
+        <div class="section-header__icon" [ngClass]="'section-header__icon--' + sectionColor">
+          <i class="uil" [ngClass]="sectionIcon"></i>
+        </div>
+        <h2 class="section-title">{{ titleKey | translate }}</h2>
+      </div>
+      <button class="section-header__view-all" (click)="viewAll()">
         {{ 'VIEW_ALL' | translate }}
-        <i class="uil uil-arrow-left" *ngIf="false"></i>
+        <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
       </button>
     </div>
 
@@ -14,7 +19,7 @@
     </div>
 
     <!-- Products -->
-    <div class="product-grid" *ngIf="!loading">
+    <div class="product-grid" *ngIf="!loading && products.length > 0">
       <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
     </div>
 

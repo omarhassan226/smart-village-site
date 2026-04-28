@@ -7,6 +7,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { TranslateService } from '@ngx-translate/core';
 import { CartService } from '../../../core/services/cart.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   standalone: true,
@@ -27,7 +28,8 @@ export class LoginComponent {
     private wishlist: WishlistService,
     private notify: NotificationService,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    public lang: LanguageService
   ) {
     this.form = this.fb.group({
       phone: ['', [Validators.required]],
@@ -37,6 +39,10 @@ export class LoginComponent {
 
   get phoneControl() { return this.form.get('phone'); }
   get passwordControl() { return this.form.get('password'); }
+
+  toggleLanguage(): void {
+    this.lang.toggle();
+  }
 
   submit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }

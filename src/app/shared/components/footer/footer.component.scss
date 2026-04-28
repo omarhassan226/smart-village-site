@@ -1,47 +1,85 @@
 @use 'styles/mixins' as *;
 
 .footer {
-  background: var(--secondary);
-  color: rgba(255,255,255,0.85);
+  background: linear-gradient(180deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+  color: rgba(255, 255, 255, 0.85);
   margin-top: auto;
 
-  #{&}__top {
+  &__top {
     padding: 48px 0 32px;
   }
 
-  #{&}__grid {
+  &__grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
 
-    @include respond-below(lg) { grid-template-columns: 1fr 1fr; }
-    @include respond-below(sm) { grid-template-columns: 1fr; }
+    @include respond-below(lg) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include respond-below(sm) {
+      grid-template-columns: 1fr;
+    }
   }
 
-  #{&}__brand {
+  &__brand {
     padding-inline-end: 2rem;
   }
 
-  #{&}__logo {
-    height: 50px;
+  &__logo-wrap {
     margin-bottom: 12px;
   }
 
-  #{&}__brand-name {
+  &__logo {
+    height: 50px;
+    filter: brightness(0) invert(1);
+  }
+
+  &__brand-name {
     color: #fff;
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 8px;
   }
 
-  #{&}__about {
+  &__about {
     font-size: 0.85rem;
     line-height: 1.7;
     margin-bottom: 1rem;
     opacity: 0.75;
   }
 
-  #{&}__social {
+  /* Contact Info */
+  &__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  &__contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+
+    i {
+      font-size: 1.1rem;
+      color: var(--primary);
+      width: 20px;
+      text-align: center;
+    }
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  &__social {
     display: flex;
     gap: 0.5rem;
 
@@ -49,22 +87,28 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
       text-decoration: none;
       font-size: 1rem;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
 
-      &:hover { background: var(--primary); }
+      &:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        color: #fff;
+      }
     }
   }
 
-  #{&}__col {}
+  &__col {}
 
-  #{&}__heading {
+  &__heading {
     color: #fff;
     font-size: 1rem;
     font-weight: 600;
@@ -74,7 +118,7 @@
     display: inline-block;
   }
 
-  #{&}__links {
+  &__links {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -83,17 +127,36 @@
     gap: 8px;
   }
 
-  #{&}__link {
-    color: rgba(255,255,255,0.75);
+  &__link {
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
     font-size: 0.875rem;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 
-    &:hover { color: var(--primary); }
+    &::before {
+      content: '';
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.2s;
+      display: inline-block;
+    }
+
+    &:hover {
+      color: var(--primary);
+      padding-inline-start: 4px;
+
+      &::before {
+        width: 10px;
+      }
+    }
   }
 
-  #{&}__bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
+  &__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 16px 0;
 
     &-inner {
@@ -103,15 +166,27 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    &-logo {
+      height: 28px;
+      filter: brightness(0) invert(1);
+      opacity: 0.6;
+    }
   }
 
-  #{&}__copyright {
+  &__copyright {
     font-size: 0.8rem;
     opacity: 0.7;
     margin: 0;
   }
 
-  #{&}__payment {
+  &__payment {
     display: flex;
     gap: 8px;
     align-items: center;

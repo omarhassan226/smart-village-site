@@ -6,13 +6,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
+import { BannerService } from '../../../core/services/banner.service';
 import { FilterSidebarComponent } from '../components/filter-sidebar/filter-sidebar.component';
 import { CategoryService } from '../../../core/services/category.service';
-import { Product, ProductFilter, Category } from '../../../core/models';
+import { Product, ProductFilter, Category, Brand } from '../../../core/models';
 import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   standalone: true,
@@ -26,13 +26,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   products: Product[] = [];
   categories: Category[] = [];
+  brands: Brand[] = [];
+  keywords: string[] = [];
   loading = false;
   totalProducts = 0;
   currentPage = 1;
   lastPage = 1;
   filter: ProductFilter = {};
   filterOpen = false;
-  searchControl = new FormControl('');
 
   sortOptions = [
     { value: '', label: '' },
@@ -43,9 +44,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
+    private bannerService: BannerService,
     private route: ActivatedRoute,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public lang: LanguageService
   ) { }
 
   ngOnInit(): void {
@@ -55,11 +58,19 @@ export class ProductListComponent implements OnInit, OnDestroy {
       { value: 'desc', label: this.translate.instant('PRICE_DESC') },
     ];
 
+    // Load categories for filter sidebar
     this.categoryService.getCategories().subscribe({
       next: (res) => (this.categories = res.data),
       error: () => { },
     });
 
+    // Load all brands for filter sidebar
+    this.bannerService.getAllBrands().subscribe({
+      next: (res) => (this.brands = res.data),
+      error: () => { },
+    });
+
+    // React to query param changes
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.filter = {
         category_id: params['category_id'] ? +params['category_id'] : undefined,
@@ -68,25 +79,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
         status: params['status'] as 'asc' | 'desc' | undefined,
         priceFrom: params['priceFrom'] ? +params['priceFrom'] : undefined,
         priceTo: params['priceTo'] ? +params['priceTo'] : undefined,
-        page: 1,
+        page: params['page'] ? +params['page'] : 1,
       };
-      this.currentPage = 1;
+      this.currentPage = this.filter.page || 1;
       this.loadProducts();
-    });
 
-    this.searchControl.valueChanges.pipe(
-      debounceTime(400),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe((val) => {
-      this.updateQueryParam('key_word', val || null);
+      // Load keywords when a category is selected
+      if (this.filter.category_id) {
+        this.loadKeywords(this.filter.category_id);
+      } else {
+        this.keywords = [];
+      }
     });
   }
 
   loadProducts(): void {
     this.loading = true;
     const filterWithPage = { ...this.filter, page: this.currentPage };
-    this.productService.getProducts(filterWithPage).subscribe({
+
+    this.productService.searchProducts(filterWithPage).subscribe({
       next: (res) => {
         this.products = res.data;
         this.totalProducts = res.total;
@@ -97,9 +108,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadKeywords(categoryId: number): void {
+    this.categoryService.getCategoryKeywords(categoryId).subscribe({
+      next: (kws) => (this.keywords = kws),
+      error: () => (this.keywords = []),
+    });
+  }
+
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.loadProducts();
+    this.updateQueryParam('page', String(page));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -108,17 +126,47 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   onCategorySelect(id: number | null): void {
-    this.updateQueryParam('category_id', id ? String(id) : null);
-  }
-
-  onPriceFilter(from: number, to: number): void {
+    // When category changes, also reset page and brand
     this.router.navigate([], {
-      queryParams: { priceFrom: from || null, priceTo: to || null },
+      queryParams: {
+        category_id: id || null,
+        page: null,
+      },
       queryParamsHandling: 'merge',
     });
   }
 
-  private updateQueryParam(key: string, value: string | null): void {
+  onBrandSelect(id: number | null): void {
+    this.router.navigate([], {
+      queryParams: {
+        brand_id: id || null,
+        page: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onKeywordSelect(keyword: string): void {
+    this.updateQueryParam('key_word', keyword);
+  }
+
+  onPriceFilter(from: number, to: number): void {
+    this.router.navigate([], {
+      queryParams: { priceFrom: from || null, priceTo: to || null, page: null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  clearFilters(): void {
+    this.router.navigate([], { queryParams: {} });
+  }
+
+  get hasActiveFilters(): boolean {
+    return !!(this.filter.category_id || this.filter.brand_id || this.filter.key_word ||
+      this.filter.priceFrom || this.filter.priceTo || this.filter.status);
+  }
+
+  updateQueryParam(key: string, value: string | null): void {
     this.router.navigate([], {
       queryParams: { [key]: value },
       queryParamsHandling: 'merge',

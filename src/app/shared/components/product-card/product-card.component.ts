@@ -61,10 +61,10 @@ export class ProductCardComponent {
 
   addToCart(e: Event): void {
     e.stopPropagation();
-    if (!this.auth.isLoggedIn) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
+    // if (!this.auth.isLoggedIn) {
+    //   this.router.navigate(['/auth/login']);
+    //   return;
+    // }
     this.addingToCart = true;
     this.cart.add({ product_id: this.product.id, quantity: 1 }).subscribe({
       next: () => {

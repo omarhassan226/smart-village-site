@@ -1,20 +1,30 @@
 <section class="brands" *ngIf="loading || brands.length > 0">
   <div class="container">
-    <div class="section-title">
-      <h2>{{ 'BEST_SELLERS' | translate }}</h2>
+    <div class="brands__header">
+      <div class="brands__header-left">
+        <div class="brands__icon-wrap">
+          <i class="uil uil-award"></i>
+        </div>
+        <div>
+          <h2 class="brands__title">{{ 'BEST_SELLERS' | translate }}</h2>
+          <p class="brands__subtitle">{{ lang.current === 'ar' ? 'أفضل العلامات التجارية المباعة' : 'Top Selling Brands' }}</p>
+        </div>
+      </div>
     </div>
 
     <!-- Skeletons -->
-    <div class="brands__grid" *ngIf="loading">
-      <div class="skeleton brands__skeleton" *ngFor="let i of [1,2,3,4,5,6]"></div>
+    <div class="brands__track" *ngIf="loading">
+      <div class="skeleton brands__skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
     </div>
 
     <!-- Brands -->
-    <div class="brands__grid" *ngIf="!loading">
+    <div class="brands__track" *ngIf="!loading">
       <a class="brands__item" *ngFor="let brand of brands" [routerLink]="['/products']"
         [queryParams]="{ brand_id: brand.id }">
-        <img [src]="brand.logo || brand.image" [alt]="getBrandName(brand)" class="brands__logo"
-          onerror="this.src='assets/images/placeholder.png'" />
+        <div class="brands__logo-wrap">
+          <img [src]="getBrandLogo(brand)" [alt]="getBrandName(brand)" class="brands__logo"
+            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" loading="lazy" />
+        </div>
         <span class="brands__name">{{ getBrandName(brand) }}</span>
       </a>
     </div>

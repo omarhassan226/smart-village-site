@@ -2,7 +2,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,8 @@ import { CartService } from '../../../core/services/cart.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { LanguageService } from '../../../core/services/language.service';
-import { MainCategory } from '../../../core/models';
+import { BannerService } from '../../../core/services/banner.service';
+import { MainCategory, SocialLinks } from '../../../core/models';
 
 @Component({
   standalone: true,
@@ -24,12 +25,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   categories: MainCategory[] = [];
+  socialLinks: SocialLinks = {};
   searchQuery = '';
   cartCount = 0;
   isLoggedIn = false;
   isScrolled = false;
   mobileMenuOpen = false;
   activeDropdown: number | null = null;
+  userDropdownOpen = false;
 
   constructor(
     public auth: AuthService,
@@ -37,8 +40,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public wishlist: WishlistService,
     public lang: LanguageService,
     private categoryService: CategoryService,
+    private bannerService: BannerService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private elRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -54,11 +59,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
       next: (res) => (this.categories = res.data),
       error: () => {},
     });
+
+    this.bannerService.getSocialLinks().subscribe({
+      next: (links) => (this.socialLinks = links),
+      error: () => {},
+    });
   }
 
   @HostListener('window:scroll')
   onScroll(): void {
     this.isScrolled = window.scrollY > 60;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (this.userDropdownOpen) {
+      const userEl = this.elRef.nativeElement.querySelector('.header__user');
+      if (userEl && !userEl.contains(event.target as Node)) {
+        this.userDropdownOpen = false;
+      }
+    }
   }
 
   search(): void {
@@ -81,20 +101,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+  }
+
+  toggleUserDropdown(): void {
+    this.userDropdownOpen = !this.userDropdownOpen;
   }
 
   setDropdown(id: number | null): void {
     this.activeDropdown = id;
   }
 
-  getCategoryName(cat: MainCategory): string {
+  getCategoryName(cat: MainCategory | any): string {
     return this.lang.current === 'ar'
-      ? cat.name_ar || cat.name
-      : cat.name_en || cat.name;
+      ? cat.category_ar || cat.name_ar || cat.name || ''
+      : cat.category_en || cat.name_en || cat.name || '';
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    document.body.style.overflow = '';
   }
 }

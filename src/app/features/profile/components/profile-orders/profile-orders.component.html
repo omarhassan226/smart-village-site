@@ -43,7 +43,7 @@
           <img
             [src]="item.product?.image"
             class="order-product__img"
-            onerror="this.src='assets/images/placeholder.png'"
+            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
           />
           <div class="order-product__info">
             <p class="order-product__name">{{ getProductName(item) }}</p>

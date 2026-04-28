@@ -3,8 +3,8 @@ import { SharedModule } from '../../../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Category, ProductFilter } from '../../../../core/models';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Category, Brand, ProductFilter } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
 
 @Component({
@@ -16,23 +16,49 @@ import { LanguageService } from '../../../../core/services/language.service';
 })
 export class FilterSidebarComponent implements OnChanges {
   @Input() categories: Category[] = [];
+  @Input() brands: Brand[] = [];
+  @Input() keywords: string[] = [];
   @Input() filter: ProductFilter = {};
   @Output() categorySelect = new EventEmitter<number | null>();
+  @Output() brandSelect = new EventEmitter<number | null>();
+  @Output() keywordSelect = new EventEmitter<string>();
   @Output() priceFilter = new EventEmitter<[number, number]>();
   @Output() close = new EventEmitter<void>();
 
   priceFrom = 0;
   priceTo = 1000;
+  brandSearch = '';
 
-  constructor(public lang: LanguageService) {}
+  constructor(public lang: LanguageService) { }
 
-  ngOnChanges(): void {
-    this.priceFrom = this.filter.priceFrom ?? 0;
-    this.priceTo = this.filter.priceTo ?? 1000;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['filter']) {
+      this.priceFrom = this.filter.priceFrom ?? 0;
+      this.priceTo = this.filter.priceTo ?? 1000;
+    }
   }
 
   getCatName(cat: Category): string {
-    return (this.lang.current === 'ar' ? cat.name_ar : cat.name_en) || cat.name;
+    return (this.lang.current === 'ar' ? cat.category_ar : cat.category_en) || cat.category_ar;
+  }
+
+  getBrandName(brand: Brand): string {
+    return (this.lang.current === 'ar' ? brand.name_ar : brand.name_en) || brand.name || '';
+  }
+
+  get filteredBrands(): Brand[] {
+    if (!this.brandSearch.trim()) return this.brands;
+    const q = this.brandSearch.toLowerCase();
+    return this.brands.filter(
+      (b) =>
+        (b.name_en || '').toLowerCase().includes(q) ||
+        (b.name_ar || '').toLowerCase().includes(q) ||
+        (b.name || '').toLowerCase().includes(q)
+    );
+  }
+
+  isBrandSelected(id: number): boolean {
+    return this.filter.brand_id === id;
   }
 
   applyPrice(): void {

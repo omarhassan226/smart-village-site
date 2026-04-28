@@ -35,13 +35,13 @@ export class ShippingModalComponent implements OnChanges {
     private location: LocationService,
     public auth: AuthService,
     public lang: LanguageService
-  ) {}
+  ) { }
 
   ngOnChanges(): void {
     if (this.isOpen && this.governorates.length === 0) {
-      this.location.getGovernorates().subscribe({
-        next: (res) => (this.governorates = res.data),
-        error: () => {},
+      this.location.getGovernorates(this.lang.current).subscribe({
+        next: (res) => (this.governorates = res.governorates),
+        error: () => { },
       });
     }
   }
@@ -54,7 +54,7 @@ export class ShippingModalComponent implements OnChanges {
     this.selectedVillage = null;
     this.shippingCost = null;
     if (id) {
-      this.location.getCities(id).subscribe({ next: (r) => (this.cities = r.data) });
+      this.location.getCities(id).subscribe({ next: (r) => (this.cities = r.cities) });
     }
   }
 
@@ -64,7 +64,7 @@ export class ShippingModalComponent implements OnChanges {
     this.selectedVillage = null;
     this.shippingCost = null;
     if (id) {
-      this.location.getVillages(id).subscribe({ next: (r) => (this.villages = r.data) });
+      this.location.getVillages(id).subscribe({ next: (r) => (this.villages = r.villages) });
     }
   }
 

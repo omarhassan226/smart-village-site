@@ -1,58 +1,263 @@
 <div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-card__header">
-      <h1 class="auth-card__title">{{ 'REGISTER_TITLE' | translate }}</h1>
+  <!-- Decorative elements -->
+  <div class="auth-page__decor auth-page__decor--1"></div>
+  <div class="auth-page__decor auth-page__decor--2"></div>
+  <div class="auth-page__decor auth-page__decor--3"></div>
+
+  <div class="auth-container">
+    <!-- Left Panel - Branding -->
+    <div class="auth-brand">
+      <div class="auth-brand__content">
+        <div class="auth-brand__logo-wrap">
+          <img src="assets/images/smart-village.png" alt="Smart Village" class="auth-brand__logo"
+            onerror="this.style.display='none'" />
+        </div>
+        <h2 class="auth-brand__title">{{ 'JOIN_US' | translate }}</h2>
+        <p class="auth-brand__desc">{{ 'REGISTER_BRAND_DESC' | translate }}</p>
+        <div class="auth-brand__features">
+          <div class="auth-brand__feature">
+            <i class="uil uil-shield-check"></i>
+            <span>{{ 'SECURE_ACCOUNT' | translate }}</span>
+          </div>
+          <div class="auth-brand__feature">
+            <i class="uil uil-truck"></i>
+            <span>{{ 'FAST_SHIPPING' | translate }}</span>
+          </div>
+          <div class="auth-brand__feature">
+            <i class="uil uil-tag-alt"></i>
+            <span>{{ 'EXCLUSIVE_OFFERS' | translate }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card__form" novalidate>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">{{ 'FIRST_NAME' | translate }}</label>
-          <input type="text" formControlName="first_name" class="form-control"
-            [class.invalid]="f['first_name'].invalid && f['first_name'].touched" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">{{ 'LAST_NAME' | translate }}</label>
-          <input type="text" formControlName="last_name" class="form-control"
-            [class.invalid]="f['last_name'].invalid && f['last_name'].touched" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">{{ 'PHONE' | translate }}</label>
-        <input type="tel" formControlName="phone" class="form-control" dir="ltr"
-          [class.invalid]="f['phone'].invalid && f['phone'].touched" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">{{ 'EMAIL' | translate }}</label>
-        <input type="email" formControlName="email" class="form-control" dir="ltr"
-          [class.invalid]="f['email'].invalid && f['email'].touched" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">{{ 'PASSWORD' | translate }}</label>
-        <input type="password" formControlName="password" class="form-control"
-          [class.invalid]="f['password'].invalid && f['password'].touched" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">{{ 'CONFIRM_PASSWORD' | translate }}</label>
-        <input type="password" formControlName="password_confirmation" class="form-control"
-          [class.invalid]="form.hasError('mismatch') && f['password_confirmation'].touched" />
-        <span class="form-error" *ngIf="form.hasError('mismatch') && f['password_confirmation'].touched">
-          {{ 'CONFIRM_PASSWORD' | translate }} {{ 'ERROR' | translate }}
-        </span>
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="loading">
-        {{ loading ? ('LOADING' | translate) : ('REGISTER_BTN' | translate) }}
+    <!-- Right Panel - Form -->
+    <div class="auth-card">
+      <!-- Language Toggle -->
+      <button class="auth-lang-toggle" (click)="toggleLanguage()">
+        <i class="uil uil-globe"></i>
+        {{ langService.current === 'ar' ? ('ENGLISH' | translate) : ('ARABIC' | translate) }}
       </button>
-    </form>
 
-    <div class="auth-card__footer">
-      <span>{{ 'HAS_ACCOUNT' | translate }}</span>
-      <a routerLink="/auth/login" class="auth-card__link">{{ 'LOGIN_BTN' | translate }}</a>
+      <!-- Header -->
+      <div class="auth-card__header">
+        <div class="auth-card__icon-wrap">
+          <i class="uil uil-user-plus auth-card__icon"></i>
+        </div>
+        <h1 class="auth-card__title">{{ 'REGISTER_TITLE' | translate }}</h1>
+        <p class="auth-card__subtitle">{{ 'REGISTER_SUBTITLE' | translate }}</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="auth-card__form" novalidate>
+
+        <!-- Section: Personal Info -->
+        <div class="form-section">
+          <div class="form-section__header">
+            <i class="uil uil-user form-section__icon"></i>
+            <span class="form-section__title">{{ 'PERSONAL_INFO' | translate }}</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">{{ 'FIRST_NAME' | translate }} <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-user"></i>
+                <input type="text" formControlName="first_name" class="form-control"
+                  [class.invalid]="f['first_name'].invalid && f['first_name'].touched"
+                  [placeholder]="'FIRST_NAME' | translate" />
+              </div>
+              <span class="form-error" *ngIf="f['first_name'].invalid && f['first_name'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{ 'LAST_NAME' | translate }} <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-user"></i>
+                <input type="text" formControlName="last_name" class="form-control"
+                  [class.invalid]="f['last_name'].invalid && f['last_name'].touched"
+                  [placeholder]="'LAST_NAME' | translate" />
+              </div>
+              <span class="form-error" *ngIf="f['last_name'].invalid && f['last_name'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">{{ 'PHONE' | translate }} <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-phone"></i>
+                <input type="tel" formControlName="phone" class="form-control" dir="ltr"
+                  [class.invalid]="f['phone'].invalid && f['phone'].touched"
+                  [placeholder]="'PHONE' | translate" />
+              </div>
+              <span class="form-error" *ngIf="f['phone'].invalid && f['phone'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{ 'EMAIL' | translate }}</label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-envelope"></i>
+                <input type="email" formControlName="email" class="form-control" dir="ltr"
+                  [class.invalid]="f['email'].invalid && f['email'].touched"
+                  [placeholder]="'EMAIL' | translate" />
+              </div>
+              <span class="form-error" *ngIf="f['email'].invalid && f['email'].touched">
+                {{ 'EMAIL_INVALID' | translate }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Location -->
+        <div class="form-section">
+          <div class="form-section__header">
+            <i class="uil uil-map-marker form-section__icon"></i>
+            <span class="form-section__title">{{ 'LOCATION_INFO' | translate }}</span>
+          </div>
+
+          <!-- Governorate -->
+          <div class="form-group">
+            <label class="form-label">{{ 'GOVERNORATE' | translate }} <span class="required">*</span></label>
+            <div class="select-wrap" [class.loading]="loadingGovernorates">
+              <i class="input-icon uil uil-map"></i>
+              <select formControlName="governorate_id" class="form-control form-select"
+                [class.invalid]="f['governorate_id'].invalid && f['governorate_id'].touched"
+                (change)="onGovernorateChange()">
+                <option [ngValue]="null" disabled>{{ 'SELECT_GOVERNORATE' | translate }}</option>
+                <option *ngFor="let gov of governorates" [ngValue]="gov.id">
+                  {{ getLocationName(gov) }}
+                </option>
+              </select>
+              <i class="select-arrow uil uil-angle-down"></i>
+              <div class="select-loader" *ngIf="loadingGovernorates">
+                <div class="spinner-sm"></div>
+              </div>
+            </div>
+            <span class="form-error" *ngIf="f['governorate_id'].invalid && f['governorate_id'].touched">
+              {{ 'FIELD_REQUIRED' | translate }}
+            </span>
+          </div>
+
+          <div class="form-row">
+            <!-- City -->
+            <div class="form-group">
+              <label class="form-label">{{ 'CITY' | translate }} <span class="required">*</span></label>
+              <div class="select-wrap" [class.loading]="loadingCities" [class.disabled]="!cities.length && !loadingCities">
+                <i class="input-icon uil uil-building"></i>
+                <select formControlName="city_id" class="form-control form-select"
+                  [class.invalid]="f['city_id'].invalid && f['city_id'].touched"
+                  (change)="onCityChange()"
+                  [attr.disabled]="!cities.length && !loadingCities ? true : null">
+                  <option [ngValue]="null" disabled>{{ 'SELECT_CITY' | translate }}</option>
+                  <option *ngFor="let city of cities" [ngValue]="city.id">
+                    {{ getLocationName(city) }}
+                  </option>
+                </select>
+                <i class="select-arrow uil uil-angle-down"></i>
+                <div class="select-loader" *ngIf="loadingCities">
+                  <div class="spinner-sm"></div>
+                </div>
+              </div>
+              <span class="form-error" *ngIf="f['city_id'].invalid && f['city_id'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+            </div>
+
+            <!-- Village -->
+            <div class="form-group">
+              <label class="form-label">{{ 'VILLAGE' | translate }} <span class="required">*</span></label>
+              <div class="select-wrap" [class.loading]="loadingVillages" [class.disabled]="!villages.length && !loadingVillages">
+                <i class="input-icon uil uil-trees"></i>
+                <select formControlName="village_id" class="form-control form-select"
+                  [class.invalid]="f['village_id'].invalid && f['village_id'].touched"
+                  [attr.disabled]="!villages.length && !loadingVillages ? true : null">
+                  <option [ngValue]="null" disabled>{{ 'SELECT_VILLAGE' | translate }}</option>
+                  <option *ngFor="let village of villages" [ngValue]="village.id">
+                    {{ getLocationName(village) }}
+                  </option>
+                </select>
+                <i class="select-arrow uil uil-angle-down"></i>
+                <div class="select-loader" *ngIf="loadingVillages">
+                  <div class="spinner-sm"></div>
+                </div>
+              </div>
+              <span class="form-error" *ngIf="f['village_id'].invalid && f['village_id'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Security -->
+        <div class="form-section">
+          <div class="form-section__header">
+            <i class="uil uil-lock form-section__icon"></i>
+            <span class="form-section__title">{{ 'SECURITY_INFO' | translate }}</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">{{ 'PASSWORD' | translate }} <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-lock"></i>
+                <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                  class="form-control" dir="ltr"
+                  [class.invalid]="f['password'].invalid && f['password'].touched"
+                  [placeholder]="'PASSWORD' | translate" />
+                <button type="button" class="input-toggle" (click)="showPassword = !showPassword">
+                  <i [class]="showPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
+                </button>
+              </div>
+              <span class="form-error" *ngIf="f['password'].hasError('required') && f['password'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+              <span class="form-error" *ngIf="f['password'].hasError('minlength') && f['password'].touched">
+                {{ 'PASSWORD_MIN_LENGTH' | translate }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{ 'CONFIRM_PASSWORD' | translate }} <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i class="input-icon uil uil-lock"></i>
+                <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="password_confirmation"
+                  class="form-control" dir="ltr"
+                  [class.invalid]="(form.hasError('mismatch') || f['password_confirmation'].invalid) && f['password_confirmation'].touched"
+                  [placeholder]="'CONFIRM_PASSWORD' | translate" />
+                <button type="button" class="input-toggle" (click)="showConfirmPassword = !showConfirmPassword">
+                  <i [class]="showConfirmPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
+                </button>
+              </div>
+              <span class="form-error" *ngIf="f['password_confirmation'].hasError('required') && f['password_confirmation'].touched">
+                {{ 'FIELD_REQUIRED' | translate }}
+              </span>
+              <span class="form-error" *ngIf="form.hasError('mismatch') && f['password_confirmation'].touched && !f['password_confirmation'].hasError('required')">
+                {{ 'PASSWORD_MISMATCH' | translate }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg btn-submit" [disabled]="loading">
+          <span *ngIf="!loading">
+            <i class="uil uil-user-plus"></i>
+            {{ 'REGISTER_BTN' | translate }}
+          </span>
+          <span *ngIf="loading" class="btn-loading">
+            <div class="spinner-btn"></div>
+            {{ 'LOADING' | translate }}
+          </span>
+        </button>
+      </form>
+
+      <div class="auth-card__footer">
+        <span>{{ 'HAS_ACCOUNT' | translate }}</span>
+        <a routerLink="/auth/login" class="auth-card__link">{{ 'LOGIN_BTN' | translate }}</a>
+      </div>
     </div>
   </div>
 </div>

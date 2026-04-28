@@ -9,11 +9,10 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.auth.token;
@@ -23,9 +22,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(cloned).pipe(
       catchError((err: HttpErrorResponse) => {
+        // Only clear the local session on 401 – do NOT redirect.
+        // The user should be able to browse freely without being forced to login.
         if (err.status === 401) {
           this.auth.logout();
-          this.router.navigate(['/auth/login']);
         }
         return throwError(() => err);
       })

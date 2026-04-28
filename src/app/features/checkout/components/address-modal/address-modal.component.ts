@@ -43,7 +43,7 @@ export class AddressModalComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.isOpen && this.governorates.length === 0) {
-      this.location.getGovernorates().subscribe({ next: (r) => (this.governorates = r.data) });
+      this.location.getGovernorates().subscribe({ next: (r: any) => (this.governorates = r.data) });
     }
   }
 
@@ -51,13 +51,13 @@ export class AddressModalComponent implements OnChanges {
     this.form.patchValue({ city_id: null, village_id: null });
     this.cities = [];
     this.villages = [];
-    if (id) this.location.getCities(id).subscribe({ next: (r) => (this.cities = r.data) });
+    if (id) this.location.getCities(id).subscribe({ next: (r: any) => (this.cities = r.data) });
   }
 
   onCityChange(id: number): void {
     this.form.patchValue({ village_id: null });
     this.villages = [];
-    if (id) this.location.getVillages(id).subscribe({ next: (r) => (this.villages = r.data) });
+    if (id) this.location.getVillages(id).subscribe({ next: (r: any) => (this.villages = r.data) });
   }
 
   submit(): void {

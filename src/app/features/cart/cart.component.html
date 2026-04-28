@@ -25,7 +25,7 @@
           [src]="item.product?.image"
           [alt]="getProductName(item)"
           class="cart-item__img"
-          onerror="this.src='assets/images/placeholder.png'"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
         />
         <div class="cart-item__info">
           <a [routerLink]="['/products', item.product_id]" class="cart-item__name">

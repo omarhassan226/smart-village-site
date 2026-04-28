@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, switchMap, of, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { User, AuthResponse, RegisterRequest } from '../models';
 
@@ -23,7 +23,7 @@ export class AuthService {
     return this.getToken();
   }
 
-  login(phone: string, password: string): Observable<AuthResponse> {
+  login(phone: string, password: string): Observable<any> {
     const body = {
       username: phone,
       password,
@@ -32,8 +32,30 @@ export class AuthService {
       client_secret: environment.clientSecret,
       provider: environment.provider,
     };
-    return this.http.post<AuthResponse>(environment.oauthUrl, body).pipe(
-      tap((res) => this.saveSession(res))
+    return this.http.post<any>(environment.oauthUrl, body).pipe(
+      tap((res) => {
+        // Save token first
+        localStorage.setItem('token', res.access_token);
+      }),
+      // If the OAuth response includes user data, use it directly
+      // Otherwise, fetch user profile after obtaining the token
+      switchMap((res) => {
+        if (res.user && res.user.id) {
+          this.saveUser(res.user);
+          return of(res);
+        }
+        // Fetch user profile using the new token
+        return this.fetchProfile().pipe(
+          tap((user) => this.saveUser(user)),
+          switchMap((user) => of({ ...res, user })),
+          catchError(() => {
+            // If profile fetch fails, create a minimal user from the phone
+            const minimalUser: User = { id: 0, first_name: phone, last_name: '', phone };
+            this.saveUser(minimalUser);
+            return of({ ...res, user: minimalUser });
+          })
+        );
+      })
     );
   }
 
@@ -53,10 +75,20 @@ export class AuthService {
       .pipe(tap((res) => this.patchUser(res.data)));
   }
 
-  private saveSession(res: AuthResponse): void {
-    localStorage.setItem('token', res.access_token);
-    localStorage.setItem('user', JSON.stringify(res.user));
-    this._user$.next(res.user);
+  /** Fetch authenticated user profile */
+  fetchProfile(): Observable<User> {
+    return this.http.get<any>(`${environment.apiUrl}/user`).pipe(
+      switchMap((res) => {
+        // Handle various API response formats
+        const user = res.user || res.data || res;
+        return of(user as User);
+      })
+    );
+  }
+
+  private saveUser(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+    this._user$.next(user);
   }
 
   private patchUser(user: User): void {
