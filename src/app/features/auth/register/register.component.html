@@ -62,7 +62,7 @@
               <label class="form-label">{{ 'FIRST_NAME' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-user"></i>
-                <input type="text" formControlName="first_name" class="form-control"
+                <input dir="ltr" type="text" formControlName="first_name" class="form-control"
                   [class.invalid]="f['first_name'].invalid && f['first_name'].touched"
                   [placeholder]="'FIRST_NAME' | translate" />
               </div>
@@ -74,7 +74,7 @@
               <label class="form-label">{{ 'LAST_NAME' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-user"></i>
-                <input type="text" formControlName="last_name" class="form-control"
+                <input dir="ltr" type="text" formControlName="last_name" class="form-control"
                   [class.invalid]="f['last_name'].invalid && f['last_name'].touched"
                   [placeholder]="'LAST_NAME' | translate" />
               </div>
@@ -89,9 +89,8 @@
               <label class="form-label">{{ 'PHONE' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-phone"></i>
-                <input type="tel" formControlName="phone" class="form-control" dir="ltr"
-                  [class.invalid]="f['phone'].invalid && f['phone'].touched"
-                  [placeholder]="'PHONE' | translate" />
+                <input dir="ltr" type="tel" formControlName="phone" class="form-control"
+                  [class.invalid]="f['phone'].invalid && f['phone'].touched" [placeholder]="'PHONE' | translate" />
               </div>
               <span class="form-error" *ngIf="f['phone'].invalid && f['phone'].touched">
                 {{ 'FIELD_REQUIRED' | translate }}
@@ -102,8 +101,7 @@
               <div class="input-wrap">
                 <i class="input-icon uil uil-envelope"></i>
                 <input type="email" formControlName="email" class="form-control" dir="ltr"
-                  [class.invalid]="f['email'].invalid && f['email'].touched"
-                  [placeholder]="'EMAIL' | translate" />
+                  [class.invalid]="f['email'].invalid && f['email'].touched" [placeholder]="'EMAIL' | translate" />
               </div>
               <span class="form-error" *ngIf="f['email'].invalid && f['email'].touched">
                 {{ 'EMAIL_INVALID' | translate }}
@@ -124,7 +122,7 @@
             <label class="form-label">{{ 'GOVERNORATE' | translate }} <span class="required">*</span></label>
             <div class="select-wrap" [class.loading]="loadingGovernorates">
               <i class="input-icon uil uil-map"></i>
-              <select formControlName="governorate_id" class="form-control form-select"
+              <select dir="ltr" formControlName="governorate_id" class="form-control form-select"
                 [class.invalid]="f['governorate_id'].invalid && f['governorate_id'].touched"
                 (change)="onGovernorateChange()">
                 <option [ngValue]="null" disabled>{{ 'SELECT_GOVERNORATE' | translate }}</option>
@@ -146,11 +144,11 @@
             <!-- City -->
             <div class="form-group">
               <label class="form-label">{{ 'CITY' | translate }} <span class="required">*</span></label>
-              <div class="select-wrap" [class.loading]="loadingCities" [class.disabled]="!cities.length && !loadingCities">
+              <div class="select-wrap" [class.loading]="loadingCities"
+                [class.disabled]="!cities.length && !loadingCities">
                 <i class="input-icon uil uil-building"></i>
-                <select formControlName="city_id" class="form-control form-select"
-                  [class.invalid]="f['city_id'].invalid && f['city_id'].touched"
-                  (change)="onCityChange()"
+                <select dir="ltr" formControlName="city_id" class="form-control form-select"
+                  [class.invalid]="f['city_id'].invalid && f['city_id'].touched" (change)="onCityChange()"
                   [attr.disabled]="!cities.length && !loadingCities ? true : null">
                   <option [ngValue]="null" disabled>{{ 'SELECT_CITY' | translate }}</option>
                   <option *ngFor="let city of cities" [ngValue]="city.id">
@@ -170,9 +168,10 @@
             <!-- Village -->
             <div class="form-group">
               <label class="form-label">{{ 'VILLAGE' | translate }} <span class="required">*</span></label>
-              <div class="select-wrap" [class.loading]="loadingVillages" [class.disabled]="!villages.length && !loadingVillages">
+              <div class="select-wrap" [class.loading]="loadingVillages"
+                [class.disabled]="!villages.length && !loadingVillages">
                 <i class="input-icon uil uil-trees"></i>
-                <select formControlName="village_id" class="form-control form-select"
+                <select dir="ltr" formControlName="village_id" class="form-control form-select"
                   [class.invalid]="f['village_id'].invalid && f['village_id'].touched"
                   [attr.disabled]="!villages.length && !loadingVillages ? true : null">
                   <option [ngValue]="null" disabled>{{ 'SELECT_VILLAGE' | translate }}</option>
@@ -204,9 +203,8 @@
               <label class="form-label">{{ 'PASSWORD' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-lock"></i>
-                <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
-                  class="form-control" dir="ltr"
-                  [class.invalid]="f['password'].invalid && f['password'].touched"
+                <input dir="ltr" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                  class="form-control" [class.invalid]="f['password'].invalid && f['password'].touched"
                   [placeholder]="'PASSWORD' | translate" />
                 <button type="button" class="input-toggle" (click)="showPassword = !showPassword">
                   <i [class]="showPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
@@ -223,22 +221,37 @@
               <label class="form-label">{{ 'CONFIRM_PASSWORD' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-lock"></i>
-                <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="password_confirmation"
-                  class="form-control" dir="ltr"
+                <input dir="ltr" [type]="showConfirmPassword ? 'text' : 'password'"
+                  formControlName="password_confirmation" class="form-control"
                   [class.invalid]="(form.hasError('mismatch') || f['password_confirmation'].invalid) && f['password_confirmation'].touched"
                   [placeholder]="'CONFIRM_PASSWORD' | translate" />
                 <button type="button" class="input-toggle" (click)="showConfirmPassword = !showConfirmPassword">
                   <i [class]="showConfirmPassword ? 'uil uil-eye-slash' : 'uil uil-eye'"></i>
                 </button>
               </div>
-              <span class="form-error" *ngIf="f['password_confirmation'].hasError('required') && f['password_confirmation'].touched">
+              <span class="form-error"
+                *ngIf="f['password_confirmation'].hasError('required') && f['password_confirmation'].touched">
                 {{ 'FIELD_REQUIRED' | translate }}
               </span>
-              <span class="form-error" *ngIf="form.hasError('mismatch') && f['password_confirmation'].touched && !f['password_confirmation'].hasError('required')">
+              <span class="form-error"
+                *ngIf="form.hasError('mismatch') && f['password_confirmation'].touched && !f['password_confirmation'].hasError('required')">
                 {{ 'PASSWORD_MISMATCH' | translate }}
               </span>
             </div>
           </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="checkbox" formControlName="accept_terms" class="form-check-input" />
+            <span class="form-check-text">
+              {{ 'I_AGREE_TERMS' | translate }}
+            </span>
+          </label>
+          <span class="form-error" *ngIf="f['accept_terms'].invalid && f['accept_terms'].touched">
+            {{ 'TERMS_ERROR' | translate }}
+          </span>
         </div>
 
         <!-- Submit -->

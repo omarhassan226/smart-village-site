@@ -10,8 +10,10 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  getOrders(page = 1): Observable<OrderListResponse> {
-    return this.http.get<OrderListResponse>(`${this.base}/orders?page=${page}`);
+  getOrders(page = 1, status?: string): Observable<OrderListResponse> {
+    let url = `${this.base}/get/orders/ar?page=${page}`;
+    if (status) url += `&status=${status}`;
+    return this.http.get<OrderListResponse>(url);
   }
 
   getOrder(id: number): Observable<{ data: Order }> {

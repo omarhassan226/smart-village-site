@@ -5,13 +5,18 @@ import { ProfileInfoComponent } from './components/profile-info/profile-info.com
 import { ProfileOrdersComponent } from './components/profile-orders/profile-orders.component';
 import { ProfileComponent } from './profile.component';
 
+import { ProfileDashboardComponent } from './components/profile-dashboard/profile-dashboard.component';
+import { ProfileAddressesComponent } from './components/profile-addresses/profile-addresses.component';
+
 const routes: Routes = [
   {
     path: '',
     component: ProfileComponent,
     children: [
-      { path: '', redirectTo: 'info', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: ProfileDashboardComponent },
       { path: 'info', component: ProfileInfoComponent },
+      { path: 'addresses', component: ProfileAddressesComponent },
       { path: 'orders', component: ProfileOrdersComponent },
     ],
   },
@@ -23,7 +28,9 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
     ProfileComponent,
+    ProfileDashboardComponent,
     ProfileInfoComponent,
+    ProfileAddressesComponent,
     ProfileOrdersComponent
   ],
 })

@@ -1,61 +1,52 @@
 <div class="profile-section">
-  <h2 class="profile-section__title">{{ 'MY_ORDERS' | translate }}</h2>
-
-  <!-- Tabs -->
-  <div class="order-tabs">
-    <button class="order-tabs__tab" [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
-      {{ 'MY_ORDERS' | translate }}
-    </button>
-    <button class="order-tabs__tab" [class.active]="activeTab === 'processing'" (click)="activeTab = 'processing'">
-      {{ 'PROCESSING' | translate }}
-    </button>
-    <button class="order-tabs__tab" [class.active]="activeTab === 'shipped'" (click)="activeTab = 'shipped'">
-      {{ 'SHIPPING' | translate }}
-    </button>
-    <button class="order-tabs__tab" [class.active]="activeTab === 'delivered'" (click)="activeTab = 'delivered'">
-      {{ 'DELIVERED' | translate }}
-    </button>
+  <div class="profile-section__header">
+    <h2 class="profile-section__title">
+      <i class="uil uil-box"></i>
+      {{ (status === 'review' ? 'PREPARING' : (status === 'delivering' ? 'DELIVERING' : 'MY_ORDERS')) | translate }}
+    </h2>
   </div>
 
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
-  <app-empty-state *ngIf="!loading && filteredOrders.length === 0" icon="uil uil-box"
+  <app-empty-state *ngIf="!loading && orders.length === 0" icon="uil uil-box"
     [title]="'ORDERS_EMPTY' | translate"></app-empty-state>
 
-  <div class="orders-list" *ngIf="!loading">
-    <div class="order-card" *ngFor="let order of filteredOrders">
-      <div class="order-card__header">
-        <div>
-          <span class="order-card__number">{{ 'ORDER_NUMBER' | translate }}: #{{ order.order_number }}</span>
-          <span class="order-card__date">{{ order.created_at | date }}</span>
-        </div>
-        <span class="status-badge" [class]="'status-badge--' + getStatusClass(order.status)">
-          {{ getStatusKey(order.status) | translate }}
-        </span>
-      </div>
-
-      <!-- Items -->
-      <div class="order-card__items">
-        <div class="order-product" *ngFor="let item of order.items">
-          <img [src]="item.product?.image" class="order-product__img"
-            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
-          <div class="order-product__info">
-            <p class="order-product__name">{{ getProductName(item) }}</p>
-            <p class="order-product__qty">x{{ item.quantity }}</p>
-          </div>
-          <p class="order-product__price">{{ item.price }} {{ 'OMR' | translate }}</p>
-        </div>
-      </div>
-
-      <div class="order-card__footer">
-        <span class="order-card__total">
-          {{ 'ORDER_VALUE' | translate }}: <strong>{{ order.total }} {{ 'OMR' | translate }}</strong>
-        </span>
-        <button class="btn btn-outline btn-sm" *ngIf="order.status === 'delivered'" (click)="openReturn(order.id)">
-          {{ 'RETURN_ORDER' | translate }}
-        </button>
-      </div>
-    </div>
+  <div class="orders-table-wrapper">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>{{ 'ORDER_NUMBER' | translate }}</th>
+          <th>{{ 'ORDER_DATE' | translate }}</th>
+          <th>{{ 'ORDER_TOTAL' | translate }}</th>
+          <th>{{ 'ORDER_STATUS' | translate }}</th>
+          <th>{{ 'ACTION' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="!loading && orders.length > 0">
+        <tr *ngFor="let order of orders">
+          <td><span class="order-id">#{{ order.order_number }}</span></td>
+          <td>{{ order.created_at | date:'shortDate' }}</td>
+          <td><span class="order-price">{{ order.total }} {{ 'OMR' | translate }}</span></td>
+          <td>
+            <span class="status-badge" [class]="'status-badge--' + getStatusClass(order.status)">
+              {{ getStatusKey(order.status) | translate }}
+            </span>
+          </td>
+          <td>
+            <div class="order-actions">
+              <button class="btn-icon" [routerLink]="['/products', order.items[0]?.product?.id]"
+                title="{{ 'VIEW_DETAILS' | translate }}">
+                <i class="uil uil-eye"></i>
+              </button>
+              <button class="btn-icon btn-icon--danger" *ngIf="order.status === 'delivered'"
+                (click)="openReturn(order.id)" title="{{ 'RETURN_ORDER' | translate }}">
+                <i class="uil uil-refresh"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <app-pagination [currentPage]="currentPage" [lastPage]="lastPage"

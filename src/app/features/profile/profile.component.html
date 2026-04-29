@@ -24,13 +24,29 @@
       </div>
 
       <nav class="profile-nav">
-        <a routerLink="info" routerLinkActive="active" class="profile-nav__item">
-          <i class="uil uil-user"></i>
-          {{ 'EDIT_DATA' | translate }}
+        <a routerLink="dashboard" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-chart-pie"></i>
+          {{ 'STATISTICS' | translate }}
         </a>
-        <a routerLink="orders" routerLinkActive="active" class="profile-nav__item">
-          <i class="uil uil-box"></i>
+        <a routerLink="info" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-user-circle"></i>
+          {{ 'UPDATE_PROFILE' | translate }}
+        </a>
+        <a routerLink="addresses" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-map-marker"></i>
+          {{ 'MY_ADDRESSES' | translate }}
+        </a>
+        <a routerLink="orders" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-clipboard-notes"></i>
           {{ 'MY_ORDERS' | translate }}
+        </a>
+        <a [routerLink]="['orders']" [queryParams]="{ status: 'review' }" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-box"></i>
+          {{ 'PREPARING' | translate }}
+        </a>
+        <a [routerLink]="['orders']" [queryParams]="{ status: 'delivering' }" routerLinkActive="active" class="profile-nav__item">
+          <i class="uil uil-truck"></i>
+          {{ 'DELIVERING' | translate }}
         </a>
         <a routerLink="/wishlist" class="profile-nav__item">
           <i class="uil uil-heart"></i>

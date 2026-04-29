@@ -1,0 +1,250 @@
+@use 'styles/mixins' as *;
+
+.addresses {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    @include respond-below(sm) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+
+    i {
+      color: var(--primary);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.address-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+  }
+
+  &--default {
+    border-color: var(--primary);
+    background: var(--bg-secondary);
+  }
+
+  &__type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+
+    i {
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .badge {
+      margin-inline-start: auto;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+  }
+
+  &__content {
+    p {
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .address-card__details {
+      color: var(--text-light);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+  }
+}
+
+.btn-action {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+
+  &--edit {
+    background: var(--primary-light);
+    color: var(--primary);
+
+    &:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+  }
+
+  &--delete {
+    background: #fee2e2;
+    color: var(--danger);
+
+    &:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+  }
+}
+
+// Modal Styles
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+
+  &--open {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  &__container {
+    position: relative;
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    max-height: auto;
+    overflow-y: hidden;
+  }
+
+  &__header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+
+    &:hover {
+      color: var(--danger);
+    }
+  }
+
+  &__body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    height: 60vh;
+  }
+
+  &__footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+}
+
+.address-form {
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+
+  .checkbox-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+
+    span {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  }
+
+  @include respond-below(sm) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

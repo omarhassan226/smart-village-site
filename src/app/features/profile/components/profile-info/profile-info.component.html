@@ -1,30 +1,95 @@
 <div class="profile-section">
-  <h2 class="profile-section__title">{{ 'EDIT_DATA' | translate }}</h2>
+  <div class="profile-section__header">
+    <h2 class="profile-section__title">
+      <i class="uil uil-user-circle"></i>
+      {{ 'UPDATE_PROFILE' | translate }}
+    </h2>
+  </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="info-form">
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">{{ 'FIRST_NAME' | translate }}</label>
-        <input type="text" class="form-control" formControlName="first_name" />
+        <input type="text" class="form-control" formControlName="first_name" placeholder="{{ 'FIRST_NAME' | translate }}" />
       </div>
       <div class="form-group">
         <label class="form-label">{{ 'LAST_NAME' | translate }}</label>
-        <input type="text" class="form-control" formControlName="last_name" />
+        <input type="text" class="form-control" formControlName="last_name" placeholder="{{ 'LAST_NAME' | translate }}" />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">{{ 'PHONE' | translate }}</label>
-      <input type="tel" class="form-control" [value]="auth.user?.phone" readonly dir="ltr" />
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">{{ 'EMAIL' | translate }}</label>
+        <input type="email" class="form-control" formControlName="email" dir="ltr" placeholder="example@mail.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">{{ 'PHONE_NUMBER' | translate }}</label>
+        <input type="tel" class="form-control" formControlName="phone" dir="ltr" />
+      </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">{{ 'EMAIL' | translate }}</label>
-      <input type="email" class="form-control" formControlName="email" dir="ltr" />
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">{{ 'GOVERNORATES' | translate }}</label>
+        <select class="form-control" formControlName="country_id" (change)="onGovChange(form.get('country_id')?.value)">
+          <option [ngValue]="null">{{ 'SELECT_GOVERNORATE' | translate }}</option>
+          <option *ngFor="let g of governorates" [ngValue]="g.id">
+            {{ lang.current === 'ar' ? g.name_ar : g.name_en }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">{{ 'CITIES' | translate }}</label>
+        <select class="form-control" formControlName="city_id" (change)="onCityChange(form.get('city_id')?.value)">
+          <option [ngValue]="null">{{ 'SELECT_CITY' | translate }}</option>
+          <option *ngFor="let c of cities" [ngValue]="c.id">
+            {{ lang.current === 'ar' ? c.name_ar : c.name_en }}
+          </option>
+        </select>
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="saving">
-      {{ saving ? ('LOADING' | translate) : ('UPDATE_BTN' | translate) }}
-    </button>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">{{ 'VILLAGES' | translate }}</label>
+        <select class="form-control" formControlName="village_id">
+          <option [ngValue]="null">{{ 'SELECT_VILLAGE' | translate }}</option>
+          <option *ngFor="let v of villages" [ngValue]="v.id">
+            {{ lang.current === 'ar' ? v.name_ar : v.name_en }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">{{ 'ADDRESS' | translate }}</label>
+        <input type="text" class="form-control" formControlName="address" placeholder="{{ 'ADDRESS' | translate }}" />
+      </div>
+    </div>
+
+    <div class="security-section">
+      <h3 class="security-title"><i class="uil uil-lock"></i> {{ 'SECURITY_INFO' | translate }}</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'CURRENT_PASSWORD' | translate }}</label>
+          <input type="password" class="form-control" formControlName="current_password" placeholder="******" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">{{ 'NEW_PASSWORD' | translate }}</label>
+          <input type="password" class="form-control" formControlName="password" placeholder="{{ 'NEW_PASSWORD' | translate }}" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ 'CONFIRM_PASSWORD' | translate }}</label>
+          <input type="password" class="form-control" formControlName="password_confirmation" placeholder="{{ 'CONFIRM_PASSWORD' | translate }}" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg" [disabled]="saving">
+        {{ saving ? ('LOADING' | translate) : ('UPDATE_BTN' | translate) }}
+      </button>
+    </div>
   </form>
 </div>

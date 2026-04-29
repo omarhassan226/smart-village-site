@@ -5,6 +5,10 @@ export interface User {
   email?: string;
   phone: string;
   image?: string;
+  address?: string;
+  country_id?: number;
+  city_id?: number;
+  village_id?: number;
   token?: string;
 }
 
@@ -29,7 +33,7 @@ export interface RegisterRequest {
   phone: string;
   email?: string;
   address?: string;
-  governorate_id?: number;
+  country_id?: number;
   city_id?: number;
   village_id?: number;
   password: string;

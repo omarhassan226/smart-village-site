@@ -178,6 +178,10 @@
     max-width: 560px;
     transition: border-color 0.2s, box-shadow 0.2s;
 
+    @include respond-below(lg) {
+      display: none; // Hide in main header on mobile/tablet to save space
+    }
+
     &:focus-within {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
@@ -524,6 +528,26 @@
   &__nav {
     background: #fff;
     border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+  }
+}
+
+.nav__container {
+  max-width: 100%;
+  // overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  clip-path: inset(0 0 -1000px 0);
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
   }
 }
 
@@ -531,6 +555,9 @@
 .nav {
   &__list {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-width: max-content;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -540,10 +567,10 @@
   &__item {
     position: relative;
 
-    &--dropdown:hover .nav__dropdown {
+    &:hover .nav__dropdown {
       opacity: 1;
       visibility: visible;
-      transform: translateY(0);
+      transform: none;
     }
   }
 
@@ -623,7 +650,7 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
-    z-index: var(--z-overlay);
+    z-index: 299;
   }
 
   &__drawer {
@@ -633,7 +660,7 @@
     width: 300px;
     height: 100%;
     background: #fff;
-    z-index: var(--z-sidebar);
+    z-index: 300;
     transition: inset-inline-start 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     display: flex;
@@ -778,70 +805,94 @@
 
   /* Search */
   &__search {
-    padding: 12px 20px;
+    padding: 20px;
+    background: var(--bg-secondary);
     border-bottom: 1px solid var(--border);
   }
 
   &__search-wrap {
+    width: 100%;
+  }
+
+  &__search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__search-select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    outline: none;
+    background: #fff;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M17,9.17a1,1,0,0,0-1.41,0L12,12.71,8.46,9.17a1,1,0,0,0-1.41,1.42l4.24,4.24a1,1,0,0,0,1.42,0L17,10.59A1,1,0,0,0,17,9.17Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+
+    [dir="rtl"] & {
+      background-position: left 10px center;
+    }
+
+    &:focus {
+      border-color: var(--primary);
+    }
+  }
+
+  &__search-input-group {
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  &__search-icon {
-    position: absolute;
-    inset-inline-start: 12px;
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    pointer-events: none;
-  }
-
-  &__search-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  &__search-select {
-    width: 100px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 8px;
-    font-size: 0.75rem;
-    outline: none;
-    background: var(--bg-secondary);
-    font-family: inherit;
-  }
-
   &__search-input {
-    flex: 1;
+    width: 100%;
     border: 1.5px solid var(--border);
     border-radius: 10px;
-    padding: 10px 12px;
+    padding: 10px 44px 10px 12px;
     font-size: 0.85rem;
     outline: none;
     font-family: inherit;
-    transition: border-color 0.2s;
-    background: var(--bg-secondary);
+    transition: all 0.2s;
+    background: #fff;
+
+    [dir="rtl"] & {
+      padding: 10px 12px 10px 44px;
+    }
 
     &:focus {
       border-color: var(--primary);
-      background: #fff;
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
     }
   }
 
   &__search-btn {
+    position: absolute;
+    inset-inline-end: 4px;
+    width: 36px;
+    height: 36px;
     background: var(--primary);
-    color: #fff;
     border: none;
-    border-radius: 10px;
-    width: 42px;
-    height: 42px;
+    border-radius: 8px;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--primary-dark);
+    }
   }
 
   /* Sections */

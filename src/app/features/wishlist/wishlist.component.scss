@@ -1,7 +1,7 @@
 @use 'styles/mixins' as *;
 
 .wishlist-page {
-  padding: 24px 0 64px;
+  padding: 24px 16px 64px;
   min-height: calc(100vh - 400px);
 
   &__header {

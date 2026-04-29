@@ -52,6 +52,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         village_id: [null, Validators.required],
         password: ['', [Validators.required, Validators.minLength(6)]],
         password_confirmation: ['', Validators.required],
+        accept_terms: [false, Validators.requiredTrue],
       },
       { validators: this.passwordMatchValidator }
     );

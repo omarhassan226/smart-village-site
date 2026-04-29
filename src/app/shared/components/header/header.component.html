@@ -103,7 +103,9 @@
         <!-- Wishlist -->
         <a routerLink="/wishlist" class="header__action header__action--wishlist">
           <i class="uil uil-heart"></i>
-          <span class="header__action-badge header__action-badge--wish" *ngIf="wishlistCount > 0">{{ wishlistCount
+          <span class="header__action-badge header__action-badge--wish" style="left: 35px; top: 7px;"
+            *ngIf="wishlistCount > 0">{{
+            wishlistCount
             }}</span>
           <span class="header__action-label">{{ 'WISHLIST' | translate }}</span>
         </a>
@@ -111,7 +113,7 @@
         <!-- Cart: opens sidebar -->
         <button type="button" class="header__action header__action--cart" (click)="openCart($event)">
           <i class="uil uil-shopping-cart"></i>
-          <span class="header__action-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+          <span class="header__action-badge" style="left: 50px;" *ngIf="cartCount > 0">{{ cartCount }}</span>
           <span class="header__action-label">{{ 'CART' | translate }}</span>
         </button>
 
@@ -173,7 +175,7 @@
 
   <!-- Navigation -->
   <nav class="header__nav d-none d-lg-block">
-    <div class="container" style="overflow-x: scroll;">
+    <div class="container nav__container">
       <ul class="nav__list">
         <li class="nav__item">
           <a routerLink="/" class="nav__link" routerLinkActive="nav__link--active"
@@ -253,11 +255,13 @@
                 {{ getCategoryName(cat) }}
               </option>
             </select>
-            <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
-              (keyup.enter)="search()" class="mobile-menu__search-input" />
-            <button class="mobile-menu__search-btn" (click)="search()">
-              <i class="uil uil-search"></i>
-            </button>
+            <div class="mobile-menu__search-input-group">
+              <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+                (keyup.enter)="search()" class="mobile-menu__search-input" />
+              <button class="mobile-menu__search-btn" (click)="search()">
+                <i class="uil uil-search"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>

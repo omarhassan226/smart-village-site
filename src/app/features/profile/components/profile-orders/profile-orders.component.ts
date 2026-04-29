@@ -6,6 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Order, OrderStatus } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
 
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   standalone: true,
   imports: [SharedModule],
@@ -18,6 +20,7 @@ export class ProfileOrdersComponent implements OnInit {
   loading = true;
   currentPage = 1;
   lastPage = 1;
+  status: string | null = null;
 
   activeTab: 'all' | 'processing' | 'shipped' | 'delivered' = 'all';
   returnModalOpen = false;
@@ -28,14 +31,20 @@ export class ProfileOrdersComponent implements OnInit {
     private orderService: OrderService,
     private notify: NotificationService,
     private translate: TranslateService,
+    private route: ActivatedRoute,
     public lang: LanguageService
   ) { }
 
-  ngOnInit(): void { this.loadOrders(); }
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.status = params['status'] || null;
+      this.loadOrders();
+    });
+  }
 
   loadOrders(): void {
     this.loading = true;
-    this.orderService.getOrders(this.currentPage).subscribe({
+    this.orderService.getOrders(this.currentPage, this.status || undefined).subscribe({
       next: (res) => {
         this.orders = res.data;
         this.lastPage = res.last_page;
@@ -65,6 +74,8 @@ export class ProfileOrdersComponent implements OnInit {
       delivered: 'STATUS_DELIVERED',
       cancelled: 'CANCEL',
       returned: 'RETURN_ORDER',
+      review: 'STATUS_PROCESSING',
+      delivering: 'STATUS_SHIPPED',
     };
     return map[status] || status;
   }
@@ -78,6 +89,8 @@ export class ProfileOrdersComponent implements OnInit {
       delivered: 'success',
       cancelled: 'danger',
       returned: 'danger',
+      review: 'info',
+      delivering: 'primary',
     };
     return map[status] || '';
   }

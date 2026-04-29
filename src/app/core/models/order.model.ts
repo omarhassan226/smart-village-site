@@ -8,7 +8,9 @@ export type OrderStatus =
   | 'shipped'
   | 'delivered'
   | 'cancelled'
-  | 'returned';
+  | 'returned'
+  | 'review'
+  | 'delivering';
 
 export type PaymentMethod = 'cash_on_delivery' | 'online';
 

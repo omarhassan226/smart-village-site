@@ -193,13 +193,31 @@
   flex: 1;
   background: #fff;
   padding: 2.5rem;
+  overflow-y: auto;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   position: relative;
+
+  &>*:first-child {
+    margin-top: auto;
+  }
+
+  &>*:last-child {
+    margin-bottom: auto;
+  }
 
   @include respond-below(sm) {
     padding: 1.75rem 1.25rem;
+    max-height: unset;
+
+    &>*:first-child {
+      margin-top: 0;
+    }
+
+    &>*:last-child {
+      margin-bottom: 0;
+    }
   }
 
   /* Header */
