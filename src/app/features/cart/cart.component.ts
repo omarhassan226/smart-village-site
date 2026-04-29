@@ -1,10 +1,12 @@
 import { SharedModule } from '../../shared/shared.module';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CartService } from '../../core/services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Cart, CartItem } from '../../core/models';
 import { LanguageService } from '../../core/services/language.service';
+import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -13,37 +15,21 @@ import { LanguageService } from '../../core/services/language.service';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   cart: Cart = { items: [], total: 0, items_count: 0 };
-  loading = true;
 
   constructor(
     public cartService: CartService,
     private notify: NotificationService,
     private translate: TranslateService,
-    public lang: LanguageService
+    public lang: LanguageService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.cartService.load().subscribe({
-      next: (res) => { this.cart = res.data; this.loading = false; },
-      error: () => { this.loading = false; },
-    });
-    this.cartService.cart$.subscribe((c) => { this.cart = c; });
-  }
-
-  updateQty(item: CartItem, qty: number): void {
-    if (!item.id) return;
-    this.cartService.updateQuantity(item.id, qty).subscribe({
-      error: () => this.notify.error(this.translate.instant('ERROR')),
-    });
-  }
-
-  remove(item: CartItem): void {
-    if (!item.id) return;
-    this.cartService.remove(item.id).subscribe({
-      next: () => this.notify.success(this.translate.instant('REMOVED_FROM_CART')),
-      error: () => this.notify.error(this.translate.instant('ERROR')),
+    this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe((c) => {
+      this.cart = c;
     });
   }
 
@@ -51,5 +37,33 @@ export class CartComponent implements OnInit {
     const p = item.product;
     if (!p) return '';
     return (this.lang.current === 'ar' ? p.name_ar : p.name_en) || p.name;
+  }
+
+  getProductImage(item: CartItem): string {
+    return item.product?.image || 'assets/images/placeholder.svg';
+  }
+
+  updateQty(item: CartItem, qty: number): void {
+    if (qty < 1) return;
+    this.cartService.updateQuantity(item.id, qty);
+  }
+
+  remove(item: CartItem): void {
+    this.cartService.remove(item.id);
+    this.notify.success(this.translate.instant('REMOVED_FROM_CART'));
+  }
+
+  clearAll(): void {
+    this.cartService.clear();
+    this.notify.success(this.translate.instant('CART_CLEARED'));
+  }
+
+  checkout(): void {
+    this.router.navigate(['/checkout']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

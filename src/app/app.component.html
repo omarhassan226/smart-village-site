@@ -1,6 +1,7 @@
-<app-header *ngIf="!isAuthRoute"></app-header>
+<app-header *ngIf="!isAuthRoute" style="position: sticky; top: 0; z-index: 1000;"></app-header>
 <main class="page-content">
   <router-outlet></router-outlet>
 </main>
 <app-footer *ngIf="!isAuthRoute"></app-footer>
 <app-notification-toast></app-notification-toast>
+<app-cart-sidebar *ngIf="!isAuthRoute"></app-cart-sidebar>

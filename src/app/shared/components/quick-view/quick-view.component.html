@@ -1,0 +1,150 @@
+<div class="qv-overlay" [class.active]="isOpen" (click)="onOverlayClick()"></div>
+
+<div class="qv-modal" [class.open]="isOpen" *ngIf="product" [dir]="lang.current === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Close -->
+  <button class="qv-modal__close" (click)="close.emit()">
+    <i class="uil uil-times"></i>
+  </button>
+
+  <div class="qv-modal__body">
+    <!-- Gallery -->
+    <div class="qv-gallery">
+      <!-- Main Image with Zoom -->
+      <div class="qv-gallery__main" (mousemove)="onImgMouseMove($event)" (mouseleave)="onImgMouseLeave()">
+        <img
+          class="qv-gallery__main-img"
+          [src]="selectedImage"
+          [alt]="name"
+          #mainImg
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
+        />
+        <div
+          class="qv-gallery__zoom-lens"
+          [style.display]="zoomVisible ? 'block' : 'none'"
+          [style.left.px]="zoomX"
+          [style.top.px]="zoomY"
+        ></div>
+        <div
+          class="qv-gallery__zoom-result"
+          [style.display]="zoomVisible ? 'block' : 'none'"
+          [style.background-image]="'url(' + selectedImage + ')'"
+          [style.background-position]="zoomBgPos"
+          [style.background-size]="zoomBgSize"
+        ></div>
+
+        <!-- Badges -->
+        <div class="qv-gallery__badges">
+          <span class="badge badge--new" *ngIf="product.is_new">{{ 'NEW' | translate }}</span>
+          <span class="badge badge--sale" *ngIf="discount > 0">-{{ discount }}%</span>
+        </div>
+      </div>
+
+      <!-- Thumbnails -->
+      <div class="qv-gallery__thumbs">
+        <button
+          class="qv-gallery__thumb"
+          *ngFor="let img of allImages"
+          [class.active]="img === selectedImage"
+          (click)="selectImage(img)"
+        >
+          <img [src]="img" [alt]="name" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="qv-info">
+      <!-- Name -->
+      <h2 class="qv-info__name">{{ name }}</h2>
+
+      <!-- Price -->
+      <div class="qv-info__price">
+        <span class="qv-info__price-current">
+          {{ currentPrice }}
+          <span class="qv-info__currency">{{ 'OMR' | translate }}</span>
+        </span>
+        <span class="qv-info__price-old" *ngIf="product.original_price && product.original_price > product.price">
+          {{ product.original_price }}
+        </span>
+      </div>
+
+      <!-- Stock -->
+      <div class="qv-info__stock" [class.out]="!product.in_stock">
+        <i [class]="product.in_stock ? 'uil uil-check-circle' : 'uil uil-times-circle'"></i>
+        {{ (product.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK') | translate }}
+      </div>
+
+      <!-- Color -->
+      <div class="qv-info__option" *ngIf="product.colors && product.colors.length > 0">
+        <label class="qv-info__option-label">
+          {{ 'COLOR' | translate }}:
+          <strong>{{ selectedColor?.name }}</strong>
+        </label>
+        <div class="color-swatches">
+          <button
+            class="color-swatch"
+            *ngFor="let color of product.colors"
+            [class.active]="selectedColor?.id === color.id"
+            [style.background]="color.hex || '#ccc'"
+            [title]="color.name"
+            (click)="selectedColor = color"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="qv-info__option" *ngIf="product.types && product.types.length > 0">
+        <label class="qv-info__option-label">{{ 'TYPE' | translate }}</label>
+        <div class="type-options">
+          <button
+            class="type-option"
+            *ngFor="let type of product.types"
+            [class.active]="selectedType?.id === type.id"
+            (click)="selectedType = type"
+          >
+            {{ type.name }}
+            <span *ngIf="type.extra_price"> (+{{ type.extra_price }})</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="qv-info__option">
+        <label class="qv-info__option-label">{{ 'QUANTITY' | translate }}</label>
+        <div class="qty-control">
+          <button class="qty-control__btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
+          <span class="qty-control__val">{{ quantity }}</span>
+          <button class="qty-control__btn" (click)="increment()">+</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="qv-info__actions">
+        <button
+          class="btn btn-primary"
+          (click)="addToCart()"
+          [disabled]="!product.in_stock || addingToCart"
+        >
+          <i class="uil uil-cart" *ngIf="!addingToCart"></i>
+          <i class="uil uil-spinner-alt spin" *ngIf="addingToCart"></i>
+          {{ 'ADD_TO_CART' | translate }}
+        </button>
+
+        <button
+          class="qv-info__wishlist-btn"
+          (click)="toggleWishlist()"
+          [class.active]="isWishlisted"
+          [title]="(isWishlisted ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST') | translate"
+        >
+          <i [class]="isWishlisted ? 'uil uil-heart' : 'uil uil-heart-alt'"></i>
+        </button>
+      </div>
+
+      <!-- View Full Detail -->
+      <button class="qv-info__view-link" (click)="goToDetail()">
+        <i class="uil uil-external-link-alt"></i>
+        {{ 'VIEW_FULL_DETAILS' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

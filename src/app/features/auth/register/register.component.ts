@@ -102,7 +102,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.locationService.getGovernorates(lang)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.governorates = res.governorates || [];
           this.loadingGovernorates = false;
         },
@@ -126,7 +126,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.locationService.getCities(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.cities = res.cities || [];
           this.loadingCities = false;
         },
@@ -149,7 +149,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.locationService.getVillages(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.villages = res.villages || [];
           this.loadingVillages = false;
         },

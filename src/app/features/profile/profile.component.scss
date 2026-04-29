@@ -1,6 +1,8 @@
 @use 'styles/mixins' as *;
 
-.profile-page { padding: 2rem 0 3rem; }
+.profile-page {
+  padding: 2rem 0 3rem;
+}
 
 .profile-layout {
   display: grid;
@@ -8,7 +10,9 @@
   gap: 1.5rem;
   align-items: flex-start;
 
-  @include respond-below(lg) { grid-template-columns: 1fr; }
+  @include respond-below(lg) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .profile-sidebar {
@@ -16,8 +20,8 @@
   border-radius: 16px;
   border: 1px solid var(--border);
   overflow: hidden;
-  position: sticky;
-  top: 90px;
+  // position: sticky;
+  // top: 90px;
 }
 
 .profile-avatar {
@@ -30,16 +34,20 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     margin: 0 auto 1rem;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid rgba(255,255,255,0.4);
+    border: 3px solid rgba(255, 255, 255, 0.4);
   }
 
-  #{&}__img { width: 100%; height: 100%; object-fit: cover; }
+  #{&}__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   #{&}__initials {
     font-size: 1.8rem;
@@ -53,7 +61,12 @@
     margin: 0 0 4px;
   }
 
-  #{&}__phone { font-size: 0.875rem; opacity: 0.85; margin: 0; direction: ltr; }
+  #{&}__phone {
+    font-size: 0.875rem;
+    opacity: 0.85;
+    margin: 0;
+    direction: ltr;
+  }
 }
 
 .profile-nav {
@@ -76,10 +89,41 @@
     transition: background 0.2s, color 0.2s;
     font-family: inherit;
 
-    i { font-size: 1.1rem; color: var(--text-light); }
-    &:hover { background: var(--primary-light); color: var(--primary); i { color: var(--primary); } }
-    &.active { background: var(--primary-light); color: var(--primary); font-weight: 600; i { color: var(--primary); } }
-    #{&}--danger { color: var(--danger); i { color: var(--danger); } &:hover { background: #fef2f2; } }
+    i {
+      font-size: 1.1rem;
+      color: var(--text-light);
+    }
+
+    &:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+
+      i {
+        color: var(--primary);
+      }
+    }
+
+    &.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+
+      i {
+        color: var(--primary);
+      }
+    }
+
+    #{&}--danger {
+      color: var(--danger);
+
+      i {
+        color: var(--danger);
+      }
+
+      &:hover {
+        background: #fef2f2;
+      }
+    }
   }
 }
 

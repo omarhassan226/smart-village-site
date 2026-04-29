@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Product, ProductFilter, ProductListResponse } from '../models';
 import { LanguageService } from './language.service';
@@ -10,7 +10,7 @@ export class ProductService {
   private base = environment.apiUrl;
   private storageBase = 'https://smartvillageapp.com/app';
 
-  constructor(private http: HttpClient, private lang: LanguageService) {}
+  constructor(private http: HttpClient, private lang: LanguageService) { }
 
   /**
    * GET /api/search/product/{lang}
@@ -18,17 +18,17 @@ export class ProductService {
    */
   searchProducts(filter: ProductFilter = {}): Observable<ProductListResponse> {
     let params = new HttpParams()
-      .set('is_paginated', '1')
-      .set('filter_main', '1')
+      .set('brand_id', String(filter.brand_id || ''))
+      .set('name', filter.key_word || filter.name || '')
       .set('priceFrom', String(filter.priceFrom ?? 0))
-      .set('priceTo', String(filter.priceTo ?? 1000000));
-
-    if (filter.category_id) params = params.set('category_id', String(filter.category_id));
-    if (filter.brand_id) params = params.set('brand_id', String(filter.brand_id));
-    if (filter.key_word) params = params.set('key_word', String(filter.key_word));
-    if (filter.name) params = params.set('name', filter.name);
-    if (filter.status) params = params.set('status', filter.status);
-    if (filter.page) params = params.set('page', String(filter.page));
+      .set('priceTo', String(filter.priceTo ?? 1000000))
+      .set('category_id', String(filter.category_id || ''))
+      .set('banner', '')
+      .set('filter_main', '1')
+      .set('status', filter.status || '')
+      .set('key_word', String(filter.key_word || ''))
+      .set('is_paginated', '1')
+      .set('page', String(filter.page || 1));
 
     return this.http
       .get<{ products: any }>(`${this.base}/search/product/${this.lang.current}`, { params })
@@ -66,7 +66,9 @@ export class ProductService {
   }
 
   getProduct(id: number): Observable<{ data: Product }> {
-    return this.http.get<{ data: Product }>(`${this.base}/products/${id}`);
+    return this.http
+      .get<any>(`${this.base}/single/product/${this.lang.current}?product_id=${id}`)
+      .pipe(map((res) => ({ data: this.mapProduct(res.product || res) })));
   }
 
   /** GET /api/paginate/choice/{lang} – "We Chose For You" */
@@ -126,7 +128,8 @@ export class ProductService {
   }
 
   getSimilar(productId: number): Observable<ProductListResponse> {
-    return this.http.get<ProductListResponse>(`${this.base}/products/${productId}/similar`);
+    // Current API doesn't support similar products yet
+    return of({ data: [], total: 0, per_page: 20, current_page: 1, last_page: 1 });
   }
 
   search(keyword: string, page = 1): Observable<ProductListResponse> {
@@ -148,13 +151,38 @@ export class ProductService {
       imageUrl = p.image.startsWith('http') ? p.image : `${this.storageBase}/${p.image}`;
     }
 
+    // Map options to colors and types
+    const colors: any[] = [];
+    const types: any[] = [];
+    if (p.options && Array.isArray(p.options)) {
+      p.options.forEach((opt: any) => {
+        const values = opt.values || [];
+        if (opt.type === 'Color' || opt.label_en?.toLowerCase() === 'color' || opt.label_ar === 'اللون') {
+          values.forEach((v: any) => colors.push({
+            id: v.id,
+            name: this.lang.current === 'ar' ? v.name_ar : v.name_en,
+            hex: v.display_value || '#ccc'
+          }));
+        } else {
+          values.forEach((v: any) => types.push({
+            id: v.id,
+            name: this.lang.current === 'ar' ? v.name_ar : v.name_en,
+            extra_price: 0 // API doesn't specify extra price here
+          }));
+        }
+      });
+    }
+
     return {
       ...p,
       image: imageUrl,
       name: p[`name_${this.lang.current}`] || p.name_en || p.name_ar || p.name || '',
+      description: p[`content_${this.lang.current}`] || p.content_en || p.content_ar || p.description || '',
       price: p.discount_price && p.discount_price > 0 ? p.discount_price : p.price,
       original_price: p.discount_price && p.discount_price > 0 && p.discount_price < p.price ? p.price : undefined,
       in_stock: p.stock !== undefined ? p.stock > 0 : true,
+      colors: colors.length > 0 ? colors : p.colors,
+      types: types.length > 0 ? types : p.types,
       discount_percentage:
         p.discount_price && p.discount_price > 0 && p.price > p.discount_price
           ? Math.round(((p.price - p.discount_price) / p.price) * 100)

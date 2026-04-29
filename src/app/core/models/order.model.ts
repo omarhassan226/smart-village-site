@@ -31,6 +31,12 @@ export interface OrderRequest {
   address_id: number;
   payment_method: PaymentMethod;
   notes?: string;
+  items: Array<{
+    product_id: number;
+    quantity: number;
+    color_id?: number;
+    type_id?: number;
+  }>;
 }
 
 export interface ReturnOrderRequest {

@@ -6,19 +6,10 @@
 <div class="products-page">
   <div class="container products-page__inner">
     <!-- Sidebar -->
-    <app-filter-sidebar
-      class="products-page__sidebar"
-      [class.open]="filterOpen"
-      [categories]="categories"
-      [brands]="brands"
-      [keywords]="keywords"
-      [filter]="filter"
-      (categorySelect)="onCategorySelect($event)"
-      (brandSelect)="onBrandSelect($event)"
-      (keywordSelect)="onKeywordSelect($event)"
-      (priceFilter)="onPriceFilter($event[0], $event[1])"
-      (close)="filterOpen = false"
-    ></app-filter-sidebar>
+    <app-filter-sidebar class="products-page__sidebar" [class.open]="filterOpen" [categories]="categories"
+      [brands]="brands" [keywords]="keywords" [filter]="filter" (categorySelect)="onCategorySelect($event)"
+      (brandSelect)="onBrandSelect($event)" (keywordSelect)="onKeywordSelect($event)"
+      (priceFilter)="onPriceFilter($event[0], $event[1])" (close)="filterOpen = false"></app-filter-sidebar>
 
     <!-- Main -->
     <div class="products-page__main">
@@ -37,10 +28,17 @@
         </div>
 
         <div class="products-toolbar__right">
+          <!-- Inline Search -->
+          <div class="products-toolbar__search">
+            <i class="uil uil-search"></i>
+            <input dir="ltr" type="text" [placeholder]="'SEARCH_PRODUCTS' | translate" [(ngModel)]="filter.key_word"
+              (keyup.enter)="updateQueryParam('key_word', filter.key_word || null)" />
+          </div>
+
           <!-- Clear Filters -->
           <button class="products-toolbar__clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
             <i class="uil uil-times-circle"></i>
-            {{ lang.current === 'ar' ? 'مسح الفلتر' : 'Clear' }}
+            {{ 'CLEAR' | translate }}
           </button>
 
           <select class="toolbar-select" (change)="onSortChange($any($event.target).value)">
@@ -70,19 +68,12 @@
       </div>
 
       <!-- Empty -->
-      <app-empty-state
-        *ngIf="!loading && products.length === 0"
-        icon="uil uil-box"
-        [title]="'NO_PRODUCTS' | translate"
-      ></app-empty-state>
+      <app-empty-state *ngIf="!loading && products.length === 0" icon="uil uil-box"
+        [title]="'NO_PRODUCTS' | translate"></app-empty-state>
 
       <!-- Pagination -->
-      <app-pagination
-        *ngIf="lastPage > 1"
-        [currentPage]="currentPage"
-        [lastPage]="lastPage"
-        (pageChange)="onPageChange($event)"
-      ></app-pagination>
+      <app-pagination *ngIf="lastPage > 1" [currentPage]="currentPage" [lastPage]="lastPage"
+        (pageChange)="onPageChange($event)"></app-pagination>
     </div>
   </div>
 </div>

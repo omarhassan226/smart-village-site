@@ -89,7 +89,7 @@ export interface ProductFilter {
   priceFrom?: number;
   priceTo?: number;
   status?: 'asc' | 'desc';
-  key_word?: number | string;
+  key_word?: string;
   page?: number;
   most_selling?: string;
 }

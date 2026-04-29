@@ -8,52 +8,80 @@ import { Component, Input } from '@angular/core';
   selector: 'app-empty-state',
   template: `
     <div class="empty-state">
-      <div class="empty-state__icon">
-        <i [class]="icon"></i>
+      <div class="empty-state__icon-wrap">
+        <div class="empty-state__icon-bg"></div>
+        <i [class]="icon" class="empty-state__icon"></i>
       </div>
       <h3 class="empty-state__title">{{ title }}</h3>
       <p class="empty-state__desc" *ngIf="description">{{ description }}</p>
-      <ng-content></ng-content>
+      <div class="empty-state__actions">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
   styles: [`
     .empty-state {
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 4rem 1.5rem;
+      max-width: 400px;
+      margin: 0 auto;
     }
 
-    .empty-state__icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: var(--primary-light);
+    .empty-state__icon-wrap {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.25rem;
-      color: var(--primary);
     }
 
-    .empty-state__icon i { 
-      font-size: 2.2rem; 
+    .empty-state__icon-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--primary);
+      opacity: 0.1;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .empty-state__icon {
+      font-size: 2.8rem;
+      color: var(--primary);
+      position: relative;
+      z-index: 1;
     }
 
     .empty-state__title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
     }
 
     .empty-state__desc {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .empty-state__actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.1; }
+      50% { transform: scale(1.05); opacity: 0.15; }
+      100% { transform: scale(0.95); opacity: 0.1; }
     }
   `],
 })
 export class EmptyStateComponent {
-  @Input() icon = 'icon-inbox';
+  @Input() icon = 'uil uil-inbox';
   @Input() title = '';
   @Input() description = '';
 }

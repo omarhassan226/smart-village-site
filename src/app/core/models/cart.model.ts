@@ -1,7 +1,7 @@
 import { Product } from './product.model';
 
 export interface CartItem {
-  id?: number;
+  id: number;           // client-side unique id (Date.now())
   product_id: number;
   product?: Product;
   quantity: number;

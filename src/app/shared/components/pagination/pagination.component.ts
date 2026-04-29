@@ -2,6 +2,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   standalone: true,
@@ -16,6 +17,8 @@ export class PaginationComponent implements OnChanges {
   @Output() pageChange = new EventEmitter<number>();
 
   pages: (number | '...')[] = [];
+
+  constructor(public lang: LanguageService) {}
 
   ngOnChanges(): void {
     this.buildPages();

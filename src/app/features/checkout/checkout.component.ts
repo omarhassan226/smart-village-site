@@ -39,13 +39,12 @@ export class CheckoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.cartService.load().subscribe({
-      next: (res) => {
-        this.cart = res.data;
-        if (this.cart.items.length === 0) this.router.navigate(['/cart']);
-        this.loading = false;
-      },
-      error: () => { this.loading = false; this.router.navigate(['/cart']); },
+    this.cartService.cart$.subscribe((cart) => {
+      this.cart = cart;
+      if (this.cart.items.length === 0 && !this.placing) {
+        this.router.navigate(['/cart']);
+      }
+      this.loading = false;
     });
     this.loadAddresses();
   }
@@ -77,9 +76,11 @@ export class CheckoutComponent implements OnInit {
       address_id: this.selectedAddressId,
       payment_method: this.paymentMethod,
       notes: this.notes,
+      items: this.cartService.buildOrderPayload()
     }).subscribe({
       next: () => {
         this.placing = false;
+        this.cartService.clear();
         this.notify.success(this.translate.instant('SUCCESS'));
         this.router.navigate(['/profile/orders']);
       },

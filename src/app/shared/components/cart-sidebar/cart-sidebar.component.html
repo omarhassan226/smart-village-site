@@ -1,0 +1,112 @@
+<div class="cart-sidebar-overlay" [class.active]="isOpen" (click)="close()"></div>
+
+<div class="cart-sidebar" [class.open]="isOpen" [dir]="lang.current === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Header -->
+  <div class="cart-sidebar__header">
+    <div class="cart-sidebar__title-wrap">
+      <i class="uil uil-shopping-cart"></i>
+      <h2 class="cart-sidebar__title">{{ 'CART' | translate }}</h2>
+      <span class="cart-sidebar__count" *ngIf="cart.items_count > 0">{{ cart.items_count }}</span>
+    </div>
+    <button class="cart-sidebar__close" (click)="close()">
+      <i class="uil uil-times"></i>
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="cart-sidebar__empty" *ngIf="cart.items.length === 0">
+    <div class="cart-sidebar__empty-icon">
+      <i class="uil uil-shopping-cart"></i>
+    </div>
+    <p class="cart-sidebar__empty-title">{{ 'CART_EMPTY_TITLE' | translate }}</p>
+    <p class="cart-sidebar__empty-desc">{{ 'CART_EMPTY_DESC' | translate }}</p>
+    <a routerLink="/products" class="btn btn-primary btn-block" (click)="close()">
+      {{ 'CONTINUE_SHOPPING' | translate }}
+    </a>
+  </div>
+
+  <!-- Items List -->
+  <div class="cart-sidebar__items" *ngIf="cart.items.length > 0">
+    <div class="cart-sidebar__item" *ngFor="let item of cart.items; trackBy: trackById">
+      <!-- Image -->
+      <div class="cart-sidebar__item-img-wrap">
+        <a [routerLink]="['/products', item.product_id]" (click)="close()">
+          <img
+            class="cart-sidebar__item-img"
+            [src]="getProductImage(item)"
+            [alt]="getProductName(item)"
+            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
+          />
+        </a>
+      </div>
+
+      <!-- Info -->
+      <div class="cart-sidebar__item-info">
+        <a
+          class="cart-sidebar__item-name"
+          [routerLink]="['/products', item.product_id]"
+          (click)="close()"
+        >{{ getProductName(item) }}</a>
+
+        <div class="cart-sidebar__item-meta" *ngIf="item.color_name">
+          <span class="cart-sidebar__item-meta-label">{{ 'COLOR' | translate }}:</span>
+          {{ item.color_name }}
+        </div>
+        <div class="cart-sidebar__item-meta" *ngIf="item.type_name">
+          <span class="cart-sidebar__item-meta-label">{{ 'TYPE' | translate }}:</span>
+          {{ item.type_name }}
+        </div>
+
+        <div class="cart-sidebar__item-bottom">
+          <!-- Qty controls -->
+          <div class="cart-sidebar__qty">
+            <button class="cart-sidebar__qty-btn" (click)="decreaseQty(item)" [disabled]="item.quantity <= 1">
+              <i class="uil uil-minus"></i>
+            </button>
+            <span class="cart-sidebar__qty-val">{{ item.quantity }}</span>
+            <button class="cart-sidebar__qty-btn" (click)="increaseQty(item)">
+              <i class="uil uil-plus"></i>
+            </button>
+          </div>
+
+          <!-- Price -->
+          <span class="cart-sidebar__item-price">
+            {{ (item.price * item.quantity) }}
+            <small>{{ 'OMR' | translate }}</small>
+          </span>
+        </div>
+      </div>
+
+      <!-- Remove -->
+      <button class="cart-sidebar__item-remove" (click)="remove(item)" [title]="'REMOVE' | translate">
+        <i class="uil uil-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer Summary -->
+  <div class="cart-sidebar__footer" *ngIf="cart.items.length > 0">
+    <!-- Subtotal -->
+    <div class="cart-sidebar__subtotal">
+      <span>{{ 'SUBTOTAL' | translate }}</span>
+      <span class="cart-sidebar__subtotal-price">
+        {{ cart.total }} {{ 'OMR' | translate }}
+      </span>
+    </div>
+
+    <p class="cart-sidebar__shipping-note">
+      <i class="uil uil-truck"></i>
+      {{ 'SHIPPING_CALCULATED_CHECKOUT' | translate }}
+    </p>
+
+    <!-- Actions -->
+    <a routerLink="/cart" class="btn btn-outline btn-block cart-sidebar__view-btn" (click)="close()">
+      <i class="uil uil-eye"></i>
+      {{ 'VIEW_CART' | translate }}
+    </a>
+    <a routerLink="/checkout" class="btn btn-primary btn-block" (click)="close()">
+      <i class="uil uil-credit-card"></i>
+      {{ 'PROCEED_TO_CHECKOUT' | translate }}
+    </a>
+  </div>
+</div>

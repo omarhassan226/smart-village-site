@@ -42,7 +42,7 @@ export class CategoryService {
    */
   getCategoryKeywords(categoryId: number): Observable<string[]> {
     return this.http
-      .get<any[]>(`${this.base}/category/keywords/${this.lang.current}?category_id=${categoryId}`)
+      .post<any[]>(`${this.base}/category/keywords/${this.lang.current}?category_id=${categoryId}`, {})
       .pipe(
         map((res) => {
           if (Array.isArray(res)) {

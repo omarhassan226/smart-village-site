@@ -23,16 +23,19 @@
     &:hover:not(:disabled):not(.pagination__btn--active) {
       border-color: var(--primary);
       color: var(--primary);
+      background: var(--primary-light);
     }
 
-    #{&}--active {
+    &--active {
       background: var(--primary);
       border-color: var(--primary);
       color: #fff;
       font-weight: 700;
+      box-shadow: 0 4px 12px rgba(43, 188, 191, 0.35);
+      transform: translateY(-1px);
     }
 
-    #{&}--ellipsis { cursor: default; border-color: transparent; }
+    &--ellipsis { cursor: default; border-color: transparent; background: transparent; }
 
     &:disabled { opacity: 0.4; cursor: not-allowed; }
   }

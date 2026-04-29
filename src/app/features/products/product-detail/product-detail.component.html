@@ -4,7 +4,7 @@
   { label: name }
 ]"></app-breadcrumb>
 
-<!-- Loading -->
+<!-- Loading Skeleton -->
 <div class="container detail-skeleton" *ngIf="loading">
   <div class="skeleton detail-skeleton__gallery"></div>
   <div class="detail-skeleton__info">
@@ -16,49 +16,96 @@
 
 <!-- Product Detail -->
 <div class="container product-detail" *ngIf="!loading && product">
-  <!-- Gallery -->
+
+  <!-- ═══════════════════ GALLERY ═══════════════════ -->
   <div class="detail-gallery">
-    <div class="detail-gallery__thumbnails">
+
+    <!-- Thumbnails Column -->
+    <div class="detail-gallery__thumbs-col">
       <button
         class="detail-gallery__thumb"
-        *ngFor="let img of allImages"
+        *ngFor="let img of allImages; let i = index"
         [class.active]="img === selectedImage"
         (click)="selectImage(img)"
       >
-        <img [src]="img" [alt]="name" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
+        <img
+          [src]="img"
+          [alt]="name"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
+        />
+        <span class="detail-gallery__thumb-border"></span>
       </button>
     </div>
 
-    <div class="detail-gallery__main">
+    <!-- Main Image -->
+    <div class="detail-gallery__main-wrap">
+      <!-- Badges -->
       <div class="detail-gallery__badges">
         <span class="badge badge--new" *ngIf="product.is_new">{{ 'NEW' | translate }}</span>
         <span class="badge badge--sale" *ngIf="discount > 0">-{{ discount }}%</span>
       </div>
+
+      <!-- Wishlist btn -->
       <button
-        class="detail-gallery__wishlist"
+        class="detail-gallery__wishlist-btn"
         (click)="toggleWishlist()"
         [class.active]="isWishlisted"
       >
-        <i [class]="isWishlisted ? 'uil uil-heart' : 'uil uil-heart'"></i>
-        {{ (isWishlisted ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST') | translate }}
+        <i class="uil" [class.uil-heart]="isWishlisted" [class.uil-heart-alt]="!isWishlisted"></i>
       </button>
-      <img
-        [src]="selectedImage"
-        [alt]="name"
-        class="detail-gallery__img"
-        onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-      />
+
+      <!-- Main image with zoom -->
+      <div
+        class="detail-gallery__img-zone"
+        (mousemove)="onImgMouseMove($event)"
+        (mouseleave)="onImgMouseLeave()"
+      >
+        <img
+          class="detail-gallery__img"
+          [src]="selectedImage"
+          [alt]="name"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
+        />
+
+        <!-- Zoom lens -->
+        <div
+          class="detail-gallery__zoom-lens"
+          [style.display]="zoomVisible ? 'block' : 'none'"
+          [style.left.px]="zoomX"
+          [style.top.px]="zoomY"
+        ></div>
+
+        <!-- Zoom result panel -->
+        <div
+          class="detail-gallery__zoom-result"
+          [style.display]="zoomVisible ? 'block' : 'none'"
+          [style.background-image]="'url(' + selectedImage + ')'"
+          [style.background-position]="zoomBgPos"
+        ></div>
+      </div>
+
+      <!-- Slider nav (when multiple images) -->
+      <div class="detail-gallery__slider-nav" *ngIf="allImages.length > 1">
+        <button class="detail-gallery__nav-btn" (click)="prevSlide()" [disabled]="currentSlide === 0">
+          <i class="uil uil-angle-left-b"></i>
+        </button>
+        <span class="detail-gallery__slide-counter">{{ currentSlide + 1 }} / {{ allImages.length }}</span>
+        <button class="detail-gallery__nav-btn" (click)="nextSlide()" [disabled]="currentSlide === allImages.length - 1">
+          <i class="uil uil-angle-right-b"></i>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Info -->
+  <!-- ═══════════════════ INFO ═══════════════════ -->
   <div class="detail-info">
+    <!-- Name -->
     <h1 class="detail-info__name">{{ name }}</h1>
 
     <!-- Rating -->
     <div class="detail-info__rating" *ngIf="product.rating">
       <span class="star" *ngFor="let s of [1,2,3,4,5]">
-        <i [class]="s <= (product.rating || 0) ? 'uil uil-star' : 'uil uil-star'"></i>
+        <i class="uil uil-star" [class.star--filled]="s <= (product.rating || 0)"></i>
       </span>
       <span class="detail-info__reviews">({{ product.reviews_count }})</span>
     </div>
@@ -66,18 +113,22 @@
     <!-- Price -->
     <div class="detail-info__price">
       <span class="detail-info__price-current">
-        {{ currentPrice | number:'1.3-3' }}
+        {{ currentPrice }}
         <span class="detail-info__currency">{{ 'OMR' | translate }}</span>
       </span>
       <span class="detail-info__price-old" *ngIf="product.original_price && product.original_price > product.price">
-        {{ product.original_price | number:'1.3-3' }} {{ 'OMR' | translate }}
+        {{ product.original_price }} {{ 'OMR' | translate }}
       </span>
+      <span class="badge badge--sale" *ngIf="discount > 0">{{ 'SAVE' | translate }} {{ discount }}%</span>
     </div>
 
     <!-- Stock -->
     <div class="detail-info__stock" [class.out]="!product.in_stock">
       <i [class]="product.in_stock ? 'uil uil-check-circle' : 'uil uil-times-circle'"></i>
       {{ (product.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK') | translate }}
+      <span *ngIf="product.stock && product.in_stock" class="detail-info__stock-qty">
+        ({{ product.stock }} {{ 'AVAILABLE' | translate }})
+      </span>
     </div>
 
     <!-- Color -->
@@ -118,10 +169,16 @@
     <div class="detail-info__option">
       <label class="detail-info__option-label">{{ 'QUANTITY' | translate }}</label>
       <div class="qty-control">
-        <button class="qty-control__btn" (click)="decrement()">−</button>
+        <button class="qty-control__btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
         <span class="qty-control__val">{{ quantity }}</span>
         <button class="qty-control__btn" (click)="increment()">+</button>
       </div>
+    </div>
+
+    <!-- Total price display -->
+    <div class="detail-info__total" *ngIf="quantity > 1">
+      {{ 'TOTAL' | translate }}:
+      <strong>{{ (currentPrice * quantity) }} {{ 'OMR' | translate }}</strong>
     </div>
 
     <!-- Actions -->
@@ -136,13 +193,26 @@
         {{ 'ADD_TO_CART' | translate }}
       </button>
 
-      <button
-        class="btn btn-outline"
-        (click)="shippingModalOpen = true"
-      >
+      <button class="btn btn-outline" (click)="shippingModalOpen = true">
         <i class="uil uil-truck"></i>
         {{ 'SHIPPING_DELIVERY' | translate }}
       </button>
+    </div>
+
+    <!-- Info chips -->
+    <div class="detail-info__chips" *ngIf="product.seller || product.salesman || product.unit">
+      <span class="detail-info__chip" *ngIf="product.salesman">
+        <i class="uil uil-store"></i>
+        {{ product.salesman.name }}
+      </span>
+      <span class="detail-info__chip" *ngIf="product.unit">
+        <i class="uil uil-package"></i>
+        {{ lang.current === 'ar' ? product.unit.unit_ar : product.unit.unit_en }}
+      </span>
+      <span class="detail-info__chip" *ngIf="product.secure">
+        <i class="uil uil-shield-check"></i>
+        {{ lang.current === 'ar' ? product.secure.duration_ar : product.secure.duration_en }}
+      </span>
     </div>
 
     <!-- Tabs -->
@@ -161,12 +231,11 @@
 
     <div class="detail-tabs__content">
       <div *ngIf="activeTab === 'details'">
-        <p class="detail-info__desc" *ngIf="description">{{ description }}</p>
-        <p class="detail-info__no-desc" *ngIf="!description">{{ 'DETAILS' | translate }}</p>
+        <p class="detail-info__desc" *ngIf="description" [innerHTML]="description"></p>
+        <p class="detail-info__no-desc" *ngIf="!description">{{ 'NO_DESCRIPTION' | translate }}</p>
       </div>
       <div *ngIf="activeTab === 'shipping'">
         <p>{{ 'SHIPPING_POLICY' | translate }}</p>
-        <a routerLink="/auth/login" class="link" *ngIf="false">{{ 'LOGIN_TO_CALCULATE' | translate }}</a>
       </div>
     </div>
   </div>

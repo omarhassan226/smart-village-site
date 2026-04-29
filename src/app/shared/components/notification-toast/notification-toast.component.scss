@@ -19,37 +19,73 @@
   animation: slide-in-ltr 0.3s ease-out;
   color: #fff;
   font-size: 0.875rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 
   :host-context([dir="rtl"]) & {
     animation: slide-in-rtl 0.3s ease-out;
   }
 
-  #{&}--success { background: var(--success); }
-  #{&}--error   { background: var(--danger); }
-  #{&}--info    { background: var(--primary); }
-  #{&}--warning { background: var(--warning); }
+  #{&}--success {
+    background: #27ae60;
+  }
 
-  #{&}__icon { font-size: 1.2rem; flex-shrink: 0; }
-  #{&}__msg  { flex: 1; line-height: 1.4; }
+  #{&}--error {
+    background: #e74c3c;
+  }
+
+  #{&}--info {
+    background: #3498db;
+  }
+
+  #{&}--warning {
+    background: #f39c12;
+  }
+
+  #{&}__icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  #{&}__msg {
+    flex: 1;
+    line-height: 1.4;
+  }
 
   #{&}__close {
     background: none;
     border: none;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     font-size: 1rem;
     padding: 0;
     flex-shrink: 0;
-    &:hover { color: #fff; }
+
+    &:hover {
+      color: #fff;
+    }
   }
 }
 
 @keyframes slide-in-ltr {
-  from { opacity: 0; transform: translateX(40px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slide-in-rtl {
-  from { opacity: 0; transform: translateX(-40px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

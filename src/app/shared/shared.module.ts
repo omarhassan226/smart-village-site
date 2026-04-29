@@ -12,6 +12,8 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { NotificationToastComponent } from './components/notification-toast/notification-toast.component';
+import { CartSidebarComponent } from './components/cart-sidebar/cart-sidebar.component';
+import { QuickViewComponent } from './components/quick-view/quick-view.component';
 
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { LocalNamePipe } from './pipes/local-name.pipe';
@@ -25,15 +27,16 @@ const COMPONENTS = [
   PaginationComponent,
   BreadcrumbComponent,
   NotificationToastComponent,
-  TranslateModule
+  CartSidebarComponent,
+  QuickViewComponent,
+  TranslateModule,
 ];
 
 
 const PIPES = [TruncatePipe, LocalNamePipe];
 
 @NgModule({
-  declarations: [
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     RouterModule,
@@ -52,4 +55,4 @@ const PIPES = [TruncatePipe, LocalNamePipe];
     ...PIPES,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

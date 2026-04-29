@@ -76,6 +76,16 @@
 
       <!-- Search Bar -->
       <div class="header__search">
+        <div class="header__search-cat">
+          <select [(ngModel)]="searchCategoryId" class="header__search-select">
+            <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">
+              {{ getCategoryName(cat) }}
+            </option>
+          </select>
+          <i class="uil uil-angle-down header__search-cat-icon"></i>
+        </div>
+        <div class="header__search-divider"></div>
         <input type="text" class="header__search-input" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
           [(ngModel)]="searchQuery" (keyup.enter)="search()" />
         <button class="header__search-btn" (click)="search()">
@@ -90,18 +100,20 @@
           <i class="uil uil-globe"></i>
         </button>
 
-        <!-- Wishlist (show always when logged in, or as action) -->
-        <a routerLink="/wishlist" class="header__action" *ngIf="isLoggedIn">
+        <!-- Wishlist -->
+        <a routerLink="/wishlist" class="header__action header__action--wishlist">
           <i class="uil uil-heart"></i>
+          <span class="header__action-badge header__action-badge--wish" *ngIf="wishlistCount > 0">{{ wishlistCount
+            }}</span>
           <span class="header__action-label">{{ 'WISHLIST' | translate }}</span>
         </a>
 
-        <!-- Cart -->
-        <a routerLink="/cart" class="header__action header__action--cart">
+        <!-- Cart: opens sidebar -->
+        <button type="button" class="header__action header__action--cart" (click)="openCart($event)">
           <i class="uil uil-shopping-cart"></i>
           <span class="header__action-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
           <span class="header__action-label">{{ 'CART' | translate }}</span>
-        </a>
+        </button>
 
         <!-- Auth: Login/Register (when NOT logged in, desktop) -->
         <div class="header__auth-desktop" *ngIf="!isLoggedIn">
@@ -161,7 +173,7 @@
 
   <!-- Navigation -->
   <nav class="header__nav d-none d-lg-block">
-    <div class="container">
+    <div class="container" style="overflow-x: scroll;">
       <ul class="nav__list">
         <li class="nav__item">
           <a routerLink="/" class="nav__link" routerLinkActive="nav__link--active"
@@ -176,9 +188,10 @@
             {{ getCategoryName(cat) }}
             <i class="uil uil-angle-down" *ngIf="(cat.sub_categories || cat.categories)?.length"></i>
           </a>
-          <div class="nav__dropdown" *ngIf="(cat.sub_categories || cat.categories)?.length && activeDropdown === cat.id">
-            <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || cat.categories || [])" [routerLink]="['/products']"
-              [queryParams]="{ category_id: sub.id }">
+          <div class="nav__dropdown"
+            *ngIf="(cat.sub_categories || cat.categories)?.length && activeDropdown === cat.id">
+            <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || cat.categories || [])"
+              [routerLink]="['/products']" [queryParams]="{ category_id: sub.id }">
               {{ getCategoryName(sub) }}
             </a>
           </div>
@@ -233,9 +246,19 @@
       <!-- Mobile Search -->
       <div class="mobile-menu__search">
         <div class="mobile-menu__search-wrap">
-          <i class="uil uil-search mobile-menu__search-icon"></i>
-          <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
-            (keyup.enter)="search(); toggleMobileMenu()" class="mobile-menu__search-input" />
+          <div class="mobile-menu__search-row">
+            <select [(ngModel)]="searchCategoryId" class="mobile-menu__search-select">
+              <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">
+                {{ getCategoryName(cat) }}
+              </option>
+            </select>
+            <input type="text" [(ngModel)]="searchQuery" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+              (keyup.enter)="search()" class="mobile-menu__search-input" />
+            <button class="mobile-menu__search-btn" (click)="search()">
+              <i class="uil uil-search"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -266,8 +289,8 @@
         </ul>
       </div>
 
-      <!-- Mobile Quick Actions (when logged in) -->
-      <div class="mobile-menu__section" *ngIf="isLoggedIn">
+      <!-- Mobile Quick Actions -->
+      <div class="mobile-menu__section">
         <span class="mobile-menu__section-title">{{ 'QUICK_ACTIONS' | translate }}</span>
         <ul class="mobile-menu__list">
           <li>
@@ -277,11 +300,11 @@
             </a>
           </li>
           <li>
-            <a routerLink="/cart" class="mobile-menu__link" (click)="toggleMobileMenu()">
+            <button class="mobile-menu__link" (click)="cart.openSidebar(); toggleMobileMenu()">
               <i class="uil uil-shopping-cart"></i>
               {{ 'CART' | translate }}
               <span class="mobile-menu__badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
-            </a>
+            </button>
           </li>
           <li>
             <a routerLink="/profile" class="mobile-menu__link" (click)="toggleMobileMenu()">

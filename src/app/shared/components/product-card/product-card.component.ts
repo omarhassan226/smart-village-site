@@ -11,10 +11,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { QuickViewComponent } from '../quick-view/quick-view.component';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, TruncatePipe, RouterModule, TranslateModule],
+  imports: [CommonModule, TruncatePipe, RouterModule, TranslateModule, QuickViewComponent],
   selector: 'app-product-card',
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.scss'],
@@ -25,6 +26,7 @@ export class ProductCardComponent {
   @Output() wishlistToggled = new EventEmitter<Product>();
 
   addingToCart = false;
+  quickViewOpen = false;
 
   constructor(
     public wishlist: WishlistService,
@@ -52,7 +54,7 @@ export class ProductCardComponent {
   }
 
   get isWishlisted(): boolean {
-    return this.wishlist.isInWishlist(this.product.id);
+    return this.wishlist.isInWishlist(Number(this.product.id));
   }
 
   navigate(): void {
@@ -61,31 +63,21 @@ export class ProductCardComponent {
 
   addToCart(e: Event): void {
     e.stopPropagation();
-    // if (!this.auth.isLoggedIn) {
-    //   this.router.navigate(['/auth/login']);
-    //   return;
-    // }
     this.addingToCart = true;
-    this.cart.add({ product_id: this.product.id, quantity: 1 }).subscribe({
-      next: () => {
-        this.addingToCart = false;
-        this.notify.success(this.translate.instant('ADDED_TO_CART'));
-      },
-      error: () => {
-        this.addingToCart = false;
-        this.notify.error(this.translate.instant('ERROR'));
-      },
-    });
+    this.cart.addProduct(this.product, 1);
+    this.addingToCart = false;
+    this.notify.success(this.translate.instant('ADDED_TO_CART'));
+  }
+
+  openQuickView(e: Event): void {
+    e.stopPropagation();
+    this.quickViewOpen = true;
   }
 
   toggleWishlist(e: Event): void {
     e.stopPropagation();
-    if (!this.auth.isLoggedIn) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
     const was = this.isWishlisted;
-    this.wishlist.toggle(this.product.id).subscribe({
+    this.wishlist.toggle(this.product.id, this.product).subscribe({
       next: () => {
         const key = was ? 'REMOVED_FROM_WISHLIST' : 'ADDED_TO_WISHLIST';
         this.notify.success(this.translate.instant(key));

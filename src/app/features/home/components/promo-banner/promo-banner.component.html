@@ -7,8 +7,7 @@
 
     <!-- Product Banner Cards -->
     <div class="promo__grid" *ngIf="!loading">
-      <a class="promo__card" *ngFor="let product of products; let i = index"
-        [routerLink]="['/products', product.id]"
+      <a class="promo__card" *ngFor="let product of products; let i = index" [routerLink]="['/products', product.id]"
         [ngClass]="'promo__card--theme-' + (i % 3)">
 
         <!-- Text Content -->
@@ -20,11 +19,11 @@
           <h3 class="promo__title">{{ getProductName(product) | truncate:60 }}</h3>
           <div class="promo__price-row">
             <span class="promo__price" *ngIf="product.discount_price && product.discount_price > 0">
-              {{ product.discount_price | number:'1.3-3' }}
+              {{ product.discount_price }}
               <small>{{ 'OMR' | translate }}</small>
             </span>
             <span class="promo__price-old" *ngIf="product.discount_price && product.discount_price < product.price">
-              {{ product.price | number:'1.3-3' }}
+              {{ product.price }}
             </span>
           </div>
           <span class="promo__cta">
@@ -35,8 +34,8 @@
 
         <!-- Image -->
         <div class="promo__img-wrap">
-          <img [src]="getProductImage(product)" [alt]="getProductName(product)"
-            class="promo__img" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" loading="lazy" />
+          <img [src]="getProductImage(product)" [alt]="getProductName(product)" class="promo__img"
+            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" loading="lazy" />
         </div>
       </a>
     </div>

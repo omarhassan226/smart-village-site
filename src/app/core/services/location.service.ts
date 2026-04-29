@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Governorate, City, Village, Address, AddressRequest } from '../models';
 
@@ -8,18 +8,24 @@ import { Governorate, City, Village, Address, AddressRequest } from '../models';
 export class LocationService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getGovernorates(lang: string = 'en'): Observable<{ governorates: any[] }> {
-    return this.http.get<{ governorates: any[] }>(`${this.base}/get/governorates/${lang}`);
+  getGovernorates(lang: string = 'en'): Observable<{ data: Governorate[] }> {
+    return this.http
+      .get<{ governorates: Governorate[] }>(`${this.base}/get/governorates/${lang}`)
+      .pipe(map((res: { governorates: Governorate[] }) => ({ data: res.governorates || [] })));
   }
 
-  getCities(stateId: number): Observable<{ cities: any[] }> {
-    return this.http.get<{ cities: any[] }>(`${this.base}/get/state/city?state_id=${stateId}`);
+  getCities(stateId: number): Observable<{ data: City[] }> {
+    return this.http
+      .get<{ cities: City[] }>(`${this.base}/get/state/city?state_id=${stateId}`)
+      .pipe(map((res: { cities: City[] }) => ({ data: res.cities || [] })));
   }
 
-  getVillages(cityId: number): Observable<{ villages: any[] }> {
-    return this.http.get<{ villages: any[] }>(`${this.base}/get/city/village?city_id=${cityId}`);
+  getVillages(cityId: number): Observable<{ data: Village[] }> {
+    return this.http
+      .get<{ villages: Village[] }>(`${this.base}/get/city/village?city_id=${cityId}`)
+      .pipe(map((res: { villages: Village[] }) => ({ data: res.villages || [] })));
   }
 
   getShippingCost(villageId: number): Observable<{ cost: number }> {
@@ -27,7 +33,9 @@ export class LocationService {
   }
 
   getUserAddresses(): Observable<{ data: Address[] }> {
-    return this.http.get<{ data: Address[] }>(`${this.base}/user/addresses`);
+    return this.http
+      .get<any>(`${this.base}/user/addresses`)
+      .pipe(map((res: any) => ({ data: res.data || res.addresses || (Array.isArray(res) ? res : []) })));
   }
 
   addAddress(request: AddressRequest): Observable<{ data: Address }> {

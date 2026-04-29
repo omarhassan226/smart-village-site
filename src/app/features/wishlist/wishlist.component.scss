@@ -1,19 +1,52 @@
 @use 'styles/mixins' as *;
 
 .wishlist-page {
-  padding: 2rem 0 3rem;
+  padding: 24px 0 64px;
+  min-height: calc(100vh - 400px);
 
-  #{&}__title {
-    font-size: 1.5rem;
+  &__header {
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+
+    i {
+      color: #e74c3c;
+    }
+  }
+
+  &__count {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 13px;
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
   }
 }
 
 .wishlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
 
-  @include respond-below(sm) { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  @include respond-below(sm) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
 }

@@ -1,20 +1,29 @@
 <app-breadcrumb [items]="[
   { label: ('HOME' | translate), route: '/' },
-  { label: ('TITLE' | translate) }
+  { label: ('WISHLIST' | translate) }
 ]"></app-breadcrumb>
 
 <div class="container wishlist-page">
-  <h1 class="wishlist-page__title">{{ 'TITLE' | translate }}</h1>
+  <div class="wishlist-page__header">
+    <h1 class="wishlist-page__title">
+      <i class="uil uil-heart"></i>
+      {{ 'WISHLIST' | translate }}
+      <span class="wishlist-page__count" *ngIf="products.length > 0">{{ products.length }}</span>
+    </h1>
+  </div>
 
   <app-loading-spinner *ngIf="loading" [fullPage]="true"></app-loading-spinner>
 
   <app-empty-state
     *ngIf="!loading && products.length === 0"
     icon="uil uil-heart"
-    [title]="'EMPTY' | translate"
-    [description]="'EMPTY_DESC' | translate"
+    [title]="'WISHLIST_EMPTY_TITLE' | translate"
+    [description]="'WISHLIST_EMPTY_DESC' | translate"
   >
-    <a routerLink="/products" class="btn btn-primary">{{ 'CONTINUE_SHOPPING' | translate }}</a>
+    <a routerLink="/products" class="btn btn-primary">
+      <i class="uil uil-shopping-bag"></i>
+      {{ 'CONTINUE_SHOPPING' | translate }}
+    </a>
   </app-empty-state>
 
   <div class="wishlist-grid" *ngIf="!loading && products.length > 0">

@@ -28,11 +28,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   socialLinks: SocialLinks = {};
   searchQuery = '';
   cartCount = 0;
+  wishlistCount = 0;
   isLoggedIn = false;
   isScrolled = false;
   mobileMenuOpen = false;
   activeDropdown: number | null = null;
   userDropdownOpen = false;
+  searchCategoryId = '';
 
   constructor(
     public auth: AuthService,
@@ -44,7 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private elRef: ElementRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.auth.user$.pipe(takeUntil(this.destroy$)).subscribe((u) => {
@@ -52,17 +54,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
 
     this.cart.cart$.pipe(takeUntil(this.destroy$)).subscribe((c) => {
-      this.cartCount = c.items_count;
+      this.cartCount = c.items?.length;
+    });
+
+    this.wishlist.ids$.pipe(takeUntil(this.destroy$)).subscribe((ids) => {
+      this.wishlistCount = ids.size;
     });
 
     this.categoryService.getMainCategories().subscribe({
       next: (res) => (this.categories = res.data),
-      error: () => {},
+      error: () => { },
     });
 
     this.bannerService.getSocialLinks().subscribe({
       next: (links) => (this.socialLinks = links),
-      error: () => {},
+      error: () => { },
     });
   }
 
@@ -82,11 +88,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   search(): void {
-    if (this.searchQuery.trim()) {
-      this.router.navigate(['/products'], {
-        queryParams: { key_word: this.searchQuery.trim() },
-      });
+    if (this.searchQuery.trim() || this.searchCategoryId) {
+      const queryParams: any = {};
+      if (this.searchQuery.trim()) queryParams.key_word = this.searchQuery.trim();
+      if (this.searchCategoryId) queryParams.category_id = this.searchCategoryId;
+
+      this.router.navigate(['/products'], { queryParams });
+
       this.searchQuery = '';
+      // We keep searchCategoryId or clear it based on preference. Let's clear it for a fresh start.
+      this.searchCategoryId = '';
+      if (this.mobileMenuOpen) this.toggleMobileMenu();
     }
   }
 
@@ -101,7 +113,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
-    // Prevent body scroll when menu is open
     document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
   }
 
@@ -117,6 +128,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.lang.current === 'ar'
       ? cat.category_ar || cat.name_ar || cat.name || ''
       : cat.category_en || cat.name_en || cat.name || '';
+  }
+
+  openCart(e: Event): void {
+    e.preventDefault();
+    this.cart.openSidebar();
   }
 
   ngOnDestroy(): void {

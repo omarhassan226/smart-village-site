@@ -77,8 +77,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
         brand_id: params['brand_id'] ? +params['brand_id'] : undefined,
         key_word: params['key_word'] || undefined,
         status: params['status'] as 'asc' | 'desc' | undefined,
-        priceFrom: params['priceFrom'] ? +params['priceFrom'] : undefined,
-        priceTo: params['priceTo'] ? +params['priceTo'] : undefined,
+        priceFrom: params['priceFrom'] !== undefined ? +params['priceFrom'] : undefined,
+        priceTo: params['priceTo'] !== undefined ? +params['priceTo'] : undefined,
         page: params['page'] ? +params['page'] : 1,
       };
       this.currentPage = this.filter.page || 1;
@@ -152,7 +152,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   onPriceFilter(from: number, to: number): void {
     this.router.navigate([], {
-      queryParams: { priceFrom: from || null, priceTo: to || null, page: null },
+      queryParams: {
+        priceFrom: from !== undefined ? from : null,
+        priceTo: to !== undefined ? to : null,
+        page: null
+      },
       queryParamsHandling: 'merge',
     });
   }

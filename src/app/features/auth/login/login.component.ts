@@ -52,7 +52,6 @@ export class LoginComponent {
     this.auth.login(phone, password).subscribe({
       next: () => {
         this.loading = false;
-        this.cart.load().subscribe();
         this.wishlist.load().subscribe();
         this.notify.success(this.translate.instant('SUCCESS'));
         this.router.navigate(['/']);

@@ -61,13 +61,12 @@
 
   /* === Z-Index Scale === */
   --z-dropdown: 1000;
-  --z-sticky: 1020;
-  --z-fixed: 1030;
-  --z-header: 1030;
-  --z-modal-bg: 1040;
-  --z-modal: 1050;
-  --z-popover: 1060;
-  --z-tooltip: 1070;
+  --z-header: 1000;
+  --z-sticky: 1010;
+  --z-overlay: 1100;
+  --z-sidebar: 1101;
+  --z-modal-bg: 1200;
+  --z-modal: 1201;
   --z-toast: 9999;
 
   /* === Layout === */

@@ -43,7 +43,7 @@ export class AddressModalComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.isOpen && this.governorates.length === 0) {
-      this.location.getGovernorates().subscribe({ next: (r: any) => (this.governorates = r.data) });
+      this.location.getGovernorates(this.lang.current).subscribe({ next: (r: any) => (this.governorates = r.data) });
     }
   }
 
