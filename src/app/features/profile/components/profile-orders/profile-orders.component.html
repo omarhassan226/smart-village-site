@@ -5,12 +5,6 @@
       {{ (status === 'review' ? 'PREPARING' : (status === 'delivering' ? 'DELIVERING' : 'MY_ORDERS')) | translate }}
     </h2>
   </div>
-
-  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-
-  <app-empty-state *ngIf="!loading && orders.length === 0" icon="uil uil-box"
-    [title]="'ORDERS_EMPTY' | translate"></app-empty-state>
-
   <div class="orders-table-wrapper">
     <table class="orders-table">
       <thead>
@@ -22,7 +16,7 @@
           <th>{{ 'ACTION' | translate }}</th>
         </tr>
       </thead>
-      <tbody *ngIf="!loading && orders.length > 0">
+      <tbody *ngIf="!loading && orders && orders.length > 0">
         <tr *ngFor="let order of orders">
           <td><span class="order-id">#{{ order.order_number }}</span></td>
           <td>{{ order.created_at | date:'shortDate' }}</td>
@@ -34,8 +28,8 @@
           </td>
           <td>
             <div class="order-actions">
-              <button class="btn-icon" [routerLink]="['/products', order.items[0]?.product?.id]"
-                title="{{ 'VIEW_DETAILS' | translate }}">
+              <button class="btn-icon" *ngIf="order.items && order.items.length > 0"
+                [routerLink]="['/products', order.items[0]?.product?.id]" title="{{ 'VIEW_DETAILS' | translate }}">
                 <i class="uil uil-eye"></i>
               </button>
               <button class="btn-icon btn-icon--danger" *ngIf="order.status === 'delivered'"
@@ -48,6 +42,13 @@
       </tbody>
     </table>
   </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <app-empty-state *ngIf="!loading && orders?.length === 0" icon="uil uil-box"
+    [title]="'ORDERS_EMPTY' | translate"></app-empty-state>
+
+
 
   <app-pagination [currentPage]="currentPage" [lastPage]="lastPage"
     (pageChange)="currentPage = $event; loadOrders()"></app-pagination>

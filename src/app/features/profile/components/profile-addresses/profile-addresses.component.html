@@ -15,7 +15,8 @@
   <div class="addresses__grid" *ngIf="!loading">
     <div class="address-card" *ngFor="let addr of addresses" [class.address-card--default]="isDefault(addr)">
       <div class="address-card__type">
-        <i class="uil" [class.uil-home]="addr.type_address === 'home'" [class.uil-building]="addr.type_address === 'work'"></i>
+        <i class="uil" [class.uil-home]="addr.type_address === 'home'"
+          [class.uil-building]="addr.type_address === 'work'"></i>
         {{ (addr.type_address === 'home' ? 'HOME_ADDR' : 'WORK_ADDR') | translate }}
         <span class="badge badge--success" *ngIf="isDefault(addr)">{{ 'DEFAULT_ADDRESS' | translate }}</span>
       </div>
@@ -124,3 +125,6 @@
     </div>
   </div>
 </div>
+
+<app-confirm-modal [isOpen]="deleteModalOpen" [loading]="deletingAddress" (confirm)="confirmDelete()"
+  (cancel)="deleteModalOpen = false"></app-confirm-modal>

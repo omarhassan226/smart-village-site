@@ -3,143 +3,151 @@
   { label: ('CART' | translate) }
 ]"></app-breadcrumb>
 
-<div class="container cart-page">
-  <div class="cart-page__header">
-    <h1 class="cart-page__title">
-      <i class="uil uil-shopping-cart"></i>
-      {{ 'CART' | translate }}
-      <span class="cart-page__count" *ngIf="cart.items_count > 0">{{ cart.items_count }}</span>
-    </h1>
-    <button class="cart-page__clear" *ngIf="cart.items.length > 0" (click)="clearAll()">
+<div class="cart-container">
+  <!-- Page Header -->
+  <div class="cart-header">
+    <div class="header-info">
+      <h1 class="page-title">
+        <i class="uil uil-shopping-basket"></i>
+        {{ 'CART' | translate }}
+        <span class="items-count" *ngIf="cart.items_count > 0">{{ cart.items_count }}</span>
+      </h1>
+      <p class="page-subtitle" *ngIf="cart.items.length > 0">{{ 'CART_REVIEW_DESC' | translate }}</p>
+    </div>
+    <button class="clear-btn" *ngIf="cart.items.length > 0" (click)="clearAll()">
       <i class="uil uil-trash-alt"></i>
       {{ 'CLEAR_CART' | translate }}
     </button>
   </div>
 
   <!-- Empty State -->
-  <app-empty-state
-    *ngIf="cart.items.length === 0"
-    icon="uil uil-shopping-cart"
-    [title]="'CART_EMPTY_TITLE' | translate"
-    [description]="'CART_EMPTY_DESC' | translate"
-  >
-    <a routerLink="/products" class="btn btn-primary">
-      <i class="uil uil-shopping-bag"></i>
-      {{ 'CONTINUE_SHOPPING' | translate }}
-    </a>
-  </app-empty-state>
+  <div class="empty-cart-wrapper" *ngIf="cart.items.length === 0">
+    <app-empty-state icon="uil uil-shopping-basket" [title]="'CART_EMPTY_TITLE' | translate"
+      [description]="'CART_EMPTY_DESC' | translate">
+      <a routerLink="/products" class="btn-continue">
+        <i class="uil uil-arrow-left"></i>
+        {{ 'CONTINUE_SHOPPING' | translate }}
+      </a>
+    </app-empty-state>
+  </div>
 
   <!-- Cart Layout -->
   <div class="cart-layout" *ngIf="cart.items.length > 0">
-
-    <!-- ── Items ───────────────────────────── -->
-    <div class="cart-items">
-      <div class="cart-item" *ngFor="let item of cart.items">
-        <!-- Image -->
-        <a [routerLink]="['/products', item.product_id]" class="cart-item__img-wrap">
-          <img
-            [src]="getProductImage(item)"
-            [alt]="getProductName(item)"
-            class="cart-item__img"
-            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-          />
-        </a>
-
-        <!-- Info -->
-        <div class="cart-item__info">
-          <a [routerLink]="['/products', item.product_id]" class="cart-item__name">
-            {{ getProductName(item) }}
-          </a>
-
-          <div class="cart-item__variants">
-            <span class="cart-item__variant" *ngIf="item.color_name">
-              <i class="uil uil-palette"></i>
-              {{ 'COLOR' | translate }}: {{ item.color_name }}
-            </span>
-            <span class="cart-item__variant" *ngIf="item.type_name">
-              <i class="uil uil-tag-alt"></i>
-              {{ 'TYPE' | translate }}: {{ item.type_name }}
-            </span>
+    <!-- Items List -->
+    <div class="cart-items-section">
+      <div class="items-list">
+        <div class="cart-item" *ngFor="let item of cart.items">
+          <!-- Product Image -->
+          <div class="item-gallery">
+            <a [routerLink]="['/products', item.product_id]" class="image-box">
+              <img [src]="getProductImage(item)" [alt]="getProductName(item)"
+                onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
+            </a>
           </div>
 
-          <div class="cart-item__price-row">
-            <span class="cart-item__unit-price">
-              {{ item.price }} {{ 'OMR' | translate }}
-            </span>
-            <span class="cart-item__unit-label">× {{ item.quantity }}</span>
-            <span class="cart-item__total-price">
-              = {{ (item.price * item.quantity) }} {{ 'OMR' | translate }}
-            </span>
-          </div>
-
-          <!-- Qty Controls + Remove -->
-          <div class="cart-item__controls">
-            <div class="qty-control">
-              <button class="qty-control__btn" (click)="updateQty(item, item.quantity - 1)" [disabled]="item.quantity <= 1">−</button>
-              <span class="qty-control__val">{{ item.quantity }}</span>
-              <button class="qty-control__btn" (click)="updateQty(item, item.quantity + 1)">+</button>
+          <!-- Product Details -->
+          <div class="item-details">
+            <div class="details-top">
+              <div class="name-brand">
+                <a [routerLink]="['/products', item.product_id]" class="item-name">
+                  {{ getProductName(item) }}
+                </a>
+                <div class="item-variants">
+                  <span class="variant-tag" *ngIf="item.color_name">
+                    <span class="dot" [style.background]="item.color_name"></span>
+                    {{ item.color_name }}
+                  </span>
+                  <span class="variant-tag" *ngIf="item.type_name">
+                    <i class="uil uil-tag-alt"></i>
+                    {{ item.type_name }}
+                  </span>
+                </div>
+              </div>
+              <button class="remove-btn" (click)="remove(item)" [title]="'REMOVE' | translate">
+                <i class="uil uil-times"></i>
+              </button>
             </div>
 
-            <button class="cart-item__remove" (click)="remove(item)">
-              <i class="uil uil-trash-alt"></i>
-              {{ 'REMOVE' | translate }}
-            </button>
+            <div class="details-bottom">
+              <div class="price-info">
+                <span class="unit-price">{{ item.price }} {{ 'OMR' | translate }}</span>
+                <span class="total-price">{{ (item.price * item.quantity) }} {{ 'OMR' | translate }}</span>
+              </div>
+
+              <div class="qty-actions">
+                <div class="modern-qty">
+                  <button (click)="updateQty(item, item.quantity - 1)" [disabled]="item.quantity <= 1">
+                    <i class="uil uil-minus"></i>
+                  </button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button (click)="updateQty(item, item.quantity + 1)">
+                    <i class="uil uil-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Summary ─────────────────────────── -->
-    <div class="cart-summary">
-      <h3 class="cart-summary__title">{{ 'ORDER_SUMMARY' | translate }}</h3>
+    <!-- Order Summary -->
+    <div class="cart-summary-section">
+      <div class="summary-card">
+        <h3 class="summary-title">{{ 'ORDER_SUMMARY' | translate }}</h3>
 
-      <div class="cart-summary__rows">
-        <div class="cart-summary__row" *ngFor="let item of cart.items">
-          <span class="cart-summary__row-name">{{ getProductName(item) }} × {{ item.quantity }}</span>
-          <span>{{ (item.price * item.quantity) }}</span>
+        <div class="summary-details">
+          <div class="summary-row">
+            <span>{{ 'SUBTOTAL' | translate }}</span>
+            <span class="amount">{{ cart.total }} {{ 'OMR' | translate }}</span>
+          </div>
+          <div class="summary-row">
+            <span>{{ 'SHIPPING' | translate }}</span>
+            <span class="shipping-tag">{{ 'SHIPPING_CALCULATED_CHECKOUT' | translate }}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="cart-summary__divider"></div>
+        <div class="summary-divider"></div>
 
-      <div class="cart-summary__row">
-        <span>{{ 'SUBTOTAL' | translate }}</span>
-        <span class="cart-summary__amount">{{ cart.total }} {{ 'OMR' | translate }}</span>
-      </div>
-
-      <div class="cart-summary__row">
-        <span>{{ 'SHIPPING' | translate }}</span>
-        <span class="cart-summary__shipping-note">{{ 'SHIPPING_CALCULATED_CHECKOUT' | translate }}</span>
-      </div>
-
-      <div class="cart-summary__divider"></div>
-
-      <div class="cart-summary__total-row">
-        <span>{{ 'TOTAL' | translate }}</span>
-        <span class="cart-summary__total-amount">{{ cart.total }} {{ 'OMR' | translate }}</span>
-      </div>
-
-      <button class="btn btn-primary btn-block btn-lg cart-summary__checkout-btn" (click)="checkout()">
-        <i class="uil uil-credit-card"></i>
-        {{ 'PROCEED_TO_CHECKOUT' | translate }}
-      </button>
-
-      <a routerLink="/products" class="btn btn-outline btn-block">
-        <i class="uil uil-shopping-bag"></i>
-        {{ 'CONTINUE_SHOPPING' | translate }}
-      </a>
-
-      <!-- Security badges -->
-      <div class="cart-summary__trust">
-        <div class="cart-summary__trust-item">
-          <i class="uil uil-shield-check"></i>
-          <span>{{ 'SECURE_CHECKOUT' | translate }}</span>
+        <div class="summary-total">
+          <div class="total-label">
+            <span>{{ 'TOTAL' | translate }}</span>
+            <small>{{ 'INCL_VAT' | translate }}</small>
+          </div>
+          <span class="total-amount">{{ cart.total }} {{ 'OMR' | translate }}</span>
         </div>
-        <div class="cart-summary__trust-item">
-          <i class="uil uil-lock-alt"></i>
-          <span>{{ 'PAYMENT_SECURED' | translate }}</span>
+
+        <div class="summary-actions">
+          <button class="checkout-btn" (click)="checkout()">
+            <span>{{ 'PROCEED_TO_CHECKOUT' | translate }}</span>
+            <i class="uil uil-arrow-right"></i>
+          </button>
+          <a routerLink="/products" class="continue-link">
+            <i class="uil uil-shopping-bag"></i>
+            {{ 'CONTINUE_SHOPPING' | translate }}
+          </a>
+        </div>
+
+        <div class="trust-badges">
+          <div class="badge-item">
+            <i class="uil uil-shield-check"></i>
+            <span>{{ 'SECURE_CHECKOUT' | translate }}</span>
+          </div>
+          <div class="badge-item">
+            <i class="uil uil-lock-alt"></i>
+            <span>{{ 'PAYMENT_SECURED' | translate }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<app-confirm-modal
+  [isOpen]="clearModalOpen"
+  [loading]="clearingCart"
+  title="CLEAR_CART"
+  message="CONFIRM_CLEAR_CART_MSG"
+  (confirm)="confirmClear()"
+  (cancel)="clearModalOpen = false"
+></app-confirm-modal>

@@ -21,11 +21,16 @@ export class ProfileAddressesComponent implements OnInit {
   loading = true;
   modalOpen = false;
   isEdit = false;
-  
+
+  deleteModalOpen = false;
+  addressToDelete: number | null = null;
+  deletingAddress = false;
+  shiping_id: number = 0
+
   governorates: Governorate[] = [];
   cities: City[] = [];
   villages: Village[] = [];
-  
+
   currentAddress: Address = this.getEmptyAddress();
 
   constructor(
@@ -34,7 +39,7 @@ export class ProfileAddressesComponent implements OnInit {
     private notify: NotificationService,
     private translate: TranslateService,
     public lang: LanguageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadAddresses();
@@ -76,8 +81,8 @@ export class ProfileAddressesComponent implements OnInit {
   openEdit(addr: any): void {
     this.isEdit = true;
     // Map response keys to payload keys
-    this.currentAddress = { 
-      id: addr.id,
+    this.currentAddress = {
+      shipping_address_id: addr.id,
       receiver_name: addr.receiver_name,
       phone_number: addr.phone_number,
       governorate_id: addr.country_id || addr.governorate_id,
@@ -88,19 +93,20 @@ export class ProfileAddressesComponent implements OnInit {
       default: String(addr.default) === 'true'
     };
     this.modalOpen = true;
-    
+
     if (this.currentAddress.governorate_id) this.onGovChange(this.currentAddress.governorate_id);
     if (this.currentAddress.state_id) this.onCityChange(this.currentAddress.state_id);
-    
+
     setTimeout(() => {
-        this.currentAddress.state_id = addr.city_id || addr.state_id;
-        this.currentAddress.village_id = addr.village_id;
+      this.currentAddress.state_id = addr.city_id || addr.state_id;
+      this.currentAddress.village_id = addr.village_id;
     }, 500);
   }
 
   save(): void {
-    const obs = this.isEdit && this.currentAddress.id 
-      ? this.shipping.updateAddress(this.currentAddress.id, this.currentAddress)
+    const id = this.currentAddress.shipping_address_id;
+    const obs = (this.isEdit && id && id !== 0)
+      ? this.shipping.updateAddress(id, this.currentAddress)
       : this.shipping.addAddress(this.currentAddress);
 
     obs.subscribe({
@@ -113,16 +119,36 @@ export class ProfileAddressesComponent implements OnInit {
     });
   }
 
-  delete(id: number): void {
-    if (!confirm(this.translate.instant('CONFIRM_DELETE'))) return;
-    this.shipping.deleteAddress(id).subscribe(() => {
-      this.notify.success(this.translate.instant('SUCCESS'));
-      this.loadAddresses();
+  delete(id: number | string): void {
+    console.log(id);
+    this.addressToDelete = Number(id);
+    this.deleteModalOpen = true;
+  }
+
+  confirmDelete(): void {
+    if (!this.addressToDelete) return;
+    console.log(this.addressToDelete);
+
+    this.deletingAddress = true;
+    this.shipping.deleteAddress(this.addressToDelete).subscribe({
+      next: () => {
+        this.shiping_id = this.addressToDelete!;
+        this.notify.success(this.translate.instant('SUCCESS'));
+        this.deletingAddress = false;
+        this.deleteModalOpen = false;
+        this.addressToDelete = null;
+        this.loadAddresses();
+      },
+      error: () => {
+        this.notify.error(this.translate.instant('ERROR'));
+        this.deletingAddress = false;
+      }
     });
   }
 
   private getEmptyAddress(): Address {
     return {
+      shipping_address_id: 0,
       receiver_name: '',
       phone_number: '',
       governorate_id: 0,

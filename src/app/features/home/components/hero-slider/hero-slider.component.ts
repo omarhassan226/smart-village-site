@@ -4,9 +4,12 @@ import { BannerService } from '../../../../core/services/banner.service';
 import { Banner } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
 
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   standalone: true,
-  imports: [SharedModule],
+  imports: [CommonModule, TranslateModule],
   selector: 'app-hero-slider',
   templateUrl: './hero-slider.component.html',
   styleUrls: ['./hero-slider.component.scss'],
@@ -15,15 +18,14 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
   banners: Banner[] = [];
   activeIndex = 0;
   loading = true;
-  private timer: ReturnType<typeof setInterval> | null = null;
+  private timer: any = null;
 
   constructor(private bannerService: BannerService, public lang: LanguageService) { }
 
   ngOnInit(): void {
     this.bannerService.getBanners().subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.banners = res.data;
-
         this.loading = false;
         if (this.banners.length > 1) this.startAutoPlay();
       },

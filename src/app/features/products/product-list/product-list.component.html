@@ -23,7 +23,7 @@
 
           <p class="products-toolbar__count" *ngIf="!loading">
             <span class="products-toolbar__count-num">{{ totalProducts }}</span>
-            {{ lang.current === 'ar' ? 'منتج' : 'Products' }}
+            {{ 'PRODUCT_COUNT_LABEL' | translate }}
           </p>
         </div>
 

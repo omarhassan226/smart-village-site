@@ -16,7 +16,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./profile-orders.component.scss'],
 })
 export class ProfileOrdersComponent implements OnInit {
-  orders: Order[] = [];
+  orders: any[] = [];
   loading = true;
   currentPage = 1;
   lastPage = 1;
@@ -46,8 +46,8 @@ export class ProfileOrdersComponent implements OnInit {
     this.loading = true;
     this.orderService.getOrders(this.currentPage, this.status || undefined).subscribe({
       next: (res) => {
-        this.orders = res.data;
-        this.lastPage = res.last_page;
+        this.orders = res.data || [];
+        this.lastPage = res.last_page || 1;
         this.loading = false;
       },
       error: () => { this.loading = false; },

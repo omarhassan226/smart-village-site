@@ -189,6 +189,9 @@
 
 .modal-body {
   padding: 1.5rem;
+  overflow-y: scroll;
+  height: 50vh;
+
 
   .form-label {
     display: block;

@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isAuthRoute = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private lang: LanguageService, private router: Router) {}
+  constructor(private lang: LanguageService, private router: Router) { }
 
   ngOnInit(): void {
     // LanguageService constructor already applies the saved language

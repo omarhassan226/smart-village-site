@@ -46,8 +46,8 @@
   <div class="hero__fallback" *ngIf="!loading && banners.length === 0">
     <div class="container hero__fallback-inner">
       <i class="uil uil-store hero__fallback-icon"></i>
-      <h1 class="hero__fallback-title">{{ lang.current === 'ar' ? 'القرية الذكية' : 'Smart Village' }}</h1>
-      <p class="hero__fallback-subtitle">{{ lang.current === 'ar' ? 'وجهتك الأولى للتسوق الذكي' : 'Your Smart Shopping Destination' }}</p>
+      <h1 class="hero__fallback-title">{{ 'SITE_NAME' | translate }}</h1>
+      <p class="hero__fallback-subtitle">{{ 'SITE_SLOGAN' | translate }}</p>
     </div>
   </div>
 </section>

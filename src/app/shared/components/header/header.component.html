@@ -102,18 +102,21 @@
 
         <!-- Wishlist -->
         <a routerLink="/wishlist" class="header__action header__action--wishlist">
-          <i class="uil uil-heart"></i>
-          <span class="header__action-badge header__action-badge--wish" style="left: 35px; top: 7px;"
-            *ngIf="wishlistCount > 0">{{
-            wishlistCount
-            }}</span>
+          <div class="header__action-icon-wrap">
+            <i class="uil uil-heart"></i>
+            <span class="header__action-badge header__action-badge--wish" *ngIf="wishlistCount > 0">
+              {{ wishlistCount }}
+            </span>
+          </div>
           <span class="header__action-label">{{ 'WISHLIST' | translate }}</span>
         </a>
 
         <!-- Cart: opens sidebar -->
         <button type="button" class="header__action header__action--cart" (click)="openCart($event)">
-          <i class="uil uil-shopping-cart"></i>
-          <span class="header__action-badge" style="left: 50px;" *ngIf="cartCount > 0">{{ cartCount }}</span>
+          <div class="header__action-icon-wrap">
+            <i class="uil uil-shopping-cart"></i>
+            <span class="header__action-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+          </div>
           <span class="header__action-label">{{ 'CART' | translate }}</span>
         </button>
 
@@ -249,7 +252,7 @@
       <div class="mobile-menu__search">
         <div class="mobile-menu__search-wrap">
           <div class="mobile-menu__search-row">
-            <select [(ngModel)]="searchCategoryId" class="mobile-menu__search-select">
+            <select dir="ltr" [(ngModel)]="searchCategoryId" class="mobile-menu__search-select">
               <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
               <option *ngFor="let cat of categories" [value]="cat.id">
                 {{ getCategoryName(cat) }}
@@ -301,6 +304,7 @@
             <a routerLink="/wishlist" class="mobile-menu__link" (click)="toggleMobileMenu()">
               <i class="uil uil-heart"></i>
               {{ 'WISHLIST' | translate }}
+              <span class="mobile-menu__badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
             </a>
           </li>
           <li>

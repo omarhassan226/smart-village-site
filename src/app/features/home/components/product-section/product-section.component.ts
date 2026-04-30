@@ -7,9 +7,14 @@ import { LanguageService } from '../../../../core/services/language.service';
 
 type SectionType = 'featured' | 'offers' | 'new';
 
+import { ProductCardComponent } from '../../../../shared/components/product-card/product-card.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   standalone: true,
-  imports: [SharedModule],
+  imports: [CommonModule, TranslateModule, ProductCardComponent, EmptyStateComponent],
   selector: 'app-product-section',
   templateUrl: './product-section.component.html',
   styleUrls: ['./product-section.component.scss'],
@@ -27,7 +32,7 @@ export class ProductSectionComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     public lang: LanguageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.load();
@@ -43,11 +48,18 @@ export class ProductSectionComponent implements OnInit {
           : this.productService.getNewArrivals();
 
     request.subscribe({
-      next: (res) => {
-        this.products = res.data.slice(0, this.limit);
+      next: (res: any) => {
+        if (res && res.data) {
+          this.products = res.data.slice(0, this.limit);
+        } else {
+          this.products = [];
+        }
         this.loading = false;
       },
-      error: () => { this.loading = false; },
+      error: () => {
+        this.products = [];
+        this.loading = false;
+      },
     });
   }
 

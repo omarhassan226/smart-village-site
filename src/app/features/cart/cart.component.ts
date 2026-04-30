@@ -18,6 +18,9 @@ import { Router } from '@angular/router';
 export class CartComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   cart: Cart = { items: [], total: 0, items_count: 0 };
+  
+  clearModalOpen = false;
+  clearingCart = false;
 
   constructor(
     public cartService: CartService,
@@ -54,8 +57,17 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   clearAll(): void {
+    this.clearModalOpen = true;
+  }
+
+  confirmClear(): void {
+    this.clearingCart = true;
     this.cartService.clear();
-    this.notify.success(this.translate.instant('CART_CLEARED'));
+    setTimeout(() => {
+      this.clearingCart = false;
+      this.clearModalOpen = false;
+      this.notify.success(this.translate.instant('CART_CLEARED'));
+    }, 500);
   }
 
   checkout(): void {

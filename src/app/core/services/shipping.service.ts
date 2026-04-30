@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Address {
-  id?: number;
+  shipping_address_id?: number;
   receiver_name: string | null;
   phone_number: string | null;
   governorate_id: number;
@@ -37,10 +37,10 @@ export class ShippingService {
   }
 
   updateAddress(id: number, address: Partial<Address>): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.base}/update/shipping/address/${id}/ar`, address);
+    return this.http.post<{ message: string }>(`${this.base}/update/shipping/way`, address);
   }
 
   deleteAddress(id: number): Observable<{ message: string }> {
-    return this.http.get<{ message: string }>(`${this.base}/delete/shipping/address/${id}/ar`);
+    return this.http.post<{ message: string }>(`${this.base}/delete/shiping/address`, { shiping_id: id });
   }
 }

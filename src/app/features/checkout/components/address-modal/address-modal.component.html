@@ -2,7 +2,7 @@
   <div class="modal-overlay" (click)="close.emit()"></div>
   <div class="modal-content">
     <div class="modal-header">
-      <h3 class="modal-title">{{ (lang.current === 'ar' ? 'إضافة عنوان جديد' : 'Add New Address') }}</h3>
+      <h3 class="modal-title">{{ 'ADD_NEW_ADDRESS' | translate }}</h3>
       <button class="btn-close" (click)="close.emit()">
         <i class="uil uil-times"></i>
       </button>

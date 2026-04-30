@@ -10,113 +10,315 @@ import { AuthService } from '../../../../core/services/auth.service';
   selector: 'app-profile-dashboard',
   template: `
     <div class="dashboard">
-      <div class="dashboard__welcome">
-        <h2>{{ 'WELCOME_USER' | translate }} {{ auth.user?.first_name }}</h2>
-        <p>{{ 'DASHBOARD_WELCOME_DESC' | translate }}</p>
+      <!-- Header Section -->
+      <div class="dashboard__header">
+        <div class="welcome-card">
+          <div class="welcome-card__content">
+            <h2 class="welcome-card__title">
+              {{ 'WELCOME_USER' | translate }}, <span>{{ auth.user?.first_name }}</span>!
+            </h2>
+            <p class="welcome-card__desc">{{ 'DASHBOARD_WELCOME_DESC' | translate }}</p>
+          </div>
+          <div class="welcome-card__actions">
+             <button (click)="logout()" class="logout-btn" [title]="'LOGOUT' | translate">
+               <i class="uil uil-signout"></i>
+               <span>{{ 'LOGOUT' | translate }}</span>
+             </button>
+          </div>
+        </div>
       </div>
 
+      <!-- Quick Stats / Navigation Grid -->
       <div class="dashboard__grid">
-        <a routerLink="../orders" class="dash-card">
+        <!-- My Orders -->
+        <a routerLink="../orders" class="dash-card dash-card--primary">
           <div class="dash-card__icon"><i class="uil uil-clipboard-notes"></i></div>
-          <span class="dash-card__title">{{ 'MY_ORDERS' | translate }}</span>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'MY_ORDERS' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_ORDERS_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
         </a>
 
-        <a [routerLink]="['../orders']" [queryParams]="{ status: 'review' }" class="dash-card">
+        <!-- Preparing Orders -->
+        <a [routerLink]="['../orders']" [queryParams]="{ status: 'review' }" class="dash-card dash-card--warning">
           <div class="dash-card__icon"><i class="uil uil-box"></i></div>
-          <span class="dash-card__title">{{ 'PREPARING' | translate }}</span>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'PREPARING' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_PREPARING_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
         </a>
 
-        <a [routerLink]="['../orders']" [queryParams]="{ status: 'delivering' }" class="dash-card">
+        <!-- Delivering Orders -->
+        <a [routerLink]="['../orders']" [queryParams]="{ status: 'delivering' }" class="dash-card dash-card--info">
           <div class="dash-card__icon"><i class="uil uil-truck"></i></div>
-          <span class="dash-card__title">{{ 'DELIVERING' | translate }}</span>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'DELIVERING' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_DELIVERING_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
         </a>
 
-        <a routerLink="../info" class="dash-card">
-          <div class="dash-card__icon"><i class="uil uil-user-circle"></i></div>
-          <span class="dash-card__title">{{ 'UPDATE_PROFILE' | translate }}</span>
-        </a>
-
-        <a routerLink="/wishlist" class="dash-card">
+        <!-- Wishlist -->
+        <a routerLink="/wishlist" class="dash-card dash-card--danger">
           <div class="dash-card__icon"><i class="uil uil-heart"></i></div>
-          <span class="dash-card__title">{{ 'WISHLIST' | translate }}</span>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'WISHLIST' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_WISHLIST_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
         </a>
 
-        <button (click)="logout()" class="dash-card dash-card--danger">
-          <div class="dash-card__icon"><i class="uil uil-signout"></i></div>
-          <span class="dash-card__title">{{ 'LOGOUT' | translate }}</span>
-        </button>
+        <!-- Profile Info -->
+        <a routerLink="../info" class="dash-card dash-card--success">
+          <div class="dash-card__icon"><i class="uil uil-user-circle"></i></div>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'UPDATE_PROFILE' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_PROFILE_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
+        </a>
+
+        <!-- Addresses -->
+        <a routerLink="../addresses" class="dash-card dash-card--purple">
+          <div class="dash-card__icon"><i class="uil uil-map-marker"></i></div>
+          <div class="dash-card__info">
+            <span class="dash-card__title">{{ 'MY_ADDRESSES' | translate }}</span>
+            <span class="dash-card__subtitle">{{ 'DASH_ADDRESS_SUB' | translate }}</span>
+          </div>
+          <div class="dash-card__arrow"><i class="uil uil-angle-right-b"></i></div>
+        </a>
       </div>
     </div>
   `,
   styles: [`
+    :host {
+      display: block;
+      padding: 1rem 0;
+    }
+
     .dashboard {
-      &__welcome {
-        margin-bottom: 2rem;
-        h2 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
-        p { color: var(--text-light); font-size: 0.9rem; }
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+
+      &__header {
+        position: relative;
       }
 
       &__grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 1.5rem;
       }
     }
 
-    .dash-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
+    /* Welcome Card */
+    .welcome-card {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 28px;
+      padding: 3rem;
+      color: white;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      gap: 1rem;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
 
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-        border-color: var(--primary);
-        .dash-card__icon { background: var(--primary-light); color: var(--primary); }
+      &::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(43, 188, 191, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
       }
 
-      &__icon {
-        width: 60px;
-        height: 60px;
-        background: var(--bg-secondary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        color: var(--text-light);
-        transition: all 0.3s;
+      &__content {
+        position: relative;
+        z-index: 2;
       }
 
       &__title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--text);
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.5px;
+        span { color: var(--primary); }
       }
 
-      &--danger:hover {
-        border-color: var(--danger);
-        .dash-card__icon { background: #fee2e2; color: var(--danger); }
+      &__desc {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        max-width: 500px;
+        line-height: 1.6;
       }
     }
 
-    @media (max-width: 576px) {
-      .dashboard__grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .dash-card { padding: 1.5rem 1rem; }
-      .dash-card__icon { width: 50px; height: 50px; font-size: 1.5rem; }
-      .dash-card__title { font-size: 0.85rem; }
+    .logout-btn {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      padding: 0.85rem 1.75rem;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 2;
+
+      &:hover {
+        background: #ef4444;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.4);
+      }
+
+      i { font-size: 1.4rem; }
+    }
+
+    /* Dash Cards */
+    .dash-card {
+      background: #ffffff;
+      border: 1px solid #f1f5f9;
+      border-radius: 24px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      text-decoration: none;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.08);
+        border-color: var(--primary-light, #e2e8f0);
+
+        .dash-card__arrow {
+          transform: translateX(8px);
+          color: var(--primary);
+          opacity: 1;
+        }
+
+        .dash-card__icon {
+          transform: scale(1.1) rotate(5deg);
+        }
+      }
+
+      &__icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        flex-shrink: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          opacity: 0.15;
+          background: currentColor;
+        }
+      }
+
+      &__info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      &__title {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: -0.3px;
+      }
+
+      &__subtitle {
+        font-size: 0.9rem;
+        color: #64748b;
+        line-height: 1.4;
+      }
+
+      &__arrow {
+        font-size: 1.5rem;
+        color: #cbd5e1;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+      }
+
+      /* Variations with Premium Colors */
+      &--primary { 
+        .dash-card__icon { color: #3b82f6; } 
+        &:hover { border-bottom: 4px solid #3b82f6; }
+      }
+      &--warning { 
+        .dash-card__icon { color: #f59e0b; } 
+        &:hover { border-bottom: 4px solid #f59e0b; }
+      }
+      &--info { 
+        .dash-card__icon { color: #06b6d4; } 
+        &:hover { border-bottom: 4px solid #06b6d4; }
+      }
+      &--danger { 
+        .dash-card__icon { color: #ef4444; } 
+        &:hover { border-bottom: 4px solid #ef4444; }
+      }
+      &--success { 
+        .dash-card__icon { color: #10b981; } 
+        &:hover { border-bottom: 4px solid #10b981; }
+      }
+      &--purple { 
+        .dash-card__icon { color: #8b5cf6; } 
+        &:hover { border-bottom: 4px solid #8b5cf6; }
+      }
+    }
+
+    /* RTL Support */
+    [dir="rtl"] {
+      .dash-card__arrow { transform: scaleX(-1); }
+      .dash-card:hover .dash-card__arrow { transform: scaleX(-1) translateX(8px); }
+      .welcome-card::before { right: auto; left: -100px; }
+    }
+
+    @media (max-width: 992px) {
+      .welcome-card {
+        padding: 2.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+      }
+      .logout-btn { width: 100%; justify-content: center; }
+      .welcome-card__title { font-size: 1.8rem; }
+    }
+
+    @media (max-width: 640px) {
+      .dashboard__grid {
+        grid-template-columns: 1fr;
+      }
+      .dash-card { padding: 1.5rem; }
+      .dash-card__icon { width: 56px; height: 56px; font-size: 1.75rem; }
     }
   `]
 })
 export class ProfileDashboardComponent {
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService) { }
   logout() { this.auth.logout(); }
 }

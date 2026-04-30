@@ -2,7 +2,7 @@
 
 .profile-section {
   padding: 1rem;
-  
+
   &__header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -18,7 +18,9 @@
     gap: 0.75rem;
     margin: 0;
 
-    i { color: var(--primary); }
+    i {
+      color: var(--primary);
+    }
   }
 }
 
@@ -28,13 +30,16 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin-bottom: 0.5rem;
-    
-    @include respond-below(sm) { grid-template-columns: 1fr; gap: 1rem; }
+
+    @include respond-below(sm) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
   }
 
   .form-group {
     margin-bottom: 1.25rem;
-    
+
     .form-label {
       display: block;
       margin-bottom: 0.5rem;
@@ -42,7 +47,7 @@
       font-size: 0.9rem;
       color: var(--text-light);
     }
-    
+
     .form-control {
       width: 100%;
       padding: 0.75rem 1rem;
@@ -51,9 +56,17 @@
       font-size: 0.95rem;
       transition: all 0.3s;
       background: #fff;
-      
-      &:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
-      &[readonly] { background: var(--bg-secondary); cursor: not-allowed; }
+
+      &:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      &[readonly] {
+        background: var(--bg-secondary);
+        cursor: not-allowed;
+      }
     }
   }
 }
@@ -62,7 +75,7 @@
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 2px dashed var(--border);
-  
+
   .security-title {
     font-size: 1.1rem;
     font-weight: 700;
@@ -71,8 +84,10 @@
     align-items: center;
     gap: 0.5rem;
     color: var(--text);
-    
-    i { color: var(--warning); }
+
+    i {
+      color: var(--warning);
+    }
   }
 }
 
@@ -80,9 +95,9 @@
   margin-top: 2rem;
   display: flex;
   justify-content: flex-start;
-  
+
   .btn-lg {
-    padding: 1rem 3rem;
+    padding: 0.5rem;
     font-weight: 700;
     border-radius: 14px;
     font-size: 1rem;

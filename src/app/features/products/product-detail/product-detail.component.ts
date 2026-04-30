@@ -1,21 +1,16 @@
-import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared.module';
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { AuthService } from '../../../core/services/auth.service';
+import { LanguageService } from '../../../core/services/language.service';
 import { Product, ProductColor, ProductType } from '../../../core/models';
 import { ShippingModalComponent } from '../components/shipping-modal/shipping-modal.component';
-import { TranslateService } from '@ngx-translate/core';
-import { LanguageService } from '../../../core/services/language.service';
-
-const STORAGE_BASE = 'https://smartvillageapp.com/app';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -24,59 +19,63 @@ const STORAGE_BASE = 'https://smartvillageapp.com/app';
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss'],
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
   product: Product | null = null;
   similarProducts: Product[] = [];
   loading = true;
 
   selectedImage = '';
+  allImages: string[] = [];
+  currentSlide = 0;
+
   selectedColor: ProductColor | null = null;
   selectedType: ProductType | null = null;
   quantity = 1;
+
+  isWishlisted = false;
   addingToCart = false;
+  activeTab: 'details' | 'shipping' = 'details';
   shippingModalOpen = false;
 
-  activeTab: 'details' | 'shipping' = 'details';
-
-  // Image zoom
+  // Zoom
   zoomVisible = false;
   zoomX = 0;
   zoomY = 0;
   zoomBgPos = '0% 0%';
 
-  // Slider
-  currentSlide = 0;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private cart: CartService,
-    public wishlist: WishlistService,
-    private auth: AuthService,
-    private notify: NotificationService,
-    private translate: TranslateService,
+    private cartService: CartService,
+    private wishlistService: WishlistService,
     public lang: LanguageService
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = +params.get('id')!;
-      this.loadProduct(id);
+    this.route.params.subscribe((params) => {
+      const id = params['id'];
+      if (id) this.loadProduct(id);
     });
   }
 
-  loadProduct(id: number): void {
+  loadProduct(id: string): void {
     this.loading = true;
-    this.productService.getProduct(id).subscribe({
-      next: (res) => {
+    this.productService.getProduct(Number(id)).subscribe({
+      next: (res: any) => {
+        if (!res || !res.data) {
+          this.router.navigate(['/products']);
+          return;
+        }
         this.product = res.data;
-        this.selectedImage = this.allImages[0] || res.data.image;
-        this.currentSlide = 0;
-        this.selectedColor = res.data.colors?.[0] || null;
-        this.selectedType = res.data.types?.[0] || null;
+        const p = res.data;
+        this.allImages = [p.image, ...(p.images || [])].filter((img: any) => !!img);
+        this.selectedImage = this.allImages[0] || '';
+        this.selectedColor = p.colors?.[0] || null;
+        this.selectedType = p.types?.[0] || null;
+        this.checkWishlist();
+        this.loadSimilar(p.category_id);
         this.loading = false;
-        this.loadSimilar(id);
       },
       error: () => {
         this.loading = false;
@@ -85,54 +84,16 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  loadSimilar(id: number): void {
-    this.productService.getSimilar(id).subscribe({
-      next: (res) => {
-        this.similarProducts = res.data.slice(0, 6);
+  loadSimilar(catId?: number): void {
+    if (!catId) return;
+    const currentId = this.product?.id;
+    this.productService.getProducts({ category_id: catId }).subscribe({
+      next: (res: any) => {
+        if (res && res.data) {
+          this.similarProducts = res.data.filter((p: any) => p.id !== currentId).slice(0, 6);
+        }
       },
-      error: () => { },
     });
-  }
-
-  get name(): string {
-    if (!this.product) return '';
-    return (this.lang.current === 'ar' ? this.product.name_ar : this.product.name_en) || this.product.name;
-  }
-
-  get description(): string {
-    if (!this.product) return '';
-    const desc = this.lang.current === 'ar'
-      ? (this.product.description_ar || this.product.content_ar)
-      : (this.product.description_en || this.product.content_en);
-    return desc || this.product.description || '';
-  }
-
-  get discount(): number {
-    if (!this.product) return 0;
-    if (this.product.discount_percentage) return this.product.discount_percentage;
-    if (this.product.original_price && this.product.original_price > this.product.price) {
-      return Math.round(
-        ((this.product.original_price - this.product.price) / this.product.original_price) * 100
-      );
-    }
-    return 0;
-  }
-
-  get currentPrice(): number {
-    const base = this.product?.price || 0;
-    return base + (this.selectedType?.extra_price || 0);
-  }
-
-  get allImages(): string[] {
-    if (!this.product) return [];
-    const sliders = (this.product.sliders || []).map((s) => `${STORAGE_BASE}/${s.image}`);
-    const main = this.product.image as string;
-    const all = sliders.length ? [main, ...sliders.filter((i) => i !== main)] : [main];
-    return [...new Set(all)].filter(Boolean);
-  }
-
-  get isWishlisted(): boolean {
-    return this.wishlist.isInWishlist(Number(this.product?.id || 0));
   }
 
   selectImage(img: string): void {
@@ -154,60 +115,73 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  increment(): void {
-    const max = this.product?.quantity;
-    if (max !== undefined && this.quantity >= max) return;
-    this.quantity++;
-  }
-
-  decrement(): void {
-    if (this.quantity > 1) this.quantity--;
-  }
-
-  addToCart(): void {
-    if (!this.product) return;
-    this.addingToCart = true;
-    this.cart.addProduct(
-      this.product,
-      this.quantity,
-      this.selectedColor?.id,
-      this.selectedColor?.name,
-      this.selectedType?.id,
-      this.selectedType?.name,
-      this.currentPrice
-    );
-    this.addingToCart = false;
-    this.notify.success(this.translate.instant('ADDED_TO_CART'));
-  }
-
-  toggleWishlist(): void {
-    if (!this.product) return;
-    const was = this.isWishlisted;
-    this.wishlist.toggle(this.product.id, this.product).subscribe({
-      next: () => {
-        const key = was ? 'REMOVED_FROM_WISHLIST' : 'ADDED_TO_WISHLIST';
-        this.notify.success(this.translate.instant(key));
-      },
-      error: () => this.notify.error(this.translate.instant('ERROR')),
-    });
-  }
-
-  // Image Zoom
-  onImgMouseMove(event: MouseEvent): void {
-    const container = event.currentTarget as HTMLElement;
-    const rect = container.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const xPct = (x / rect.width) * 100;
-    const yPct = (y / rect.height) * 100;
-
+  // Zoom methods
+  onImgMouseMove(e: MouseEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const x = ((e.pageX - left - window.scrollX) / width) * 100;
+    const y = ((e.pageY - top - window.scrollY) / height) * 100;
+    this.zoomX = e.pageX - left - window.scrollX - 40;
+    this.zoomY = e.pageY - top - window.scrollY - 40;
+    this.zoomBgPos = `${x}% ${y}%`;
     this.zoomVisible = true;
-    this.zoomX = x - 30;
-    this.zoomY = y - 30;
-    this.zoomBgPos = `${xPct}% ${yPct}%`;
   }
 
   onImgMouseLeave(): void {
     this.zoomVisible = false;
   }
+
+  increment(): void { this.quantity++; }
+  decrement(): void { if (this.quantity > 1) this.quantity--; }
+
+  checkWishlist(): void {
+    if (this.product) {
+      this.isWishlisted = this.wishlistService.isInWishlist(this.product.id);
+    }
+  }
+
+  toggleWishlist(): void {
+    if (!this.product) return;
+    if (this.isWishlisted) {
+      this.wishlistService.remove(this.product.id).subscribe();
+    } else {
+      this.wishlistService.add(this.product.id, this.product).subscribe();
+    }
+    this.isWishlisted = !this.isWishlisted;
+  }
+
+  addToCart(): void {
+    if (!this.product) return;
+    this.addingToCart = true;
+    this.cartService.addProduct(
+      this.product,
+      this.quantity,
+      this.selectedColor?.id,
+      this.selectedColor?.name,
+      this.selectedType?.id,
+      this.selectedType?.name
+    );
+    setTimeout(() => { this.addingToCart = false; }, 500);
+  }
+
+  get name(): string {
+    return this.lang.current === 'ar' ? this.product?.name_ar || '' : this.product?.name_en || '';
+  }
+
+  get description(): string {
+    return this.lang.current === 'ar' ? this.product?.description_ar || '' : this.product?.description_en || '';
+  }
+
+  get currentPrice(): number {
+    let p = this.product?.price || 0;
+    if (this.selectedType?.extra_price) p += Number(this.selectedType.extra_price);
+    return p;
+  }
+
+  get discount(): number {
+    if (!this.product?.original_price || this.product.original_price <= this.product.price) return 0;
+    return Math.round(((this.product.original_price - this.product.price) / this.product.original_price) * 100);
+  }
+
+  ngOnDestroy(): void { }
 }

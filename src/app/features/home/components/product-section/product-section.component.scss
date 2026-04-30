@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .product-section {
   padding: 3rem 0;
   background: #fff;
@@ -87,7 +89,7 @@
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));

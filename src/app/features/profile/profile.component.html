@@ -3,18 +3,14 @@
   { label: ('TITLE' | translate) }
 ]"></app-breadcrumb>
 
-<div class="container profile-page">
-  <div class="profile-layout">
+<div class="profile-page">
+  <div class="profile-layout container">
     <!-- Sidebar -->
     <div class="profile-sidebar">
       <div class="profile-avatar">
         <div class="profile-avatar__circle">
-          <img
-            *ngIf="auth.user?.image"
-            [src]="auth.user?.image"
-            [alt]="auth.user?.first_name"
-            class="profile-avatar__img"
-          />
+          <img *ngIf="auth.user?.image" [src]="auth.user?.image" [alt]="auth.user?.first_name"
+            class="profile-avatar__img" />
           <span *ngIf="!auth.user?.image" class="profile-avatar__initials">
             {{ auth.user?.first_name?.charAt(0) }}{{ auth.user?.last_name?.charAt(0) }}
           </span>
@@ -36,15 +32,18 @@
           <i class="uil uil-map-marker"></i>
           {{ 'MY_ADDRESSES' | translate }}
         </a>
-        <a routerLink="orders" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="profile-nav__item">
+        <a routerLink="orders" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"
+          class="profile-nav__item">
           <i class="uil uil-clipboard-notes"></i>
           {{ 'MY_ORDERS' | translate }}
         </a>
-        <a [routerLink]="['orders']" [queryParams]="{ status: 'review' }" routerLinkActive="active" class="profile-nav__item">
+        <a [routerLink]="['orders']" [queryParams]="{ status: 'review' }" routerLinkActive="active"
+          class="profile-nav__item">
           <i class="uil uil-box"></i>
           {{ 'PREPARING' | translate }}
         </a>
-        <a [routerLink]="['orders']" [queryParams]="{ status: 'delivering' }" routerLinkActive="active" class="profile-nav__item">
+        <a [routerLink]="['orders']" [queryParams]="{ status: 'delivering' }" routerLinkActive="active"
+          class="profile-nav__item">
           <i class="uil uil-truck"></i>
           {{ 'DELIVERING' | translate }}
         </a>

@@ -18,11 +18,7 @@
         </div>
 
         <div class="address-list" *ngIf="addresses.length > 0">
-          <label
-            class="address-option"
-            *ngFor="let addr of addresses"
-            [class.selected]="selectedAddressId === addr.id"
-          >
+          <label class="address-option" *ngFor="let addr of addresses" [class.selected]="selectedAddressId === addr.id">
             <input type="radio" name="address" [value]="addr.id" [(ngModel)]="selectedAddressId" />
             <div class="address-option__info">
               <p class="address-option__name">
@@ -65,29 +61,18 @@
 
       <!-- Notes -->
       <div class="checkout-card">
-        <textarea
-          class="notes-input"
-          [(ngModel)]="notes"
-          [placeholder]="lang.current === 'ar' ? 'ملاحظات...' : 'Notes...'"
-          rows="3"
-        ></textarea>
+        <textarea class="notes-input" [(ngModel)]="notes"
+          [placeholder]="lang.current === 'ar' ? 'ملاحظات...' : 'Notes...'" rows="3"></textarea>
       </div>
     </div>
 
     <!-- Summary -->
-    <app-order-summary
-      [cart]="cart"
-      [placing]="placing"
-      (placeOrder)="placeOrder()"
-    ></app-order-summary>
+    <app-order-summary [cart]="cart" [placing]="placing" (placeOrder)="placeOrder()"></app-order-summary>
   </div>
 </div>
 
 <app-loading-spinner *ngIf="loading" [fullPage]="true"></app-loading-spinner>
 
 <!-- Address Modal -->
-<app-address-modal
-  [isOpen]="addressModalOpen"
-  (close)="addressModalOpen = false"
-  (saved)="onAddressAdded()"
-></app-address-modal>
+<app-address-modal [isOpen]="addressModalOpen" (close)="addressModalOpen = false"
+  (saved)="onAddressAdded()"></app-address-modal>

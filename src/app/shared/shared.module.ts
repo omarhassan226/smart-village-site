@@ -14,6 +14,7 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
 import { NotificationToastComponent } from './components/notification-toast/notification-toast.component';
 import { CartSidebarComponent } from './components/cart-sidebar/cart-sidebar.component';
 import { QuickViewComponent } from './components/quick-view/quick-view.component';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { LocalNamePipe } from './pipes/local-name.pipe';
@@ -29,6 +30,7 @@ const COMPONENTS = [
   NotificationToastComponent,
   CartSidebarComponent,
   QuickViewComponent,
+  ConfirmModalComponent,
   TranslateModule,
 ];
 

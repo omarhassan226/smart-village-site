@@ -1,9 +1,13 @@
 @use 'styles/mixins' as *;
 
 .checkout-page {
-  padding: 2rem 0 3rem;
+  padding: 2rem 1rem 3rem;
 
-  #{&}__title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+  #{&}__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .checkout-layout {
@@ -12,10 +16,16 @@
   gap: 1.5rem;
   align-items: flex-start;
 
-  @include respond-below(lg) { grid-template-columns: 1fr; }
+  @include respond-below(lg) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.checkout-main { display: flex; flex-direction: column; gap: 1rem; }
+.checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 .checkout-card {
   background: #fff;
@@ -33,12 +43,24 @@
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--border);
 
-    i { font-size: 1.3rem; color: var(--primary); }
-    h3 { margin: 0; font-size: 1rem; font-weight: 700; }
+    i {
+      font-size: 1.3rem;
+      color: var(--primary);
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
   }
 }
 
-.address-list { display: flex; flex-direction: column; gap: 8px; }
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .address-option {
   display: flex;
@@ -50,18 +72,52 @@
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 
-  input[type="radio"] { margin-top: 2px; accent-color: var(--primary); }
+  input[type="radio"] {
+    margin-top: 2px;
+    accent-color: var(--primary);
+  }
 
-  &.selected { border-color: var(--primary); background: var(--primary-light); }
+  &.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
 
-  #{&}__info { flex: 1; }
-  #{&}__name { font-size: 0.875rem; font-weight: 600; margin: 0 0 4px; }
-  #{&}__type { font-size: 0.75rem; background: var(--bg-secondary); padding: 2px 8px; border-radius: 4px; }
-  #{&}__default { font-size: 0.75rem; color: var(--success); margin-inline-start: 6px; }
-  #{&}__cost { font-size: 0.875rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+  #{&}__info {
+    flex: 1;
+  }
+
+  #{&}__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  #{&}__type {
+    font-size: 0.75rem;
+    background: var(--bg-secondary);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  #{&}__default {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-inline-start: 6px;
+  }
+
+  #{&}__cost {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+    white-space: nowrap;
+  }
 }
 
-.payment-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.payment-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 .payment-option {
   display: flex;
@@ -74,9 +130,23 @@
   font-size: 0.875rem;
   transition: all 0.2s;
 
-  input[type="radio"] { accent-color: var(--primary); }
-  i { font-size: 1.1rem; color: var(--text-light); }
-  &.selected { border-color: var(--primary); background: var(--primary-light); i { color: var(--primary); } }
+  input[type="radio"] {
+    accent-color: var(--primary);
+  }
+
+  i {
+    font-size: 1.1rem;
+    color: var(--text-light);
+  }
+
+  &.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+
+    i {
+      color: var(--primary);
+    }
+  }
 }
 
 .notes-input {
@@ -89,5 +159,8 @@
   outline: none;
   resize: vertical;
   box-sizing: border-box;
-  &:focus { border-color: var(--primary); }
+
+  &:focus {
+    border-color: var(--primary);
+  }
 }

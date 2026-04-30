@@ -1,6 +1,8 @@
 @use 'styles/mixins' as *;
 
 .addresses {
+  padding: 1rem;
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -135,9 +137,9 @@
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 3000;
+  align-items: start;
   display: flex;
-  align-items: center;
   justify-content: center;
   visibility: hidden;
   opacity: 0;
@@ -162,8 +164,9 @@
     max-width: 600px;
     border-radius: 20px;
     box-shadow: var(--shadow-xl);
-    max-height: auto;
-    overflow-y: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin-top: 2rem;
   }
 
   &__header {
@@ -195,7 +198,7 @@
   &__body {
     padding: 1.5rem;
     overflow-y: auto;
-    height: 60vh;
+    height: 42vh;
   }
 
   &__footer {

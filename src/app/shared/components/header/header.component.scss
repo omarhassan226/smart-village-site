@@ -298,14 +298,19 @@
       background: var(--primary-light);
     }
 
-    &--cart {
+    &-icon-wrap {
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
     }
 
     &-badge {
       position: absolute;
-      top: 2px;
-      inset-inline-end: 4px;
+      top: -6px;
+      inset-inline-end: -8px;
       background: linear-gradient(135deg, var(--danger), #c0392b);
       color: #fff;
       border-radius: 50%;
@@ -316,7 +321,9 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
+      border: 2px solid #fff;
       animation: badgePop 0.3s ease;
+      z-index: 2;
     }
 
     &-label {
