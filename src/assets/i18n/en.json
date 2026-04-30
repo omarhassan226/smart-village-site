@@ -233,5 +233,13 @@
   "NO_ADDRESSES_DESC": "You haven't added any shipping addresses yet",
   "ARE_YOU_SURE": "Are you sure?",
   "CONFIRM_DELETE_MSG": "Do you really want to delete this item? This action cannot be undone.",
-  "CONFIRM_CLEAR_CART_MSG": "Are you sure you want to remove all items from your cart?"
+  "CONFIRM_CLEAR_CART_MSG": "Are you sure you want to remove all items from your cart?",
+  "FREE_SHIPPING": "Fast Shipping",
+  "FREE_SHIPPING_DESC": "Fast delivery to most areas with multiple options that suit your needs",
+  "SECURE_PAYMENT": "Secure Shopping",
+  "SECURE_PAYMENT_DESC": "Multiple payment options including cash on delivery",
+  "SUPPORT_247": "24/7 Support",
+  "SUPPORT_247_DESC": "Contact us via phone or email to solve your problem as soon as possible",
+  "TOP_BRANDS": "Top Brands",
+  "TOP_BRANDS_DESC": "Shop from the best global brands available with us"
 }
