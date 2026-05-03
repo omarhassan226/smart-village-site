@@ -103,11 +103,11 @@ import { AuthService } from '../../../../core/services/auth.service';
       flex-direction: column;
       gap: 2.5rem;
 
-      &__header {
+      .dashboard__header {
         position: relative;
       }
 
-      &__grid {
+      .dashboard__grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 1.5rem;
@@ -139,12 +139,12 @@ import { AuthService } from '../../../../core/services/auth.service';
         border-radius: 50%;
       }
 
-      &__content {
+      .welcome-card__content {
         position: relative;
         z-index: 2;
       }
 
-      &__title {
+      .welcome-card__title {
         font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 0.75rem;
@@ -152,7 +152,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         span { color: var(--primary); }
       }
 
-      &__desc {
+      .welcome-card__desc {
         font-size: 1.1rem;
         color: #94a3b8;
         max-width: 500px;
@@ -215,7 +215,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         }
       }
 
-      &__icon {
+      .dash-card__icon {
         width: 64px;
         height: 64px;
         border-radius: 18px;
@@ -237,27 +237,27 @@ import { AuthService } from '../../../../core/services/auth.service';
         }
       }
 
-      &__info {
+      .dash-card__info {
         flex: 1;
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
       }
 
-      &__title {
+      .dash-card__title {
         font-size: 1.2rem;
         font-weight: 800;
         color: #1e293b;
         letter-spacing: -0.3px;
       }
 
-      &__subtitle {
+      .dash-card__subtitle {
         font-size: 0.9rem;
         color: #64748b;
         line-height: 1.4;
       }
 
-      &__arrow {
+      .dash-card__arrow {
         font-size: 1.5rem;
         color: #cbd5e1;
         opacity: 0.5;
@@ -265,27 +265,27 @@ import { AuthService } from '../../../../core/services/auth.service';
       }
 
       /* Variations with Premium Colors */
-      &--primary { 
+      &.dash-card--primary { 
         .dash-card__icon { color: #3b82f6; } 
         &:hover { border-bottom: 4px solid #3b82f6; }
       }
-      &--warning { 
+      &.dash-card--warning { 
         .dash-card__icon { color: #f59e0b; } 
         &:hover { border-bottom: 4px solid #f59e0b; }
       }
-      &--info { 
+      &.dash-card--info { 
         .dash-card__icon { color: #06b6d4; } 
         &:hover { border-bottom: 4px solid #06b6d4; }
       }
-      &--danger { 
+      &.dash-card--danger { 
         .dash-card__icon { color: #ef4444; } 
         &:hover { border-bottom: 4px solid #ef4444; }
       }
-      &--success { 
+      &.dash-card--success { 
         .dash-card__icon { color: #10b981; } 
         &:hover { border-bottom: 4px solid #10b981; }
       }
-      &--purple { 
+      &.dash-card--purple { 
         .dash-card__icon { color: #8b5cf6; } 
         &:hover { border-bottom: 4px solid #8b5cf6; }
       }

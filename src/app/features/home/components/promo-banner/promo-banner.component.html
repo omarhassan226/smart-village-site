@@ -1,43 +1,58 @@
-<section class="promo" *ngIf="loading || products.length > 0">
+<section class="promo-bento" *ngIf="loading || products.length > 0">
   <div class="container">
-    <!-- Loading -->
-    <div class="promo__grid" *ngIf="loading">
-      <div class="skeleton promo__skeleton" *ngFor="let i of [1,2,3]"></div>
-    </div>
+    <div class="bento-grid">
+      <!-- Loading Skeleton -->
+      <ng-container *ngIf="loading">
+        <div class="skeleton bento-skeleton bento-skeleton--large"></div>
+        <div class="skeleton bento-skeleton"></div>
+        <div class="skeleton bento-skeleton"></div>
+      </ng-container>
 
-    <!-- Product Banner Cards -->
-    <div class="promo__grid" *ngIf="!loading">
-      <a class="promo__card" *ngFor="let product of products; let i = index" [routerLink]="['/products', product.id]"
-        [ngClass]="'promo__card--theme-' + (i % 3)">
-
-        <!-- Text Content -->
-        <div class="promo__content">
-          <span class="promo__tag" *ngIf="getDiscount(product) > 0">
-            <i class="uil uil-tag-alt"></i>
-            -{{ getDiscount(product) }}%
-          </span>
-          <h3 class="promo__title">{{ getProductName(product) | truncate:60 }}</h3>
-          <div class="promo__price-row">
-            <span class="promo__price" *ngIf="product.discount_price && product.discount_price > 0">
-              {{ product.discount_price }}
-              <small>{{ 'OMR' | translate }}</small>
-            </span>
-            <span class="promo__price-old" *ngIf="product.discount_price && product.discount_price < product.price">
-              {{ product.price }}
-            </span>
+      <!-- Real Content -->
+      <ng-container *ngIf="!loading">
+        <!-- Main Large Banner -->
+        <a *ngIf="products[0]" class="bento-item bento-item--large" [routerLink]="['/products', products[0].id]">
+          <div class="bento-content">
+            <span class="badge-glass">{{ 'SPECIAL_OFFER' | translate }}</span>
+            <h2 class="bento-title">{{ getProductName(products[0]) }}</h2>
+            <p class="bento-desc">{{ 'DISCOUNT_UP_TO' | translate }} {{ getDiscount(products[0]) }}%</p>
+            <div class="bento-action">
+              <span class="btn-premium">
+                {{ 'SHOP_NOW' | translate }}
+                <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
+              </span>
+            </div>
           </div>
-          <span class="promo__cta">
-            {{ 'SHOP_NOW' | translate }}
-            <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
-          </span>
-        </div>
+          <div class="bento-visual">
+            <img [src]="getProductImage(products[0])" [alt]="getProductName(products[0])" 
+                 onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
+            <div class="glow-effect"></div>
+          </div>
+        </a>
 
-        <!-- Image -->
-        <div class="promo__img-wrap">
-          <img [src]="getProductImage(product)" [alt]="getProductName(product)" class="promo__img"
-            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" loading="lazy" />
+        <!-- Smaller Banners -->
+        <div class="bento-column">
+          <a *ngIf="products[1]" class="bento-item bento-item--small bento-item--blue" [routerLink]="['/products', products[1].id]">
+            <div class="bento-content">
+              <h3>{{ getProductName(products[1]) | truncate:30 }}</h3>
+              <span class="price-tag">{{ products[1].discount_price || products[1].price }} {{ 'OMR' | translate }}</span>
+            </div>
+            <div class="bento-visual-small">
+              <img [src]="getProductImage(products[1])" />
+            </div>
+          </a>
+
+          <a *ngIf="products[2]" class="bento-item bento-item--small bento-item--orange" [routerLink]="['/products', products[2].id]">
+            <div class="bento-content">
+              <h3>{{ getProductName(products[2]) | truncate:30 }}</h3>
+              <span class="price-tag">{{ products[2].discount_price || products[2].price }} {{ 'OMR' | translate }}</span>
+            </div>
+            <div class="bento-visual-small">
+              <img [src]="getProductImage(products[2])" />
+            </div>
+          </a>
         </div>
-      </a>
+      </ng-container>
     </div>
   </div>
 </section>

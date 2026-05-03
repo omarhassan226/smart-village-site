@@ -33,11 +33,6 @@ export class ProductSectionComponent implements OnInit, AfterViewInit, OnDestroy
   loading = true;
   private scrollInterval: any;
 
-  // Dragging states
-  isDragging = false;
-  startX = 0;
-  scrollLeft = 0;
-
   constructor(
     private productService: ProductService,
     private router: Router,
@@ -45,19 +40,27 @@ export class ProductSectionComponent implements OnInit, AfterViewInit, OnDestroy
   ) { }
 
   ngOnInit(): void {
-    this.load();
+    // Re-fetch data whenever language changes
+    this.lang.lang$.subscribe(() => {
+      this.load();
+    });
   }
 
   ngAfterViewInit(): void {
+    this.initAutoScroll();
+  }
+
+  private initAutoScroll(): void {
     if (this.autoScroll && this.slider) {
       setTimeout(() => {
         const el = this.slider?.nativeElement;
         if (el) {
           const oneThird = el.scrollWidth / 3;
+          el.style.scrollBehavior = 'auto';
           el.scrollLeft = this.lang.isRtl ? -oneThird : oneThird;
           this.startAutoScroll();
         }
-      }, 500); // Small delay to ensure items are rendered
+      }, 600);
     }
   }
 
@@ -68,67 +71,38 @@ export class ProductSectionComponent implements OnInit, AfterViewInit, OnDestroy
   startAutoScroll(): void {
     if (!this.autoScroll) return;
     this.stopAutoScroll();
-    this.scrollInterval = setInterval(() => {
-      if (this.isDragging) return;
 
-      if (this.slider && this.slider.nativeElement) {
-        const el = this.slider.nativeElement;
+    this.scrollInterval = setInterval(() => {
+      const el = this.slider?.nativeElement;
+      if (el) {
         const totalWidth = el.scrollWidth;
         const oneThird = totalWidth / 3;
 
+        el.style.scrollBehavior = 'auto';
+
         if (this.lang.isRtl) {
-          // Reset to middle if we go too far in either direction
           if (Math.abs(el.scrollLeft) >= (oneThird * 2)) {
             el.scrollLeft = -oneThird;
           } else if (el.scrollLeft >= 0) {
             el.scrollLeft = -oneThird;
           }
-          el.scrollLeft -= 1;
+          el.scrollLeft -= 1.5; // Slightly faster
         } else {
-          // Reset to middle if we go too far
           if (el.scrollLeft >= (oneThird * 2)) {
             el.scrollLeft = oneThird;
           } else if (el.scrollLeft <= 0) {
             el.scrollLeft = oneThird;
           }
-          el.scrollLeft += 1;
+          el.scrollLeft += 1.5;
         }
       }
-    }, 25);
+    }, 20); // Faster tick
   }
 
   stopAutoScroll(): void {
     if (this.scrollInterval) {
       clearInterval(this.scrollInterval);
     }
-  }
-
-  // Dragging Methods
-  onMouseDown(e: MouseEvent | TouchEvent): void {
-    if (!this.compact) return;
-    this.isDragging = true;
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    this.startX = clientX - this.slider?.nativeElement.offsetLeft;
-    this.scrollLeft = this.slider?.nativeElement.scrollLeft;
-
-    // Disable smooth scroll during drag
-    this.slider!.nativeElement.style.scrollBehavior = 'auto';
-  }
-
-  onMouseUp(): void {
-    this.isDragging = false;
-    if (this.slider?.nativeElement) {
-      this.slider.nativeElement.style.scrollBehavior = 'smooth';
-    }
-  }
-
-  onMouseMove(e: MouseEvent | TouchEvent): void {
-    if (!this.isDragging || !this.slider) return;
-    e.preventDefault();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const x = clientX - this.slider.nativeElement.offsetLeft;
-    const walk = (x - this.startX) * 2; // Scroll multiplier
-    this.slider.nativeElement.scrollLeft = this.scrollLeft - walk;
   }
 
   private load(): void {
@@ -147,14 +121,18 @@ export class ProductSectionComponent implements OnInit, AfterViewInit, OnDestroy
           data = data.slice(0, this.limit);
         }
 
-        // If autoScroll is enabled, duplicate items to create an infinite loop effect
         if (this.autoScroll && data.length > 0) {
-          this.products = [...data, ...data, ...data]; // Triple the items for extra safety
+          let buffer = [...data];
+          while (buffer.length < 12) { buffer = [...buffer, ...data]; }
+          this.products = [...buffer, ...buffer, ...buffer];
         } else {
           this.products = data;
         }
 
         this.loading = false;
+        if (this.autoScroll) {
+          setTimeout(() => this.initAutoScroll(), 200);
+        }
       },
       error: () => {
         this.products = [];
@@ -164,11 +142,11 @@ export class ProductSectionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   viewAll(): void {
-    if (this.type === 'offers') {
-      this.router.navigate(['/products'], { queryParams: { status: 'offers' } });
-    } else {
-      this.router.navigate(['/products']);
-    }
+    // if (this.type === 'offers') {
+    //   this.router.navigate(['/products'], { queryParams: { status: 'offers' } });
+    // } else {
+    this.router.navigate(['/products']);
+    // }
   }
 
   get sectionIcon(): string {

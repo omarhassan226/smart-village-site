@@ -18,18 +18,30 @@ export class BannerService {
       .pipe(map((res) => ({ data: this.mapBanners(res.banners || []) })));
   }
 
-  /** GET /api/show/brands/{lang}?most_selling=id – homepage best sellers */
-  getBrands(): Observable<{ data: Brand[] }> {
+  /** GET /api/show/brands/{lang}?most_selling=1 – homepage best sellers */
+  getBrands(mostSelling = true): Observable<{ data: Brand[] }> {
+    const param = mostSelling ? '1' : '0';
     return this.http
-      .get<Brand[]>(`${this.base}/show/brands/${this.lang.current}?most_selling=id`)
-      .pipe(map((brands) => ({ data: brands || [] })));
+      .get<any>(`${this.base}/show/brands/${this.lang.current}?most_selling=${param}`)
+      .pipe(
+        map((res) => {
+          // Handle both direct array and { brands: [...] } wrap
+          const brands = Array.isArray(res) ? res : (res.brands || []);
+          return { data: brands };
+        })
+      );
   }
 
   /** GET /api/show/brands/{lang} – all brands for filter sidebar */
   getAllBrands(): Observable<{ data: Brand[] }> {
     return this.http
-      .get<Brand[]>(`${this.base}/show/brands/${this.lang.current}`)
-      .pipe(map((brands) => ({ data: brands || [] })));
+      .get<any>(`${this.base}/show/brands/${this.lang.current}`)
+      .pipe(
+        map((res) => {
+          const brands = Array.isArray(res) ? res : (res.brands || []);
+          return { data: brands };
+        })
+      );
   }
 
   /** POST /api/product/banners/{lang} – product-based banners */

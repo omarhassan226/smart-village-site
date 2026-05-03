@@ -7,6 +7,8 @@ export interface Banner {
   title?: string;
   title_ar?: string;
   title_en?: string;
+  desc_ar?: string;
+  desc_en?: string;
   subtitle?: string;
   link?: string;
   category_id?: number;

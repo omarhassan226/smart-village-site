@@ -15,6 +15,8 @@ import { NotificationToastComponent } from './components/notification-toast/noti
 import { CartSidebarComponent } from './components/cart-sidebar/cart-sidebar.component';
 import { QuickViewComponent } from './components/quick-view/quick-view.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+import { ScrollTopComponent } from './components/scroll-top/scroll-top.component';
+import { InstagramGridComponent } from './components/footer/instagram-grid.component';
 
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { LocalNamePipe } from './pipes/local-name.pipe';
@@ -31,6 +33,8 @@ const COMPONENTS = [
   CartSidebarComponent,
   QuickViewComponent,
   ConfirmModalComponent,
+  ScrollTopComponent,
+  InstagramGridComponent,
   TranslateModule,
 ];
 

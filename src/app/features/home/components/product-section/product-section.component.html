@@ -5,7 +5,7 @@
         <div class="section-header__icon" [ngClass]="'section-header__icon--' + sectionColor">
           <i class="uil" [ngClass]="sectionIcon"></i>
         </div>
-        <h2 class="section-title">{{ titleKey | translate }}</h2>
+        <h2 class="section-title" [ngClass]="'section-title--' + sectionColor">{{ titleKey | translate }}</h2>
       </div>
       <button class="section-header__view-all" (click)="viewAll()">
         {{ 'VIEW_ALL' | translate }}
@@ -19,10 +19,7 @@
     </div>
 
     <!-- Products -->
-    <div #slider [class.product-grid]="!compact" [class.product-slider]="compact" [class.is-dragging]="isDragging"
-      (mouseenter)="stopAutoScroll()" (mouseleave)="autoScroll && !isDragging && startAutoScroll()"
-      (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)"
-      (touchstart)="onMouseDown($event)" (touchend)="onMouseUp()" (touchmove)="onMouseMove($event)"
+    <div #slider [class.product-grid]="!compact" [class.product-slider]="compact"
       *ngIf="!loading && products.length > 0">
       <app-product-card *ngFor="let product of products" [product]="product" [compact]="compact"></app-product-card>
     </div>

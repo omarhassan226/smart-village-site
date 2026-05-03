@@ -76,7 +76,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
         category_id: params['category_id'] ? +params['category_id'] : undefined,
         brand_id: params['brand_id'] ? +params['brand_id'] : undefined,
         key_word: params['key_word'] || undefined,
-        status: params['status'] as 'asc' | 'desc' | undefined,
+        status: params['status'] as 'asc' | 'desc' | '' | undefined,
         priceFrom: params['priceFrom'] !== undefined ? +params['priceFrom'] : undefined,
         priceTo: params['priceTo'] !== undefined ? +params['priceTo'] : undefined,
         page: params['page'] ? +params['page'] : 1,

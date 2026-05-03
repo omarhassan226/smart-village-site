@@ -1,0 +1,43 @@
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-title">
+      <span class="subtitle">{{ 'TESTIMONIALS_SUBTITLE' | translate }}</span>
+      <h2>{{ 'WHAT_OUR_CLIENTS_SAY' | translate }}</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let item of testimonials">
+        <div class="quote-icon">
+          <i class="uil uil-quote-right"></i>
+        </div>
+
+        <div class="card-header">
+          <div class="user-img">
+            <img [src]="item.image" [alt]="lang.current === 'ar' ? item.name_ar : item.name_en"
+                 onerror="this.onerror=null;this.src='assets/images/placeholder.svg'">
+          </div>
+          <div class="user-info">
+            <h4 class="name">{{ lang.current === 'ar' ? item.name_ar : item.name_en }}</h4>
+            <span class="role">{{ lang.current === 'ar' ? item.role_ar : item.role_en }}</span>
+          </div>
+        </div>
+
+        <div class="rating">
+          <i class="uil uil-star" *ngFor="let s of [1,2,3,4,5]" 
+             [class.star--filled]="s <= item.rating"></i>
+        </div>
+
+        <p class="comment">
+          "{{ lang.current === 'ar' ? item.comment_ar : item.comment_en }}"
+        </p>
+
+        <div class="card-footer">
+          <span class="verified">
+            <i class="uil uil-check-circle"></i>
+            {{ 'VERIFIED_PURCHASE' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

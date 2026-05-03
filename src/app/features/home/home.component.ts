@@ -7,6 +7,8 @@ import { FeaturesSectionComponent } from './components/features-section/features
 import { CategoriesGridComponent } from './components/categories-grid/categories-grid.component';
 import { ProductSectionComponent } from './components/product-section/product-section.component';
 import { PromoBannerComponent } from './components/promo-banner/promo-banner.component';
+import { NewsletterComponent } from './components/newsletter/newsletter.component';
+import { TestimonialsComponent } from './components/testimonials/testimonials.component';
 
 @Component({
   standalone: true,
@@ -17,7 +19,9 @@ import { PromoBannerComponent } from './components/promo-banner/promo-banner.com
     FeaturesSectionComponent,
     CategoriesGridComponent,
     ProductSectionComponent,
-    PromoBannerComponent
+    PromoBannerComponent,
+    NewsletterComponent,
+    TestimonialsComponent
   ],
   selector: 'app-home',
   templateUrl: './home.component.html',
