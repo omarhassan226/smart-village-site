@@ -35,6 +35,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./features/profile/profile.module').then((m) => m.ProfileModule),
   },
+  {
+    path: 'contact',
+    loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
+  },
+  {
+    path: 'support',
+    loadComponent: () => import('./features/support/support.component').then(m => m.SupportComponent)
+  },
   { path: '**', redirectTo: '' },
 ];
 

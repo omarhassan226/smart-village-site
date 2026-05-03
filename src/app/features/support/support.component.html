@@ -1,0 +1,83 @@
+<div class="support-page">
+  <!-- Hero Section -->
+  <section class="support-hero">
+    <div class="container">
+      <h1>{{ 'SUPPORT_CENTER' | translate }}</h1>
+      <div class="search-box">
+        <i class="uil uil-search"></i>
+        <input type="text" [placeholder]="'HOW_CAN_WE_HELP' | translate">
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links -->
+  <section class="support-categories">
+    <div class="container">
+      <div class="category-grid">
+        <div class="support-card">
+          <i class="uil uil-package"></i>
+          <h3>{{ 'MY_ORDERS' | translate }}</h3>
+          <p>{{ 'MANAGE_YOUR_ORDERS_DESC' | translate }}</p>
+        </div>
+
+        <div class="support-card">
+          <i class="uil uil-truck"></i>
+          <h3>{{ 'SHIPPING_DELIVERY' | translate }}</h3>
+          <p>{{ 'TRACK_YOUR_DELIVERY_DESC' | translate }}</p>
+        </div>
+
+        <div class="support-card">
+          <i class="uil uil-exchange"></i>
+          <h3>{{ 'RETURN' | translate }}</h3>
+          <p>{{ 'RETURN_POLICY_DESC' | translate }}</p>
+        </div>
+
+        <div class="support-card">
+          <i class="uil uil-setting"></i>
+          <h3>{{ 'TECH_SUPPORT' | translate }}</h3>
+          <p>{{ 'TECHNICAL_ISSUES_DESC' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>{{ 'FAQ' | translate }}</h2>
+        <p>{{ 'FAQ_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs" [class.faq-open]="faq.open">
+          <div class="faq-question" (click)="toggleFaq(faq)">
+            <h3>{{ lang.current === 'ar' ? faq.question_ar : faq.question_en }}</h3>
+            <i class="uil uil-angle-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>{{ lang.current === 'ar' ? faq.answer_ar : faq.answer_en }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direct Contact -->
+  <section class="direct-contact">
+    <div class="container">
+      <div class="contact-box">
+        <h2>{{ 'STILL_NEED_HELP' | translate }}</h2>
+        <p>{{ 'CONTACT_OUR_TEAM' | translate }}</p>
+        <div class="btn-group">
+          <a href="https://wa.me/968XXXXXXXX" class="btn btn-whatsapp">
+            <i class="uil uil-whatsapp"></i> WhatsApp
+          </a>
+          <a routerLink="/contact" class="btn btn-email">
+            <i class="uil uil-envelope"></i> {{ 'EMAIL_US' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

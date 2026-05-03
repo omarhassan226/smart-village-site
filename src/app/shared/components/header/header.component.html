@@ -31,10 +31,15 @@
           <i class="uil uil-truck"></i>
           {{ 'SHIPPING' | translate }}
         </span>
-        <span class="topbar__item">
-          <i class="uil uil-headphones"></i>
+        <a routerLink="/support" class="topbar__item">
+          <i class="uil uil-question-circle"></i>
           {{ 'SUPPORT' | translate }}
-        </span>
+        </a>
+        <span class="topbar__divider"></span>
+        <a routerLink="/contact" class="topbar__item">
+          <i class="uil uil-envelope-info"></i>
+          {{ 'CONTACT_US' | translate }}
+        </a>
       </div>
       <div class="topbar__right">
         <!-- Auth Links (when NOT logged in) -->
@@ -291,6 +296,18 @@
               class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
               <i class="uil uil-percentage"></i>
               {{ 'DEALS' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/support" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-question-circle"></i>
+              {{ 'SUPPORT' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/contact" class="mobile-menu__link" (click)="toggleMobileMenu()">
+              <i class="uil uil-envelope-info"></i>
+              {{ 'CONTACT_US' | translate }}
             </a>
           </li>
         </ul>
