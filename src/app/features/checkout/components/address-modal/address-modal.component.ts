@@ -98,6 +98,6 @@ export class AddressModalComponent implements OnChanges, OnInit {
   }
 
   getName(item: Governorate | City | Village): string {
-    return (this.lang.current === 'ar' ? (item as any).name_ar : (item as any).name_en) || item.name;
+    return (this.lang.current === 'ar' ? item.name_ar : item.name_en) || item.name || '';
   }
 }

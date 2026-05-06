@@ -1,0 +1,207 @@
+.success-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  padding: 2rem 1rem;
+  background: radial-gradient(circle at top, rgba(var(--primary-rgb), 0.05), transparent 70%);
+}
+
+.success-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px stroke var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+// ── Illustration & Animations ─────────────────────────────────────────────
+
+.illustration-container {
+  width: 100%;
+  max-width: 400px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -1rem;
+}
+
+.delivery-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Scooter Floating Animation */
+.scooter-group {
+  animation: float Scooter 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes floatScooter {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+/* Speed Lines Animation */
+.speed-lines line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  animation: windSpeed 1.2s linear infinite;
+}
+
+@keyframes windSpeed {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+// ── Success Content ────────────────────────────────────────────────────────
+
+.success-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark, var(--primary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.success-description {
+  color: var(--text-light);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+// ── Countdown Circular Progress Timer ──────────────────────────────────────
+
+.countdown-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.countdown-circle {
+  position: relative;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  position: absolute;
+  z-index: 2;
+}
+
+.countdown-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.countdown-bg-ring {
+  fill: none;
+  stroke: rgba(var(--primary-rgb), 0.1);
+  stroke-width: 6;
+}
+
+.countdown-bar {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 282.6; /* 2 * PI * r = 2 * 3.14159 * 45 = 282.6 */
+  transition: stroke-dashoffset 1s linear;
+}
+
+.countdown-text {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+// ── Action Buttons ─────────────────────────────────────────────────────────
+
+.btn-orders {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+
+  i {
+    font-size: 1.15rem;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(var(--primary-rgb), 0.3);
+
+    i {
+      transform: translateX(4px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* RTL Support for Button Icon */
+:host-context([dir="rtl"]) {
+  .btn-orders:hover i {
+    transform: translateX(-4px);
+  }
+}
+
+// ── Responsive Design ──────────────────────────────────────────────────────
+
+@media (max-width: 576px) {
+  .success-card {
+    padding: 2.5rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .success-description {
+    font-size: 0.9rem;
+  }
+
+  .illustration-container {
+    height: 160px;
+  }
+}

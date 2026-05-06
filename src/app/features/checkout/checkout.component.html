@@ -17,12 +17,13 @@
           <h3>{{ 'SHIPPING_ADDRESS' | translate }}</h3>
         </div>
 
-        <div class="address-list" *ngIf="addresses.length > 0">
+        <div class="address-list">
           <label class="address-option" *ngFor="let addr of addresses" [class.selected]="selectedAddressId === addr.id">
-            <input type="radio" name="address" [value]="addr.id" [(ngModel)]="selectedAddressId" />
+            <input type="radio" name="address" [value]="addr.id" [(ngModel)]="selectedAddressId"
+              (change)="onAddressChange()" />
             <div class="address-option__info">
               <p class="address-option__name">
-                {{ addr.governorate?.name }} - {{ addr.city?.name }} - {{ addr.village?.name }}
+                {{ getName(addr.governorate) }} - {{ getName(addr.state) }} - {{ getName(addr.village) }}
               </p>
               <span class="address-option__type" *ngIf="addr.address_type">{{ addr.address_type }}</span>
               <span class="address-option__default" *ngIf="addr.is_default">✓ Default</span>
@@ -46,16 +47,51 @@
           <h3>{{ 'PAYMENT_METHOD' | translate }}</h3>
         </div>
         <div class="payment-options">
-          <label class="payment-option" [class.selected]="paymentMethod === 'cash_on_delivery'">
-            <input type="radio" name="payment" value="cash_on_delivery" [(ngModel)]="paymentMethod" />
+          <label class="payment-option" [class.selected]="paymentMethod === 'Pay on receipt'">
+            <input type="radio" name="payment" value="Pay on receipt" [(ngModel)]="paymentMethod"
+              (change)="onPaymentChange()" />
             <i class="uil uil-money-bill"></i>
             {{ 'CASH_ON_DELIVERY' | translate }}
           </label>
-          <label class="payment-option" [class.selected]="paymentMethod === 'online'">
-            <input type="radio" name="payment" value="online" [(ngModel)]="paymentMethod" />
-            <i class="uil uil-credit-card"></i>
-            {{ 'ONLINE_PAYMENT' | translate }}
+          <label class="payment-option" [class.selected]="paymentMethod === 'Transfer via Bank'">
+            <input type="radio" name="payment" value="Transfer via Bank" [(ngModel)]="paymentMethod"
+              (change)="onPaymentChange()" />
+            <i class="uil uil-university"></i>
+            {{ lang.current === 'ar' ? 'تحويل بنكي' : 'Bank Transfer' }}
           </label>
+        </div>
+      </div>
+
+      <!-- Shipping Companies -->
+      <div class="checkout-card" *ngIf="selectedAddressId && paymentMethod">
+        <div class="checkout-card__header">
+          <i class="uil uil-truck"></i>
+          <h3>{{ 'SHIPPING_COMPANIES' | translate }}</h3>
+        </div>
+
+        <div class="shipping-loading" *ngIf="loadingCompanies">
+          <i class="uil uil-spinner-alt spin"></i> {{ 'LOADING_SHIPPING_COMPANIES' | translate }}
+        </div>
+
+        <div class="payment-options shipping-companies" *ngIf="!loadingCompanies && shippingCompanies.length > 0">
+          <label class="payment-option" *ngFor="let company of shippingCompanies"
+            [class.selected]="selectedCompanyId === (company.id || company.company_shipping_id)">
+            <input type="radio" name="shipping_company" [value]="company.id || company.company_shipping_id"
+              [(ngModel)]="selectedCompanyId" />
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong>{{ lang.current === 'ar' ? company.name_ar || company.name : company.name_en || company.name
+                }}</strong>
+              <span style="font-size: 13px; color: var(--text-light);"
+                *ngIf="company.f_price || company.cost || company.price_shipping">{{
+                'SHIPPING_COST' | translate }}: {{ company.f_price || company.cost || company.price_shipping }} {{ 'OMR'
+                | translate
+                }}</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="no-shipping" *ngIf="!loadingCompanies && shippingCompanies.length === 0">
+          <p style="color: var(--text-light); font-size: 14px;">{{ 'NO_SHIPPING_COMPANIES' | translate }}</p>
         </div>
       </div>
 
@@ -67,7 +103,8 @@
     </div>
 
     <!-- Summary -->
-    <app-order-summary [cart]="cart" [placing]="placing" (placeOrder)="placeOrder()"></app-order-summary>
+    <app-order-summary [cart]="cart" [shippingCost]="selectedShippingCost" [placing]="placing"
+      (placeOrder)="placeOrder()"></app-order-summary>
   </div>
 </div>
 

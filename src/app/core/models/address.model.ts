@@ -34,6 +34,7 @@ export interface Address {
   address_type?: string;
   is_default?: boolean;
   notes?: string;
+  state?: string;
 }
 
 export interface AddressRequest {

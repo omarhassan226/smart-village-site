@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -20,6 +21,8 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./product-detail.component.scss'],
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private productId: string | null = null;
   product: Product | null = null;
   similarProducts: Product[] = [];
   loading = true;
@@ -28,8 +31,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   allImages: string[] = [];
   currentSlide = 0;
 
-  selectedColor: ProductColor | null = null;
-  selectedType: ProductType | null = null;
+  selectedOptions: { [optionId: number]: any } = {};
+  dynamicPrice: number | null = null;
+  dynamicDetailId: number | null = null;
+  calculatingPrice = false;
+
   quantity = 1;
 
   isWishlisted = false;
@@ -53,9 +59,16 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const id = params['id'];
-      if (id) this.loadProduct(id);
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.productId = params['id'];
+      if (this.productId) this.loadProduct(this.productId);
+    });
+
+    // Listen to language changes and reload the product information dynamically
+    this.lang.lang$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.productId) {
+        this.loadProduct(this.productId);
+      }
     });
   }
 
@@ -69,12 +82,34 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         }
         this.product = res.data;
         const p = res.data;
-        this.allImages = [p.image, ...(p.images || [])].filter((img: any) => !!img);
-        this.selectedImage = this.allImages[0] || '';
-        this.selectedColor = p.colors?.[0] || null;
-        this.selectedType = p.types?.[0] || null;
+
+        // Handle images
+        this.allImages = [];
+        if (p.image) this.allImages.push(p.image);
+        if (p.sliders && p.sliders.length > 0) {
+          p.sliders.forEach((s: any) => {
+            if (s.image) {
+              const fullUrl = s.image.startsWith('http') ? s.image : `https://smartvillageapp.com/app/${s.image}`;
+              if (!this.allImages.includes(fullUrl)) this.allImages.push(fullUrl);
+            }
+          });
+        }
+        if (this.allImages.length === 0) this.allImages.push('assets/images/placeholder.svg');
+        this.selectedImage = this.allImages[0];
+
+        // Initialize options
+        this.selectedOptions = {};
+        if (p.options && Array.isArray(p.options)) {
+          p.options.forEach((opt: any) => {
+            if (opt.values && opt.values.length > 0) {
+              this.selectedOptions[opt.id] = opt.values[0];
+            }
+          });
+        }
+
         this.checkWishlist();
         this.loadSimilar(p.category_id);
+        this.calculateDynamicPrice();
         this.loading = false;
       },
       error: () => {
@@ -115,6 +150,45 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectOption(optionId: number, val: any): void {
+    this.selectedOptions[optionId] = val;
+    this.calculateDynamicPrice();
+  }
+
+  calculateDynamicPrice(): void {
+    if (!this.product || !this.product.options || this.product.options.length === 0) {
+      return;
+    }
+
+    const values = Object.values(this.selectedOptions)
+      .map(v => v.randam_key)
+      .filter(key => !!key);
+
+    if (values.length === 0) return;
+
+    this.calculatingPrice = true;
+    this.productService.getProductPrice(this.product.id, values).subscribe({
+      next: (res: any) => {
+        if (res) {
+          const detail = res.detail || res;
+          if (detail.price_sale !== undefined && detail.price_sale !== null) {
+            this.dynamicPrice = Number(detail.price_sale);
+          } else if (res.price !== undefined && res.price !== null) {
+            this.dynamicPrice = Number(res.price);
+          } else if (detail.price !== undefined && detail.price !== null) {
+            this.dynamicPrice = Number(detail.price);
+          }
+
+          this.dynamicDetailId = detail.id || res.detail_id || res.id || null;
+        }
+        this.calculatingPrice = false;
+      },
+      error: () => {
+        this.calculatingPrice = false;
+      }
+    });
+  }
+
   // Zoom methods
   onImgMouseMove(e: MouseEvent): void {
     const el = e.currentTarget as HTMLElement;
@@ -153,29 +227,66 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   addToCart(): void {
     if (!this.product) return;
     this.addingToCart = true;
+
+    // Convert selected options back to the format cart expects, or just send the first color/type found
+    // If cart logic requires color/type specifically, map them:
+    let colorId, colorName, typeId, typeName;
+    if (this.product.options) {
+      for (const opt of this.product.options) {
+        const val = this.selectedOptions[opt.id];
+        if (!val) continue;
+        if (opt.type === 'Color' || opt.label_en?.toLowerCase() === 'color' || opt.label_ar === 'اللون') {
+          colorId = val.id;
+          colorName = this.lang.current === 'ar' ? val.name_ar : val.name_en;
+        } else {
+          typeId = val.id;
+          typeName = this.lang.current === 'ar' ? val.name_ar : val.name_en;
+        }
+      }
+    }
+
+    // Format selectedOptions to match exactly what is shown in payload:
+    // [{id: 1024, name_ar: "أبيض", name_en: "white", display_value: "#ffffff", randam_key: "1931232", option_id: 1022}, ...]
+    const optionsArray = Object.values(this.selectedOptions).map((val: any) => ({
+      id: val.id,
+      name_ar: val.name_ar,
+      name_en: val.name_en,
+      display_value: val.display_value,
+      randam_key: val.randam_key,
+      option_id: val.option_id
+    }));
+
     this.cartService.addProduct(
       this.product,
       this.quantity,
-      this.selectedColor?.id,
-      this.selectedColor?.name,
-      this.selectedType?.id,
-      this.selectedType?.name
+      colorId,
+      colorName,
+      typeId,
+      typeName,
+      this.currentPrice,
+      this.dynamicDetailId || undefined,
+      optionsArray
     );
     setTimeout(() => { this.addingToCart = false; }, 500);
   }
 
   get name(): string {
-    return this.lang.current === 'ar' ? this.product?.name_ar || '' : this.product?.name_en || '';
+    if (!this.product) return '';
+    return this.lang.current === 'ar'
+      ? (this.product.name_ar || this.product.name || '')
+      : (this.product.name_en || this.product.name || '');
   }
 
   get description(): string {
-    return this.lang.current === 'ar' ? this.product?.description_ar || '' : this.product?.description_en || '';
+    if (!this.product) return '';
+    return this.lang.current === 'ar'
+      ? (this.product.content_ar || this.product.description_ar || this.product.description || '')
+      : (this.product.content_en || this.product.description_en || this.product.description || '');
   }
 
   get currentPrice(): number {
-    let p = this.product?.price || 0;
-    if (this.selectedType?.extra_price) p += Number(this.selectedType.extra_price);
-    return p;
+    if (this.dynamicPrice !== null) return this.dynamicPrice;
+    return this.product?.price || 0;
   }
 
   get discount(): number {
@@ -183,5 +294,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     return Math.round(((this.product.original_price - this.product.price) / this.product.original_price) * 100);
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

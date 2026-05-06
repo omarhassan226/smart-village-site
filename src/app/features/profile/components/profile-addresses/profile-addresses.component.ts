@@ -163,4 +163,9 @@ export class ProfileAddressesComponent implements OnInit {
   isDefault(addr: any): boolean {
     return String(addr.default) === 'true';
   }
+
+  getName(item: any): string {
+    if (!item) return '';
+    return (this.lang.current === 'ar' ? item.name_ar : item.name_en) || item.name || item.name_ar || '';
+  }
 }

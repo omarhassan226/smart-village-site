@@ -23,7 +23,7 @@ export class LanguageService {
 
   toggle(): void {
     this.set(this.current === 'ar' ? 'en' : 'ar');
-    // window.location.reload();
+    window.location.reload();
   }
 
   set(lang: Lang): void {

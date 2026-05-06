@@ -23,7 +23,8 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ 'GOVERNORATE' | translate }}</label>
-          <select class="form-select" formControlName="governorate_id" (change)="onGovChange(+$any($event.target).value)">
+          <select class="form-select" formControlName="governorate_id"
+            (change)="onGovChange(+$any($event.target).value)">
             <option [value]="null">---</option>
             <option *ngFor="let g of governorates" [value]="g.id">{{ getName(g) }}</option>
           </select>

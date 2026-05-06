@@ -136,6 +136,11 @@ export class ProductService {
     return this.searchProducts({ key_word: keyword, page });
   }
 
+  getProductPrice(productId: number, values: string[]): Observable<any> {
+    const body = { product_id: productId, values };
+    return this.http.post<any>(`${this.base}/filter/product/price`, body);
+  }
+
   /** Map API product images to full URLs */
   mapProducts(products: any[]): Product[] {
     return products.map((p) => this.mapProduct(p));

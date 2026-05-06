@@ -62,11 +62,11 @@
               <label class="form-label">{{ 'FIRST_NAME' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-user"></i>
-                <input dir="ltr" type="text" formControlName="first_name" class="form-control"
-                  [class.invalid]="f['first_name'].invalid && f['first_name'].touched"
+                <input dir="ltr" type="text" formControlName="Fname" class="form-control"
+                  [class.invalid]="f['Fname'].invalid && f['Fname'].touched"
                   [placeholder]="'FIRST_NAME' | translate" />
               </div>
-              <span class="form-error" *ngIf="f['first_name'].invalid && f['first_name'].touched">
+              <span class="form-error" *ngIf="f['Fname'].invalid && f['Fname'].touched">
                 {{ 'FIELD_REQUIRED' | translate }}
               </span>
             </div>
@@ -74,11 +74,11 @@
               <label class="form-label">{{ 'LAST_NAME' | translate }} <span class="required">*</span></label>
               <div class="input-wrap">
                 <i class="input-icon uil uil-user"></i>
-                <input dir="ltr" type="text" formControlName="last_name" class="form-control"
-                  [class.invalid]="f['last_name'].invalid && f['last_name'].touched"
+                <input dir="ltr" type="text" formControlName="Lname" class="form-control"
+                  [class.invalid]="f['Lname'].invalid && f['Lname'].touched"
                   [placeholder]="'LAST_NAME' | translate" />
               </div>
-              <span class="form-error" *ngIf="f['last_name'].invalid && f['last_name'].touched">
+              <span class="form-error" *ngIf="f['Lname'].invalid && f['Lname'].touched">
                 {{ 'FIELD_REQUIRED' | translate }}
               </span>
             </div>
@@ -147,8 +147,8 @@
               <div class="select-wrap" [class.loading]="loadingCities"
                 [class.disabled]="!cities.length && !loadingCities">
                 <i class="input-icon uil uil-building"></i>
-                <select dir="ltr" formControlName="city_id" class="form-control form-select"
-                  [class.invalid]="f['city_id'].invalid && f['city_id'].touched" (change)="onCityChange()"
+                <select dir="ltr" formControlName="state_id" class="form-control form-select"
+                  [class.invalid]="f['state_id'].invalid && f['state_id'].touched" (change)="onCityChange()"
                   [attr.disabled]="!cities.length && !loadingCities ? true : null">
                   <option [ngValue]="null" disabled>{{ 'SELECT_CITY' | translate }}</option>
                   <option *ngFor="let city of cities" [ngValue]="city.id">
@@ -160,7 +160,7 @@
                   <div class="spinner-sm"></div>
                 </div>
               </div>
-              <span class="form-error" *ngIf="f['city_id'].invalid && f['city_id'].touched">
+              <span class="form-error" *ngIf="f['state_id'].invalid && f['state_id'].touched">
                 {{ 'FIELD_REQUIRED' | translate }}
               </span>
             </div>
@@ -188,6 +188,19 @@
                 {{ 'FIELD_REQUIRED' | translate }}
               </span>
             </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label class="form-label">{{ 'ADDRESS' | translate }} <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i class="input-icon uil uil-map-marker-info"></i>
+              <input dir="ltr" type="text" formControlName="type_address" class="form-control"
+                [class.invalid]="f['type_address'].invalid && f['type_address'].touched"
+                [placeholder]="'ADDRESS' | translate" />
+            </div>
+            <span class="form-error" *ngIf="f['type_address'].invalid && f['type_address'].touched">
+              {{ 'FIELD_REQUIRED' | translate }}
+            </span>
           </div>
         </div>
 

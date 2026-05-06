@@ -19,9 +19,9 @@ export class CartService {
   private loadFromStorage(): Cart {
     try {
       const raw = localStorage.getItem(CART_KEY);
-      return raw ? JSON.parse(raw) : { items: [], total: 0, items_count: 0 };
+      return raw ? JSON.parse(raw) : { items: [], total: 0, items_count: 0, price_sale: 0 };
     } catch {
-      return { items: [], total: 0, items_count: 0 };
+      return { items: [], total: 0, items_count: 0, price_sale: 0 };
     }
   }
 
@@ -32,7 +32,7 @@ export class CartService {
   private recalculate(items: CartItem[]): Cart {
     const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     const items_count = items.length;
-    return { items, total, items_count };
+    return { items, total, items_count, price_sale: total };
   }
 
   private commit(cart: Cart): void {
@@ -58,17 +58,19 @@ export class CartService {
     colorName?: string,
     typeId?: number,
     typeName?: string,
-    unitPrice?: number
+    unitPrice?: number,
+    detailId?: number,
+    selectedOptions?: any[]
   ): void {
     const items = [...this._cart$.value.items];
     const idx = items.findIndex(
-      (i) => i.product_id === product.id && i.color_id === colorId && i.type_id === typeId
+      (i) => i.product_id === product.id && (detailId ? i.detail_id === detailId : (i.color_id === colorId && i.type_id === typeId))
     );
 
     const price = unitPrice ?? product.price;
 
     if (idx > -1) {
-      items[idx] = { ...items[idx], quantity: items[idx].quantity + quantity };
+      items[idx] = { ...items[idx], quantity: items[idx].quantity + quantity, total: price * (items[idx].quantity + quantity) };
     } else {
       const newItem: CartItem = {
         id: Date.now(), // client-side unique id
@@ -81,6 +83,8 @@ export class CartService {
         type_name: typeName,
         price,
         total: price * quantity,
+        detail_id: detailId,
+        selectedOptions: selectedOptions || []
       };
       items.push(newItem);
     }
@@ -106,7 +110,7 @@ export class CartService {
 
   /** Clear the entire cart */
   clear(): void {
-    const empty: Cart = { items: [], total: 0, items_count: 0 };
+    const empty: Cart = { items: [], total: 0, items_count: 0, price_sale: 0 };
     this.commit(empty);
   }
 

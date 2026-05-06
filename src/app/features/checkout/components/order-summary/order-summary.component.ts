@@ -11,6 +11,7 @@ import { Cart } from '../../../../core/models';
 })
 export class OrderSummaryComponent {
   @Input() cart!: Cart;
+  @Input() shippingCost: number | null = null;
   @Input() placing = false;
   @Output() placeOrder = new EventEmitter<void>();
 }

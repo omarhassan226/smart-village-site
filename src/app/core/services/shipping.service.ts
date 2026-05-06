@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { LanguageService } from './language.service';
 
 export interface Address {
   shipping_address_id?: number;
@@ -26,10 +27,10 @@ export interface Address {
 export class ShippingService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private langService: LanguageService) { }
 
-  getAddresses(): Observable<{ address: Address[] }> {
-    return this.http.get<{ address: Address[] }>(`${this.base}/show/shipping/address/ar`);
+  getAddresses(lang: string = this.langService.current): Observable<any> {
+    return this.http.get<any>(`${this.base}/show/shipping/address/${lang}`);
   }
 
   addAddress(address: Partial<Address>): Observable<{ message: string }> {

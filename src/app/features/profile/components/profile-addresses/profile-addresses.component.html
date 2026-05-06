@@ -24,7 +24,7 @@
         <p class="address-card__name"><strong>{{ addr.receiver_name || '-' }}</strong></p>
         <p class="address-card__phone">{{ addr.phone_number || '-' }}</p>
         <p class="address-card__location">
-          {{ addr.governorate?.name_ar }}, {{ addr.state?.name_ar || addr.city?.name_ar }}, {{ addr.village?.name_ar }}
+          {{ getName(addr.governorate) }}, {{ getName(addr.state || addr.city) }}, {{ getName(addr.village) }}
         </p>
         <p class="address-card__details">{{ addr.address || '-' }}</p>
       </div>
@@ -79,7 +79,7 @@
             <select [(ngModel)]="currentAddress.governorate_id" name="governorate_id" required
               (change)="onGovChange(currentAddress.governorate_id)" class="form-control">
               <option [ngValue]="0" disabled>{{ 'SELECT_GOVERNORATE' | translate }}</option>
-              <option *ngFor="let g of governorates" [ngValue]="g.id">{{ g.name_ar }}</option>
+              <option *ngFor="let g of governorates" [ngValue]="g.id">{{ getName(g) }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -88,7 +88,7 @@
               (change)="onCityChange(currentAddress.state_id)" class="form-control"
               [disabled]="!currentAddress.governorate_id">
               <option [ngValue]="0" disabled>{{ 'SELECT_CITY' | translate }}</option>
-              <option *ngFor="let c of cities" [ngValue]="c.id">{{ c.name_ar }}</option>
+              <option *ngFor="let c of cities" [ngValue]="c.id">{{ getName(c) }}</option>
             </select>
           </div>
         </div>
@@ -99,7 +99,7 @@
             <select [(ngModel)]="currentAddress.village_id" name="village_id" required class="form-control"
               [disabled]="!currentAddress.state_id">
               <option [ngValue]="0" disabled>{{ 'SELECT_VILLAGE' | translate }}</option>
-              <option *ngFor="let v of villages" [ngValue]="v.id">{{ v.name_ar }}</option>
+              <option *ngFor="let v of villages" [ngValue]="v.id">{{ getName(v) }}</option>
             </select>
           </div>
           <div class="form-group">

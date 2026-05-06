@@ -4,11 +4,8 @@
   <div class="order-summary__items">
     <div class="order-item" *ngFor="let item of cart.items">
       <div class="order-item__img-wrap">
-        <img
-          [src]="item.product?.image"
-          class="order-item__img"
-          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-        />
+        <img [src]="item.product?.image" class="order-item__img"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
         <span class="order-item__qty">{{ item.quantity }}</span>
       </div>
       <span class="order-item__name">{{ item.product?.name }}</span>
@@ -19,23 +16,22 @@
   <div class="order-summary__rows">
     <div class="order-summary__row">
       <span>{{ 'PRICE' | translate }}</span>
-      <span>{{ cart.total }} {{ 'OMR' | translate }}</span>
+      <span>{{ cart.price_sale }} {{ 'OMR' | translate }}</span>
     </div>
     <div class="order-summary__row">
       <span>{{ 'SHIPPING' | translate }}</span>
-      <span class="text-warning">{{ 'SHIPPING_NOT_CALCULATED' | translate }}</span>
+      <span *ngIf="shippingCost === null" class="text-warning">{{ 'SHIPPING_NOT_CALCULATED' | translate }}</span>
+      <span *ngIf="shippingCost !== null">
+        {{ shippingCost === 0 ? ('FREE_SHIPPING' | translate) : (shippingCost + ' ' + ('OMR' | translate)) }}
+      </span>
     </div>
     <div class="order-summary__total">
       <span>{{ 'TOTAL' | translate }}</span>
-      <span>{{ cart.total }} {{ 'OMR' | translate }}</span>
+      <span>{{ cart.total + (shippingCost || 0) }} {{ 'OMR' | translate }}</span>
     </div>
   </div>
 
-  <button
-    class="btn btn-primary btn-block btn-lg"
-    (click)="placeOrder.emit()"
-    [disabled]="placing"
-  >
+  <button class="btn btn-primary btn-block btn-lg" (click)="placeOrder.emit()" [disabled]="placing">
     <i class="uil uil-check" *ngIf="!placing"></i>
     <i class="uil uil-spinner-alt spin" *ngIf="placing"></i>
     {{ 'PLACE_ORDER' | translate }}

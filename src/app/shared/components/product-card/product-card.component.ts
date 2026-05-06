@@ -63,6 +63,13 @@ export class ProductCardComponent {
 
   addToCart(e: Event): void {
     e.stopPropagation();
+    
+    // If the product has options, redirect to detail page to select options first!
+    if (this.product.options && this.product.options.length > 0) {
+      this.navigate();
+      return;
+    }
+
     this.addingToCart = true;
     this.cart.addProduct(this.product, 1);
     this.addingToCart = false;

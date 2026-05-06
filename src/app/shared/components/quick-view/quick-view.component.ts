@@ -87,6 +87,13 @@ export class QuickViewComponent implements OnInit, OnChanges {
 
   addToCart(): void {
     if (!this.product) return;
+
+    // If the product has options, redirect to detail page to select options first!
+    if (this.product.options && this.product.options.length > 0) {
+      this.goToDetail();
+      return;
+    }
+
     this.addingToCart = true;
     this.cartService.addProduct(
       this.product,

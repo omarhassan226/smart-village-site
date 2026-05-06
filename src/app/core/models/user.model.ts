@@ -28,14 +28,14 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-  first_name: string;
-  last_name: string;
+  Fname: string;
+  Lname: string;
   phone: string;
   email?: string;
-  address?: string;
-  country_id?: number;
-  city_id?: number;
+  type_address?: string;
+  governorate_id?: number;
+  state_id?: number;
   village_id?: number;
   password: string;
-  password_confirmation: string;
+  password_confirmation?: string;
 }

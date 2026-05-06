@@ -43,13 +43,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group(
       {
-        first_name: ['', Validators.required],
-        last_name: ['', Validators.required],
+        Fname: ['', Validators.required],
+        Lname: ['', Validators.required],
         phone: ['', Validators.required],
         email: ['', Validators.email],
         governorate_id: [null, Validators.required],
-        city_id: [null, Validators.required],
+        state_id: [null, Validators.required],
         village_id: [null, Validators.required],
+        type_address: ['', Validators.required],
         password: ['', [Validators.required, Validators.minLength(6)]],
         password_confirmation: ['', Validators.required],
         accept_terms: [false, Validators.requiredTrue],
@@ -119,7 +120,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     // Reset dependent dropdowns
     this.cities = [];
     this.villages = [];
-    this.form.patchValue({ city_id: null, village_id: null });
+    this.form.patchValue({ state_id: null, village_id: null });
 
     if (!id) return;
 
@@ -138,7 +139,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onCityChange(): void {
-    const id = this.form.get('city_id')?.value;
+    const id = this.form.get('state_id')?.value;
 
     // Reset village dropdown
     this.villages = [];

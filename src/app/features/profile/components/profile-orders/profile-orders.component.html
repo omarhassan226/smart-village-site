@@ -1,11 +1,15 @@
 <div class="profile-section">
+  <!-- Header -->
   <div class="profile-section__header">
     <h2 class="profile-section__title">
       <i class="uil uil-box"></i>
-      {{ (status === 'review' ? 'PREPARING' : (status === 'delivering' ? 'DELIVERING' : 'MY_ORDERS')) | translate }}
+      {{ (status === 'review' || status === 'process' ? 'PREPARING' : (status === 'delivering' ? 'DELIVERING' :
+      'MY_ORDERS')) | translate }}
     </h2>
   </div>
-  <div class="orders-table-wrapper">
+
+  <!-- Orders Table Grid -->
+  <div class="orders-table-wrapper" *ngIf="!loading && orders && orders.length > 0">
     <table class="orders-table">
       <thead>
         <tr>
@@ -16,23 +20,40 @@
           <th>{{ 'ACTION' | translate }}</th>
         </tr>
       </thead>
-      <tbody *ngIf="!loading && orders && orders.length > 0">
-        <tr *ngFor="let order of orders">
-          <td><span class="order-id">#{{ order.order_number }}</span></td>
-          <td>{{ order.created_at | date:'shortDate' }}</td>
-          <td><span class="order-price">{{ order.total }} {{ 'OMR' | translate }}</span></td>
+      <tbody>
+        <tr *ngFor="let order of orders" class="order-row">
           <td>
-            <span class="status-badge" [class]="'status-badge--' + getStatusClass(order.status)">
-              {{ getStatusKey(order.status) | translate }}
-            </span>
+            <span class="order-id">#{{ order.id || order.order_number }}</span>
+          </td>
+          <td>
+            <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+          </td>
+          <td>
+            <span class="order-price">{{ order.cost || order.total }} {{ 'OMR' | translate }}</span>
+          </td>
+          <td>
+            <div class="status-cell-wrapper">
+              <span class="status-badge" [class]="'status-badge--' + getStatusClass(order.status)">
+                <span class="status-dot"></span>
+                {{ getStatusKey(order.status) | translate }}
+              </span>
+              <span class="return-eligible-badge" [class.eligible]="order.can_return === 'yes'">
+                <i class="uil" [class.uil-check-circle]="order.can_return === 'yes'"
+                  [class.uil-times-circle]="order.can_return !== 'yes'"></i>
+                {{ (order.can_return === 'yes' ? 'ELIGIBLE_FOR_RETURN' : 'NOT_ELIGIBLE_FOR_RETURN') | translate }}
+              </span>
+            </div>
           </td>
           <td>
             <div class="order-actions">
-              <button class="btn-icon" *ngIf="order.items && order.items.length > 0"
-                [routerLink]="['/products', order.items[0]?.product?.id]" title="{{ 'VIEW_DETAILS' | translate }}">
-                <i class="uil uil-eye"></i>
+              <!-- View Details Button -->
+              <button class="btn-details" (click)="toggleOrderDetails(order)" title="{{ 'ORDER_DETAILS' | translate }}">
+                <i class="uil uil-receipt"></i>
+                <span>{{ 'ORDER_DETAILS' | translate }}</span>
               </button>
-              <button class="btn-icon btn-icon--danger" *ngIf="order.status === 'delivered'"
+
+              <!-- Return Button -->
+              <button class="btn-icon btn-icon--danger animate-pulse" *ngIf="order.can_return === 'yes'"
                 (click)="openReturn(order.id)" title="{{ 'RETURN_ORDER' | translate }}">
                 <i class="uil uil-refresh"></i>
               </button>
@@ -43,18 +64,184 @@
     </table>
   </div>
 
+  <!-- Loading Spinner -->
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
+  <!-- Empty State -->
   <app-empty-state *ngIf="!loading && orders?.length === 0" icon="uil uil-box"
     [title]="'ORDERS_EMPTY' | translate"></app-empty-state>
 
-
-
-  <app-pagination [currentPage]="currentPage" [lastPage]="lastPage"
+  <!-- Pagination -->
+  <app-pagination *ngIf="!loading && orders && orders.length > 0" [currentPage]="currentPage" [lastPage]="lastPage"
     (pageChange)="currentPage = $event; loadOrders()"></app-pagination>
 </div>
 
-<!-- Return Modal -->
+<!-- Premium Order Details Sidebar -->
+<div class="details-modal-backdrop" [class.open]="selectedOrderDetails" (click)="closeOrderDetails()">
+  <div class="details-modal-box" (click)="$event.stopPropagation()">
+    <!-- Sidebar Header -->
+    <div class="details-modal-header">
+      <div class="header-title-area">
+        <h3>{{ 'ORDER_DETAILS' | translate }} <span class="highlight">#{{ selectedOrderDetails?.id }}</span></h3>
+        <div class="header-badges-row" *ngIf="selectedOrderDetails">
+          <span class="status-badge" [class]="'status-badge--' + getStatusClass(selectedOrderDetails.status)">
+            <span class="status-dot"></span>
+            {{ getStatusKey(selectedOrderDetails.status) | translate }}
+          </span>
+          <span class="return-eligible-badge" [class.eligible]="selectedOrderDetails.can_return === 'yes'">
+            <i class="uil" [class.uil-check-circle]="selectedOrderDetails.can_return === 'yes'"
+              [class.uil-times-circle]="selectedOrderDetails.can_return !== 'yes'"></i>
+            {{ (selectedOrderDetails.can_return === 'yes' ? 'ELIGIBLE_FOR_RETURN' : 'NOT_ELIGIBLE_FOR_RETURN') |
+            translate }}
+          </span>
+        </div>
+      </div>
+      <div class="header-actions-area">
+        <button class="btn btn-primary btn-sm btn-return-modal" *ngIf="selectedOrderDetails?.can_return === 'yes'"
+          (click)="openReturn(selectedOrderDetails.id)">
+          <i class="uil uil-refresh"></i>
+          {{ 'RETURN_ORDER' | translate }}
+        </button>
+        <button class="modal-close-btn" (click)="closeOrderDetails()">
+          <i class="uil uil-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar Scrollable Content -->
+    <div class="details-modal-body" *ngIf="selectedOrderDetails">
+
+      <!-- Info Cards Grid -->
+      <div class="modal-grid">
+        <!-- Delivery Info Card -->
+        <div class="info-card">
+          <h4 class="card-title">
+            <i class="uil uil-map-marker"></i>
+            {{ 'DELIVERY_ADDRESS' | translate }}
+          </h4>
+          <div class="card-content">
+            <div class="info-row" *ngIf="selectedOrderDetails.shipping_address?.receiver_name">
+              <span class="info-label">{{ 'RECEIVER_NAME' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.shipping_address.receiver_name }}</span>
+            </div>
+            <div class="info-row" *ngIf="selectedOrderDetails.shipping_address?.phone_number">
+              <span class="info-label">{{ 'PHONE' | translate }}:</span>
+              <span class="info-val dir-ltr">{{ selectedOrderDetails.shipping_address.phone_number }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">{{ 'GOVERNORATE' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.shipping_address?.governorate?.name_ar || '' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">{{ 'CITY_STATE' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.shipping_address?.state?.name_ar || '' }}</span>
+            </div>
+            <div class="info-row" *ngIf="selectedOrderDetails.shipping_address?.village">
+              <span class="info-label">{{ 'VILLAGE' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.shipping_address.village?.name_ar || '' }}</span>
+            </div>
+            <div class="info-row" *ngIf="selectedOrderDetails.shipping_address?.address">
+              <span class="info-label">{{ 'ADDRESS' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.shipping_address.address }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment & Shipping Info Card -->
+        <div class="info-card">
+          <h4 class="card-title">
+            <i class="uil uil-bill"></i>
+            {{ 'SHIPPING_DELIVERY' | translate }}
+          </h4>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-label">{{ 'PAYMENT_METHOD' | translate }}:</span>
+              <span class="info-val highlight-val">{{ selectedOrderDetails.way_pay }}</span>
+            </div>
+            <div class="info-row" *ngIf="selectedOrderDetails.pay_status">
+              <span class="info-label">{{ 'PAY_STATUS' | translate }}:</span>
+              <span class="info-val info-val--pay-status" [class]="'pay-status--' + selectedOrderDetails.pay_status">
+                {{ getPayStatusText(selectedOrderDetails.pay_status) | translate }}
+              </span>
+            </div>
+            <div class="info-row" *ngIf="selectedOrderDetails.shipping_company">
+              <span class="info-label">{{ 'SHIPPING_COMPANY' | translate }}:</span>
+              <span class="info-val">{{ lang.current === 'ar' ? selectedOrderDetails.shipping_company.name_ar :
+                selectedOrderDetails.shipping_company.name_en }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">{{ 'ORDER_DATE' | translate }}:</span>
+              <span class="info-val">{{ selectedOrderDetails.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Card -->
+      <div class="products-card">
+        <h4 class="card-title">
+          <i class="uil uil-shopping-bag"></i>
+          {{ 'PRODUCTS' | translate }}
+        </h4>
+        <div class="products-list">
+          <div class="product-item" *ngFor="let item of selectedOrderDetails.all_products">
+            <!-- Product Thumb -->
+            <div class="product-thumb">
+              <img [src]="formatProductImage(item.product?.sliders?.[0]?.image || item.product?.image || '')"
+                [alt]="lang.current === 'ar' ? item.product?.name_ar : item.product?.name_en"
+                onerror="this.onerror=null;this.src='assets/images/placeholder.svg'">
+            </div>
+
+            <!-- Product Details -->
+            <div class="product-meta">
+              <span class="product-name">
+                {{ lang.current === 'ar' ? item.product?.name_ar : item.product?.name_en }}
+              </span>
+
+              <!-- Selected Options Display -->
+              <div class="product-options" *ngIf="item.selectedOptions && item.selectedOptions.length > 0">
+                <div class="option-badge" *ngFor="let opt of item.selectedOptions">
+                  <span class="option-dot" *ngIf="opt.display_value && opt.display_value.startsWith('#')"
+                    [style.backgroundColor]="opt.display_value"></span>
+                  <img class="option-img-thumb"
+                    *ngIf="opt.display_value && !opt.display_value.startsWith('#') && opt.display_value.includes('/')"
+                    [src]="formatOptionImage(opt.display_value)" />
+                  <span class="option-text">{{ lang.current === 'ar' ? opt.name_ar : opt.name_en }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing / Qty -->
+            <div class="product-price-info">
+              <span class="qty-label">x{{ item.quantity }}</span>
+              <span class="item-total">{{ item.productTotalPrice }} {{ 'OMR' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Breakdown Summary -->
+      <div class="order-summary-box">
+        <div class="summary-line">
+          <span>{{ 'SUBTOTAL' | translate }}</span>
+          <span>{{ (selectedOrderDetails.cost - selectedOrderDetails.price_shipping).toFixed(2) }} {{ 'OMR' |
+            translate }}</span>
+        </div>
+        <div class="summary-line">
+          <span>{{ 'SHIPPING_COST' | translate }}</span>
+          <span>+ {{ selectedOrderDetails.price_shipping }} {{ 'OMR' | translate }}</span>
+        </div>
+        <div class="summary-line grand-total">
+          <span>{{ 'GRAND_TOTAL' | translate }}</span>
+          <span class="grand-price">{{ selectedOrderDetails.cost }} {{ 'OMR' | translate }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Return Request Modal -->
 <div class="modal-backdrop" [class.open]="returnModalOpen" (click)="returnModalOpen = false">
   <div class="modal-box" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -65,7 +252,8 @@
       <label class="form-label">{{ 'RETURN_REASON' | translate }}</label>
       <textarea class="return-textarea" [(ngModel)]="returnReason" rows="4"></textarea>
       <div class="modal-actions">
-        <button class="btn btn-outline btn-sm" (click)="returnModalOpen = false">{{ 'CANCEL' | translate }}</button>
+        <button class="btn btn-outline btn-sm" (click)="returnModalOpen = false">{{ 'CANCEL' | translate
+          }}</button>
         <button class="btn btn-primary btn-sm" (click)="submitReturn()" [disabled]="!returnReason.trim()">
           {{ 'CONFIRM' | translate }}
         </button>

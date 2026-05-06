@@ -41,7 +41,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         </a>
 
         <!-- Preparing Orders -->
-        <a [routerLink]="['../orders']" [queryParams]="{ status: 'review' }" class="dash-card dash-card--warning">
+        <a [routerLink]="['../orders']" [queryParams]="{ status: 'process' }" class="dash-card dash-card--warning">
           <div class="dash-card__icon"><i class="uil uil-box"></i></div>
           <div class="dash-card__info">
             <span class="dash-card__title">{{ 'PREPARING' | translate }}</span>

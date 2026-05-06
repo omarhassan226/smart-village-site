@@ -22,17 +22,9 @@
 
     <!-- Thumbnails Column -->
     <div class="detail-gallery__thumbs-col">
-      <button
-        class="detail-gallery__thumb"
-        *ngFor="let img of allImages; let i = index"
-        [class.active]="img === selectedImage"
-        (click)="selectImage(img)"
-      >
-        <img
-          [src]="img"
-          [alt]="name"
-          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-        />
+      <button class="detail-gallery__thumb" *ngFor="let img of allImages; let i = index"
+        [class.active]="img === selectedImage" (click)="selectImage(img)">
+        <img [src]="img" [alt]="name" onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
         <span class="detail-gallery__thumb-border"></span>
       </button>
     </div>
@@ -46,42 +38,22 @@
       </div>
 
       <!-- Wishlist btn -->
-      <button
-        class="detail-gallery__wishlist-btn"
-        (click)="toggleWishlist()"
-        [class.active]="isWishlisted"
-      >
+      <button class="detail-gallery__wishlist-btn" (click)="toggleWishlist()" [class.active]="isWishlisted">
         <i class="uil" [class.uil-heart]="isWishlisted" [class.uil-heart-alt]="!isWishlisted"></i>
       </button>
 
       <!-- Main image with zoom -->
-      <div
-        class="detail-gallery__img-zone"
-        (mousemove)="onImgMouseMove($event)"
-        (mouseleave)="onImgMouseLeave()"
-      >
-        <img
-          class="detail-gallery__img"
-          [src]="selectedImage"
-          [alt]="name"
-          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-        />
+      <div class="detail-gallery__img-zone" (mousemove)="onImgMouseMove($event)" (mouseleave)="onImgMouseLeave()">
+        <img class="detail-gallery__img" [src]="selectedImage" [alt]="name"
+          onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
 
         <!-- Zoom lens -->
-        <div
-          class="detail-gallery__zoom-lens"
-          [style.display]="zoomVisible ? 'block' : 'none'"
-          [style.left.px]="zoomX"
-          [style.top.px]="zoomY"
-        ></div>
+        <div class="detail-gallery__zoom-lens" [style.display]="zoomVisible ? 'block' : 'none'" [style.left.px]="zoomX"
+          [style.top.px]="zoomY"></div>
 
         <!-- Zoom result panel -->
-        <div
-          class="detail-gallery__zoom-result"
-          [style.display]="zoomVisible ? 'block' : 'none'"
-          [style.background-image]="'url(' + selectedImage + ')'"
-          [style.background-position]="zoomBgPos"
-        ></div>
+        <div class="detail-gallery__zoom-result" [style.display]="zoomVisible ? 'block' : 'none'"
+          [style.background-image]="'url(' + selectedImage + ')'" [style.background-position]="zoomBgPos"></div>
       </div>
 
       <!-- Slider nav (when multiple images) -->
@@ -90,7 +62,8 @@
           <i class="uil uil-angle-left-b"></i>
         </button>
         <span class="detail-gallery__slide-counter">{{ currentSlide + 1 }} / {{ allImages.length }}</span>
-        <button class="detail-gallery__nav-btn" (click)="nextSlide()" [disabled]="currentSlide === allImages.length - 1">
+        <button class="detail-gallery__nav-btn" (click)="nextSlide()"
+          [disabled]="currentSlide === allImages.length - 1">
           <i class="uil uil-angle-right-b"></i>
         </button>
       </div>
@@ -131,39 +104,44 @@
       </span>
     </div>
 
-    <!-- Color -->
-    <div class="detail-info__option" *ngIf="product.colors && product.colors.length > 0">
-      <label class="detail-info__option-label">
-        {{ 'COLOR' | translate }}:
-        <strong>{{ selectedColor?.name }}</strong>
-      </label>
-      <div class="color-swatches">
-        <button
-          class="color-swatch"
-          *ngFor="let color of product.colors"
-          [class.active]="selectedColor?.id === color.id"
-          [style.background]="color.hex || '#ccc'"
-          [title]="color.name"
-          (click)="selectedColor = color"
-        ></button>
-      </div>
-    </div>
+    <!-- Dynamic Options Loop -->
+    <ng-container *ngIf="product.options && product.options.length > 0">
+      <div class="detail-info__option" *ngFor="let opt of product.options">
+        <label class="detail-info__option-label">
+          {{ lang.current === 'ar' ? opt.label_ar : opt.label_en || opt.label_ar }}
+          <span *ngIf="opt.type === 'Color' && selectedOptions[opt.id]">
+            : <strong>{{ lang.current === 'ar' ? selectedOptions[opt.id].name_ar : selectedOptions[opt.id].name_en
+              }}</strong>
+          </span>
+        </label>
 
-    <!-- Type -->
-    <div class="detail-info__option" *ngIf="product.types && product.types.length > 0">
-      <label class="detail-info__option-label">{{ 'TYPE' | translate }}</label>
-      <div class="type-options">
-        <button
-          class="type-option"
-          *ngFor="let type of product.types"
-          [class.active]="selectedType?.id === type.id"
-          (click)="selectedType = type"
-        >
-          {{ type.name }}
-          <span *ngIf="type.extra_price"> (+{{ type.extra_price }})</span>
-        </button>
+        <!-- Color Options -->
+        <div class="color-swatches" *ngIf="opt.type === 'Color'">
+          <button class="color-swatch" *ngFor="let val of opt.values"
+            [class.active]="selectedOptions[opt.id]?.id === val.id" [style.background]="val.display_value || '#ccc'"
+            [title]="lang.current === 'ar' ? val.name_ar : val.name_en" (click)="selectOption(opt.id, val)"></button>
+        </div>
+
+        <!-- Text/Other Options -->
+        <div class="type-options" *ngIf="opt.type !== 'Color' && opt.type !== 'image'">
+          <button class="type-option" *ngFor="let val of opt.values"
+            [class.active]="selectedOptions[opt.id]?.id === val.id" (click)="selectOption(opt.id, val)">
+            {{ lang.current === 'ar' ? val.name_ar : val.name_en }}
+          </button>
+        </div>
+
+        <!-- Image Options -->
+        <div class="image-options" *ngIf="opt.type === 'image'">
+          <button class="image-swatch" *ngFor="let val of opt.values"
+            [class.active]="selectedOptions[opt.id]?.id === val.id"
+            [title]="lang.current === 'ar' ? val.name_ar : val.name_en" (click)="selectOption(opt.id, val)">
+            <img
+              [src]="val.display_value?.startsWith('http') ? val.display_value : ('https://smartvillageapp.com/app/' + val.display_value)"
+              alt="option image" onerror="this.style.display='none'">
+          </button>
+        </div>
       </div>
-    </div>
+    </ng-container>
 
     <!-- Quantity -->
     <div class="detail-info__option">
@@ -183,13 +161,10 @@
 
     <!-- Actions -->
     <div class="detail-info__actions">
-      <button
-        class="btn btn-primary btn-lg"
-        (click)="addToCart()"
-        [disabled]="!product.in_stock || addingToCart"
-      >
+      <button class="btn btn-primary btn-lg" (click)="addToCart()"
+        [disabled]="!product.in_stock || addingToCart || calculatingPrice">
         <i class="uil uil-cart" *ngIf="!addingToCart"></i>
-        <i class="uil uil-spinner-alt spin" *ngIf="addingToCart"></i>
+        <i class="uil uil-spinner-alt spin" *ngIf="addingToCart || calculatingPrice"></i>
         {{ 'ADD_TO_CART' | translate }}
       </button>
 
@@ -217,16 +192,10 @@
 
     <!-- Tabs -->
     <div class="detail-tabs">
-      <button
-        class="detail-tabs__tab"
-        [class.active]="activeTab === 'details'"
-        (click)="activeTab = 'details'"
-      >{{ 'DETAILS' | translate }}</button>
-      <button
-        class="detail-tabs__tab"
-        [class.active]="activeTab === 'shipping'"
-        (click)="activeTab = 'shipping'"
-      >{{ 'SHIPPING_DELIVERY' | translate }}</button>
+      <button class="detail-tabs__tab" [class.active]="activeTab === 'details'" (click)="activeTab = 'details'">{{
+        'DETAILS' | translate }}</button>
+      <button class="detail-tabs__tab" [class.active]="activeTab === 'shipping'" (click)="activeTab = 'shipping'">{{
+        'SHIPPING_DELIVERY' | translate }}</button>
     </div>
 
     <div class="detail-tabs__content">
@@ -252,8 +221,5 @@
 </div>
 
 <!-- Shipping Modal -->
-<app-shipping-modal
-  [isOpen]="shippingModalOpen"
-  [product]="product"
-  (close)="shippingModalOpen = false"
-></app-shipping-modal>
+<app-shipping-modal [isOpen]="shippingModalOpen" [product]="product"
+  (close)="shippingModalOpen = false"></app-shipping-modal>

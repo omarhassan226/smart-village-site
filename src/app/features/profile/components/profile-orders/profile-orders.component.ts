@@ -42,16 +42,42 @@ export class ProfileOrdersComponent implements OnInit {
     });
   }
 
+  selectedOrderDetails: any | null = null;
+
   loadOrders(): void {
     this.loading = true;
     this.orderService.getOrders(this.currentPage, this.status || undefined).subscribe({
-      next: (res) => {
-        this.orders = res.data || [];
+      next: (res: any) => {
+        this.orders = res.orders || res.data || [];
         this.lastPage = res.last_page || 1;
         this.loading = false;
       },
       error: () => { this.loading = false; },
     });
+  }
+
+  toggleOrderDetails(order: any): void {
+    if (this.selectedOrderDetails && this.selectedOrderDetails.id === order.id) {
+      this.selectedOrderDetails = null;
+    } else {
+      this.selectedOrderDetails = order;
+    }
+  }
+
+  closeOrderDetails(): void {
+    this.selectedOrderDetails = null;
+  }
+
+  formatOptionImage(path: string): string {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    return `https://smartvillageapp.com/app/${path}`;
+  }
+
+  formatProductImage(path: string): string {
+    if (!path) return 'assets/images/placeholder.svg';
+    if (path.startsWith('http')) return path;
+    return `https://smartvillageapp.com/app/${path}`;
   }
 
   get filteredOrders(): Order[] {
@@ -65,28 +91,38 @@ export class ProfileOrdersComponent implements OnInit {
     return this.orders.filter((o) => map[this.activeTab].includes(o.status));
   }
 
-  getStatusKey(status: OrderStatus): string {
-    const map: Record<OrderStatus, string> = {
+  getStatusKey(status: any): string {
+    const map: Record<string, string> = {
+      new: 'STATUS_NEW',
       pending: 'STATUS_PENDING',
       confirmed: 'STATUS_CONFIRMED',
       processing: 'STATUS_PROCESSING',
+      process: 'STATUS_PROCESSING',
       shipped: 'STATUS_SHIPPED',
       delivered: 'STATUS_DELIVERED',
-      cancelled: 'CANCEL',
-      returned: 'RETURN_ORDER',
+      complete: 'STATUS_COMPLETED',
+      completed: 'STATUS_COMPLETED',
+      cancel: 'STATUS_CANCELLED',
+      cancelled: 'STATUS_CANCELLED',
+      returned: 'RETURNED',
       review: 'STATUS_PROCESSING',
       delivering: 'STATUS_SHIPPED',
     };
     return map[status] || status;
   }
 
-  getStatusClass(status: OrderStatus): string {
-    const map: Record<OrderStatus, string> = {
+  getStatusClass(status: any): string {
+    const map: Record<string, string> = {
+      new: 'warning',
       pending: 'warning',
       confirmed: 'info',
       processing: 'info',
+      process: 'info',
       shipped: 'primary',
       delivered: 'success',
+      complete: 'success',
+      completed: 'success',
+      cancel: 'danger',
       cancelled: 'danger',
       returned: 'danger',
       review: 'info',
@@ -111,6 +147,15 @@ export class ProfileOrdersComponent implements OnInit {
       },
       error: () => this.notify.error(this.translate.instant('ERROR')),
     });
+  }
+
+  getPayStatusText(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'PAY_STATUS_PENDING',
+      paid: 'PAY_STATUS_PAID',
+      failed: 'PAY_STATUS_FAILED',
+    };
+    return map[status] || status;
   }
 
   getProductName(item: any): string {
