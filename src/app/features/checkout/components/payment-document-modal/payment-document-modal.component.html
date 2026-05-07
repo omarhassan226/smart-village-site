@@ -1,0 +1,65 @@
+<div class="modal" [class.open]="isOpen">
+  <div class="modal-overlay" (click)="onCancel()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="uil uil-invoice icon-header"></i>
+        {{ 'UPLOAD_PAYMENT_DOC' | translate }}
+      </h3>
+      <button class="btn-close" (click)="onCancel()" aria-label="Close modal">
+        <i class="uil uil-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-desc">{{ 'UPLOAD_PAYMENT_DOC_DESC' | translate }}</p>
+
+      <div class="dropzone" [class.dragover]="isDragOver" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()" *ngIf="!fileBase64">
+        <input #fileInput type="file" accept="image/*,application/pdf" style="display: none;"
+          (change)="onFileSelected($event)" />
+        <div class="dropzone-content">
+          <div class="icon-wrapper">
+            <i class="uil uil-cloud-upload"></i>
+          </div>
+          <h4>{{ 'SELECT_PAYMENT_FILE' | translate }}</h4>
+          <span>{{ 'SUPPORTED_FORMATS' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- File Preview State -->
+      <div class="file-preview-card" *ngIf="fileBase64">
+        <div class="preview-header">
+          <div class="file-info">
+            <i class="uil uil-file-check-alt file-icon"></i>
+            <div class="file-details">
+              <span class="file-name">{{ fileName }}</span>
+              <span class="file-size">{{ fileSize }}</span>
+            </div>
+          </div>
+          <button class="btn-remove" (click)="clearFile()" [title]="'DELETE' | translate">
+            <i class="uil uil-trash-alt"></i>
+          </button>
+        </div>
+
+        <div class="preview-body" *ngIf="isImage">
+          <img [src]="fileBase64" alt="Payment receipt preview" />
+        </div>
+        <div class="preview-body pdf-preview" *ngIf="!isImage">
+          <i class="uil uil-file-pdf pdf-large-icon"></i>
+          <span>{{ 'PDF_DOCUMENT_SELECTED' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">
+        {{ 'CANCEL' | translate }}
+      </button>
+      <button type="button" class="btn btn-primary btn-submit-order" [disabled]="!fileBase64" (click)="onSubmit()">
+        <i class="uil uil-check-circle"></i>
+        {{ 'CONFIRM_AND_SUBMIT_ORDER' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

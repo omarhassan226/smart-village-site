@@ -313,5 +313,19 @@
   "PAY_STATUS_PAID": "مكتمل (تم الدفع)",
   "PAY_STATUS_FAILED": "فشل الدفع",
   "STATUS_CANCELLED": "ملغي",
-  "STATUS_COMPLETED": "مكتمل"
+  "STATUS_COMPLETED": "مكتمل",
+  "UPLOAD_PAYMENT_DOC": "إرفاق مستند الدفع",
+  "UPLOAD_PAYMENT_DOC_DESC": "يرجى رفع صورة أو مستند يثبت عملية التحويل البنكي لإتمام الطلب.",
+  "SELECT_PAYMENT_FILE": "اختر ملف الدفع أو اسحبه هنا",
+  "SUPPORTED_FORMATS": "الملفات المدعومة: PNG, JPG, JPEG, PDF (الحد الأقصى: 5 ميجابايت)",
+  "CONFIRM_AND_SUBMIT_ORDER": "تأكيد وإتمام الطلب",
+  "FILE_SELECTED": "تم اختيار الملف",
+  "FILE_TOO_LARGE": "حجم الملف كبير جداً، الحد الأقصى المسموح به هو 5 ميجابايت",
+  "FILE_READ_ERROR": "حدث خطأ أثناء قراءة الملف، يرجى المحاولة مرة أخرى",
+  "PDF_DOCUMENT_SELECTED": "تم تحديد مستند PDF بنجاح",
+  "PAYMENT_RECEIPT": "إيصال التحويل البنكي",
+  "CHANGE_FILE": "تغيير الملف",
+  "UPLOAD_FILE": "إرفاق ملف",
+  "RECEIPT_UPLOADED": "تم إرفاق إيصال الدفع بنجاح",
+  "PLEASE_UPLOAD_RECEIPT": "اضغط هنا لإرفاق إيصال التحويل البنكي"
 }

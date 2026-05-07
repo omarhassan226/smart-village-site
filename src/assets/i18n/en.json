@@ -313,5 +313,19 @@
   "PAY_STATUS_PAID": "Paid",
   "PAY_STATUS_FAILED": "Failed",
   "STATUS_CANCELLED": "Cancelled",
-  "STATUS_COMPLETED": "Completed"
+  "STATUS_COMPLETED": "Completed",
+  "UPLOAD_PAYMENT_DOC": "Upload Payment Document",
+  "UPLOAD_PAYMENT_DOC_DESC": "Please upload an image or document proving the bank transfer to complete your order.",
+  "SELECT_PAYMENT_FILE": "Choose payment file or drag it here",
+  "SUPPORTED_FORMATS": "Supported formats: PNG, JPG, JPEG, PDF (Max: 5MB)",
+  "CONFIRM_AND_SUBMIT_ORDER": "Confirm & Complete Order",
+  "FILE_SELECTED": "File Selected",
+  "FILE_TOO_LARGE": "File size is too large, maximum allowed is 5MB",
+  "FILE_READ_ERROR": "An error occurred while reading the file, please try again",
+  "PDF_DOCUMENT_SELECTED": "PDF Document selected successfully",
+  "PAYMENT_RECEIPT": "Bank Payment Receipt",
+  "CHANGE_FILE": "Change File",
+  "UPLOAD_FILE": "Upload File",
+  "RECEIPT_UPLOADED": "Receipt uploaded successfully",
+  "PLEASE_UPLOAD_RECEIPT": "Click here to upload the bank transfer receipt"
 }

@@ -11,10 +11,11 @@ import { Cart, Address } from '../../core/models';
 import { LanguageService } from '../../core/services/language.service';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 import { AddressModalComponent } from './components/address-modal/address-modal.component';
+import { PaymentDocumentModalComponent } from './components/payment-document-modal/payment-document-modal.component';
 
 @Component({
   standalone: true,
-  imports: [SharedModule, OrderSummaryComponent, AddressModalComponent],
+  imports: [SharedModule, OrderSummaryComponent, AddressModalComponent, PaymentDocumentModalComponent],
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss'],
@@ -29,6 +30,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   loading = true;
   placing = false;
   addressModalOpen = false;
+  paymentDocModalOpen = false;
+  paymentReceiptFile: string | null = null;
+  paymentReceiptName = '';
+  paymentReceiptSize = '';
 
   shippingCompanies: any[] = [];
   selectedCompanyId: number | null = null;
@@ -86,6 +91,22 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   onPaymentChange(): void {
     this.loadShippingCompanies();
+    if (this.paymentMethod === 'Transfer via Bank' && !this.paymentReceiptFile) {
+      this.paymentDocModalOpen = true;
+    }
+  }
+
+  onPaymentReceiptConfirmed(event: { base64: string; name: string; size: string }): void {
+    this.paymentReceiptFile = event.base64;
+    this.paymentReceiptName = event.name;
+    this.paymentReceiptSize = event.size;
+    this.paymentDocModalOpen = false;
+  }
+
+  clearPaymentReceipt(): void {
+    this.paymentReceiptFile = null;
+    this.paymentReceiptName = '';
+    this.paymentReceiptSize = '';
   }
 
   loadShippingCompanies(): void {
@@ -126,6 +147,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.paymentMethod === 'Transfer via Bank' && !this.paymentReceiptFile) {
+      this.notify.error(this.translate.instant('PLEASE_UPLOAD_RECEIPT') || 'Please upload bank transfer receipt');
+      this.paymentDocModalOpen = true;
+      return;
+    }
+
     const selectedCompany = this.shippingCompanies.find(c =>
       (c.id || c.company_shipping_id) === this.selectedCompanyId
     );
@@ -137,7 +164,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       shipping_address_id: String(this.selectedAddressId),
       company_shipping_id: this.selectedCompanyId,
       cost: cost,
-      file: "",
+      file: this.paymentReceiptFile || "",
       price_shipping: priceShipping,
       products: this.cart.items.map(i => ({
         detail_id: i.detail_id || i.type_id || i.color_id || null,
@@ -153,6 +180,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.orderService.saveWebOrder(payload).subscribe({
       next: () => {
         this.placing = false;
+        this.paymentDocModalOpen = false;
         this.cartService.clear();
         this.notify.success(this.translate.instant('SUCCESS'));
         this.router.navigate(['/checkout/success']);

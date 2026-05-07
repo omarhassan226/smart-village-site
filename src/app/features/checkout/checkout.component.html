@@ -60,6 +60,40 @@
             {{ lang.current === 'ar' ? 'تحويل بنكي' : 'Bank Transfer' }}
           </label>
         </div>
+
+        <!-- Receipt Preview directly in Checkout Page -->
+        <div class="receipt-preview-section" *ngIf="paymentMethod === 'Transfer via Bank'">
+          <div class="receipt-preview-header">
+            <h4>
+              <i class="uil uil-invoice"></i>
+              {{ 'PAYMENT_RECEIPT' | translate }}
+            </h4>
+            <button class="btn btn-text btn-sm edit-receipt-btn" (click)="paymentDocModalOpen = true">
+              <i class="uil uil-edit"></i>
+              {{ (paymentReceiptFile ? 'CHANGE_FILE' : 'UPLOAD_FILE') | translate }}
+            </button>
+          </div>
+
+          <!-- If file uploaded -->
+          <div class="receipt-preview-box" *ngIf="paymentReceiptFile">
+            <div class="receipt-info">
+              <i class="uil uil-file-check-alt receipt-icon"></i>
+              <div class="receipt-details">
+                <span class="receipt-filename">{{ paymentReceiptName || ('RECEIPT_UPLOADED' | translate) }}</span>
+                <span class="receipt-filesize" *ngIf="paymentReceiptSize">{{ paymentReceiptSize }}</span>
+              </div>
+            </div>
+            <button class="btn-remove-receipt" (click)="clearPaymentReceipt()" [title]="'DELETE' | translate">
+              <i class="uil uil-trash-alt"></i>
+            </button>
+          </div>
+
+          <!-- If file NOT uploaded yet -->
+          <div class="receipt-empty-box" *ngIf="!paymentReceiptFile" (click)="paymentDocModalOpen = true">
+            <i class="uil uil-image-upload upload-placeholder-icon"></i>
+            <span>{{ 'PLEASE_UPLOAD_RECEIPT' | translate }}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Shipping Companies -->
@@ -113,3 +147,10 @@
 <!-- Address Modal -->
 <app-address-modal [isOpen]="addressModalOpen" (close)="addressModalOpen = false"
   (saved)="onAddressAdded()"></app-address-modal>
+
+<!-- Payment Document Modal -->
+<app-payment-document-modal 
+  [isOpen]="paymentDocModalOpen" 
+  (close)="paymentDocModalOpen = false"
+  (confirmed)="onPaymentReceiptConfirmed($event)">
+</app-payment-document-modal>
