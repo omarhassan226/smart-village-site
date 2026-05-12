@@ -118,17 +118,15 @@
   }
 
   &__zoom-result {
-    position: fixed;
-    width: 320px;
-    height: 320px;
-    border-radius: 12px;
-    border: 2px solid var(--primary);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
     pointer-events: none;
-    z-index: 1202;
-    top: 50%;
-    inset-inline-end: 24px;
-    transform: translateY(-50%);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    background-color: #fff;
     background-repeat: no-repeat;
 
     @media (max-width: 900px) {
