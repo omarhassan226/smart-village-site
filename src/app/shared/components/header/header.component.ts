@@ -125,9 +125,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getCategoryName(cat: MainCategory | any): string {
-    return this.lang.current === 'ar'
+    const name = this.lang.current === 'ar'
       ? cat.category_ar || cat.name_ar || cat.name || ''
       : cat.category_en || cat.name_en || cat.name || '';
+      
+    if (this.lang.current === 'en' && name === 'عروض حصرية') return 'Exclusive Offers';
+    return name;
   }
 
   openCart(e: Event): void {

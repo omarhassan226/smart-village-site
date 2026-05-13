@@ -225,6 +225,8 @@ export class CategoriesGridComponent implements OnInit {
   }
 
   getName(cat: MainCategory): string {
-    return (this.lang.current === 'ar' ? cat.category_ar || cat.name_ar || cat.name || '' : cat.category_en || cat.name_en || cat.name || '');
+    const name = (this.lang.current === 'ar' ? cat.category_ar || cat.name_ar || cat.name || '' : cat.category_en || cat.name_en || cat.name || '');
+    if (this.lang.current === 'en' && name === 'عروض حصرية') return 'Exclusive Offers';
+    return name;
   }
 }

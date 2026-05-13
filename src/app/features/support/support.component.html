@@ -52,11 +52,11 @@
       <div class="faq-list">
         <div class="faq-item" *ngFor="let faq of faqs" [class.faq-open]="faq.open">
           <div class="faq-question" (click)="toggleFaq(faq)">
-            <h3>{{ lang.current === 'ar' ? faq.question_ar : faq.question_en }}</h3>
+            <h3>{{ faq.question }}</h3>
             <i class="uil uil-angle-down"></i>
           </div>
           <div class="faq-answer">
-            <p>{{ lang.current === 'ar' ? faq.answer_ar : faq.answer_en }}</p>
+            <p>{{ faq.answer }}</p>
           </div>
         </div>
       </div>

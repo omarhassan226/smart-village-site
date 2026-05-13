@@ -34,4 +34,6 @@ export interface SocialLinks {
   whatsapp?: string;
   youtube?: string;
   phone?: string;
+  Secure_policy?: string;
+  Sales_policy?: string;
 }

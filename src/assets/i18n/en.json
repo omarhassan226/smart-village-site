@@ -327,5 +327,10 @@
   "CHANGE_FILE": "Change File",
   "UPLOAD_FILE": "Upload File",
   "RECEIPT_UPLOADED": "Receipt uploaded successfully",
-  "PLEASE_UPLOAD_RECEIPT": "Click here to upload the bank transfer receipt"
+  "PLEASE_UPLOAD_RECEIPT": "Click here to upload the bank transfer receipt",
+  "SHIPPING_DESC_1": "We strive to deliver your orders as quickly as possible and at the best prices. Here are the details of our shipping policy:",
+  "SHIPPING_POINT_1": "Delivery to all governorates within 1-3 working days.",
+  "SHIPPING_POINT_2": "Shipping fees are calculated based on the governorate and state.",
+  "SHIPPING_POINT_3": "Cash on delivery service is available for some areas.",
+  "SHIPPING_DESC_2": "Please ensure that your address and phone number are written correctly to ensure your order arrives without delay."
 }

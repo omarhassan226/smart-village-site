@@ -69,10 +69,14 @@ export class AuthService {
     this._user$.next(null);
   }
 
-  updateProfile(data: Partial<User>): Observable<{ data: User }> {
+  updateProfile(data: any): Observable<any> {
     return this.http
-      .post<{ data: User }>(`${environment.apiUrl}/user/update`, data)
-      .pipe(tap((res) => this.patchUser(res.data)));
+      .post<any>(`${environment.apiUrl}/update/user/account`, data)
+      .pipe(tap((res) => {
+        if (res && res.user) {
+          this.patchUser(res.user);
+        }
+      }));
   }
 
   /** Fetch authenticated user profile */
@@ -81,18 +85,30 @@ export class AuthService {
       switchMap((res) => {
         // Handle various API response formats
         const user = res.user || res.data || res;
-        return of(user as User);
+        return of(this.normalizeUser(user));
       })
     );
   }
 
-  private saveUser(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
-    this._user$.next(user);
+  private normalizeUser(user: any): User {
+    if (!user) return user;
+    return {
+      ...user,
+      first_name: user.first_name || user.Fname || '',
+      last_name: user.last_name || user.Lname || '',
+      address: user.address || user.type_address || ''
+    };
   }
 
-  private patchUser(user: User): void {
-    const merged = { ...this._user$.value, ...user };
+  private saveUser(user: any): void {
+    const normalized = this.normalizeUser(user);
+    localStorage.setItem('user', JSON.stringify(normalized));
+    this._user$.next(normalized);
+  }
+
+  private patchUser(user: any): void {
+    const normalized = this.normalizeUser(user);
+    const merged = { ...this._user$.value, ...normalized };
     localStorage.setItem('user', JSON.stringify(merged));
     this._user$.next(merged);
   }

@@ -1,15 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
-
-interface FAQ {
-  question_ar: string;
-  question_en: string;
-  answer_ar: string;
-  answer_en: string;
-  open?: boolean;
-}
+import { SupportService, FAQ } from '../../core/services/support.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-support',
@@ -18,31 +12,48 @@ interface FAQ {
   templateUrl: './support.component.html',
   styleUrls: ['./support.component.scss']
 })
-export class SupportComponent {
-  faqs: FAQ[] = [
-    {
-      question_ar: 'كيف يمكنني تتبع طلبي؟',
-      question_en: 'How can I track my order?',
-      answer_ar: 'يمكنك تتبع طلبك من خلال الانتقال إلى صفحة "طلباتي" في حسابك الشخصي والضغط على رقم الطلب.',
-      answer_en: 'You can track your order by going to the "My Orders" page in your personal account and clicking on the order number.'
-    },
-    {
-      question_ar: 'ما هي سياسة الاسترجاع؟',
-      question_en: 'What is the return policy?',
-      answer_ar: 'يمكنك إرجاع المنتجات خلال 14 يوماً من تاريخ الاستلام بشرط أن تكون في حالتها الأصلية.',
-      answer_en: 'You can return products within 14 days of receipt, provided they are in their original condition.'
-    },
-    {
-      question_ar: 'هل تتوفر خدمة الدفع عند الاستلام؟',
-      question_en: 'Is cash on delivery available?',
-      answer_ar: 'نعم، نوفر خدمة الدفع عند الاستلام لجميع محافظات سلطنة عمان.',
-      answer_en: 'Yes, we provide cash on delivery service for all governorates of the Sultanate of Oman.'
-    }
-  ];
+export class SupportComponent implements OnInit, OnDestroy {
+  faqs: FAQ[] = [];
+  loading = true;
+  private destroy$ = new Subject<void>();
 
-  constructor(public lang: LanguageService) {}
+  constructor(
+    public lang: LanguageService,
+    private supportService: SupportService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadFAQs();
+
+    this.lang.lang$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.loadFAQs();
+    });
+  }
+
+  loadFAQs(): void {
+    this.loading = true;
+    this.supportService.getFAQs(this.lang.current).subscribe({
+      next: (res) => {
+        if (res && res.questions && res.questions.data) {
+          this.faqs = res.questions.data;
+        } else {
+          this.faqs = [];
+        }
+        this.loading = false;
+      },
+      error: () => {
+        this.faqs = [];
+        this.loading = false;
+      }
+    });
+  }
 
   toggleFaq(faq: FAQ) {
     faq.open = !faq.open;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

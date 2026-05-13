@@ -1,0 +1,128 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.policy-page {
+  padding: 60px 0;
+  background-color: var(--color-background-soft);
+  min-height: 50vh;
+
+  &__title {
+    font-size: 2rem;
+    color: var(--color-text-primary);
+    margin-bottom: 40px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-primary);
+      border-radius: 2px;
+    }
+  }
+
+  &__content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: var(--shadow-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    font-size: 1rem;
+
+    // Handle any raw HTML coming from the backend properly
+    ::ng-deep {
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: var(--color-text-primary);
+        margin-top: 24px;
+        margin-bottom: 16px;
+        font-weight: 600;
+      }
+
+      p {
+        margin-bottom: 16px;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 16px;
+        padding-inline-start: 24px;
+
+        li {
+          margin-bottom: 8px;
+        }
+      }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: underline;
+      }
+
+      hr {
+        border: 0;
+        border-top: 1px solid var(--color-border);
+        margin: 24px 0;
+      }
+    }
+
+    .static-policy {
+      h2 {
+        color: var(--color-text-primary);
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+
+      ul {
+        margin-top: 15px;
+        margin-bottom: 20px;
+
+        li {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+}
+
+// Dark Mode Support
+:host-context([data-theme='dark']) {
+  .policy-page {
+    background-color: var(--color-background-dark);
+
+    &__content {
+      background-color: var(--color-surface-dark);
+      color: var(--color-text-dark);
+      box-shadow: none;
+      border: 1px solid var(--color-border-dark);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .policy-page {
+    padding: 40px 0;
+
+    &__content {
+      padding: 20px;
+    }
+  }
+}

@@ -27,10 +27,10 @@
           </a>
         </div>
         <span class="topbar__divider"></span>
-        <span class="topbar__item">
+        <a routerLink="/policy/shipping" class="topbar__item">
           <i class="uil uil-truck"></i>
           {{ 'SHIPPING' | translate }}
-        </span>
+        </a>
         <a routerLink="/support" class="topbar__item">
           <i class="uil uil-question-circle"></i>
           {{ 'SUPPORT' | translate }}
@@ -210,6 +210,12 @@
           <a routerLink="/products" [queryParams]="{ status: 'offers' }" class="nav__link nav__link--highlight">
             <i class="uil uil-percentage nav__link-icon"></i>
             {{ 'DEALS' | translate }}
+          </a>
+        </li>
+        <li class="nav__item">
+          <a routerLink="/support" class="nav__link" routerLinkActive="nav__link--active">
+            <i class="uil uil-question-circle nav__link-icon"></i>
+            {{ 'FAQ' | translate }}
           </a>
         </li>
       </ul>

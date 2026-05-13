@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 export class ProfileInfoComponent implements OnInit {
   form: FormGroup;
   saving = false;
-  
+
   governorates: Governorate[] = [];
   cities: City[] = [];
   villages: Village[] = [];
@@ -61,7 +61,7 @@ export class ProfileInfoComponent implements OnInit {
         village_id: user.village_id,
         address: user.address,
       });
-      
+
       if (user.country_id) this.onGovChange(user.country_id);
       if (user.city_id) this.onCityChange(user.city_id);
     }
@@ -87,22 +87,38 @@ export class ProfileInfoComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    
-    // Check password confirmation if password is provided
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.notify.error(this.translate.instant('FIELD_REQUIRED'));
+      return;
+    }
+
     if (this.form.value.password && this.form.value.password !== this.form.value.password_confirmation) {
-        this.notify.error(this.translate.instant('PASSWORD_MISMATCH'));
-        return;
+      this.notify.error(this.translate.instant('PASSWORD_MISMATCH'));
+      return;
     }
 
     this.saving = true;
-    const data = { ...this.form.getRawValue() };
-    
-    // Clean up empty password fields
-    if (!data.password) {
-        delete data.password;
-        delete data.password_confirmation;
-        delete data.current_password;
+    const raw = this.form.getRawValue();
+
+    const data: any = {
+      id: this.auth.user?.id,
+      Fname: raw.first_name,
+      Lname: raw.last_name,
+      email: raw.email,
+      phone: raw.phone,
+      country_id: raw.country_id,
+      city_id: raw.city_id,
+      village_id: raw.village_id,
+      type_address: raw.address
+    };
+
+    if (raw.password) {
+      data.password = raw.password;
+      data.password_confirmation = raw.password_confirmation;
+      if (raw.current_password) {
+        data.current_password = raw.current_password;
+      }
     }
 
     this.auth.updateProfile(data).subscribe({
@@ -111,9 +127,15 @@ export class ProfileInfoComponent implements OnInit {
         this.notify.success(this.translate.instant('SUCCESS'));
         this.form.patchValue({ current_password: '', password: '', password_confirmation: '' });
       },
-      error: () => {
+      error: (err) => {
         this.saving = false;
-        this.notify.error(this.translate.instant('ERROR'));
+        let msg = this.translate.instant('ERROR');
+        if (err.error) {
+          if (typeof err.error === 'string') msg = err.error;
+          else if (err.error.message) msg = err.error.message;
+          else if (err.error.error) msg = err.error.error;
+        }
+        this.notify.error(msg);
       },
     });
   }

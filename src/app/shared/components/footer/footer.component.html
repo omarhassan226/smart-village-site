@@ -15,33 +15,36 @@
             <i class="uil uil-envelope"></i>
             <span>info&#64;smartvillage.com</span>
           </a>
-          <a href="https://wa.me/+96891234567" target="_blank" rel="noopener" class="footer__contact-item">
+          <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener"
+            class="footer__contact-item" *ngIf="socialLinks.whatsapp">
             <i class="uil uil-whatsapp"></i>
-            <span>+968 9123 4567</span>
+            <span dir="ltr">{{ socialLinks.whatsapp }}</span>
           </a>
-          <a href="tel:+96891234567" class="footer__contact-item">
+          <a [href]="'tel:' + socialLinks.phone" class="footer__contact-item" *ngIf="socialLinks.phone">
             <i class="uil uil-phone"></i>
-            <span>+968 9123 4567</span>
+            <span dir="ltr">{{ socialLinks.phone }}</span>
           </a>
         </div>
         <!-- Social Media -->
         <div class="footer__social">
-          <a href="https://facebook.com" target="_blank" rel="noopener" class="footer__social-link"
-            aria-label="Facebook">
+          <a [href]="socialLinks.facebook || '#'" target="_blank" rel="noopener" class="footer__social-link"
+            aria-label="Facebook" *ngIf="socialLinks.facebook">
             <i class="uil uil-facebook-f"></i>
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener" class="footer__social-link"
-            aria-label="Instagram">
+          <a [href]="socialLinks.instagram || '#'" target="_blank" rel="noopener" class="footer__social-link"
+            aria-label="Instagram" *ngIf="socialLinks.instagram">
             <i class="uil uil-instagram"></i>
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener" class="footer__social-link" aria-label="Twitter">
+          <a [href]="socialLinks.twitter || '#'" target="_blank" rel="noopener" class="footer__social-link"
+            aria-label="Twitter" *ngIf="socialLinks.twitter">
             <i class="uil uil-twitter-alt"></i>
           </a>
-          <a href="https://wa.me/+96891234567" target="_blank" rel="noopener" class="footer__social-link"
-            aria-label="WhatsApp">
+          <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener" class="footer__social-link"
+            aria-label="WhatsApp" *ngIf="socialLinks.whatsapp">
             <i class="uil uil-whatsapp"></i>
           </a>
-          <a href="https://youtube.com" target="_blank" rel="noopener" class="footer__social-link" aria-label="YouTube">
+          <a [href]="socialLinks.youtube || '#'" target="_blank" rel="noopener" class="footer__social-link"
+            aria-label="YouTube" *ngIf="socialLinks.youtube">
             <i class="uil uil-youtube"></i>
           </a>
         </div>
@@ -51,10 +54,11 @@
       <div class="footer__col">
         <h4 class="footer__heading">{{ 'CUSTOMER_SERVICE' | translate }}</h4>
         <ul class="footer__links">
-          <li><a href="#" class="footer__link">{{ 'CONTACT_US' | translate }}</a></li>
-          <li><a routerLink="/profile/orders" class="footer__link">{{ 'ORDER_HISTORY' | translate }}</a></li>
-          <li><a href="#" class="footer__link">{{ 'RETURN' | translate }}</a></li>
-          <li><a href="#" class="footer__link">{{ 'FAQ' | translate }}</a></li>
+          <li><a routerLink="/contact" class="footer__link">{{ 'CONTACT_US' | translate }}</a></li>
+          <li><a routerLink="/support" class="footer__link">{{ 'FAQ' | translate }}</a></li>
+          <li><a routerLink="/policy/secure" class="footer__link">{{ 'WARRANTY' | translate }}</a></li>
+          <li><a routerLink="/policy/sales" class="footer__link">{{ 'SELL_POLICY' | translate }}</a></li>
+          <li><a routerLink="/policy/shipping" class="footer__link">{{ 'SHIPPING_POLICY' | translate }}</a></li>
         </ul>
       </div>
 
@@ -63,6 +67,7 @@
         <h4 class="footer__heading">{{ 'MY_ACCOUNT' | translate }}</h4>
         <ul class="footer__links">
           <li><a routerLink="/profile" class="footer__link">{{ 'MY_ACCOUNT' | translate }}</a></li>
+          <li><a routerLink="/profile/orders" class="footer__link">{{ 'ORDER_HISTORY' | translate }}</a></li>
           <li><a routerLink="/cart" class="footer__link">{{ 'CART' | translate }}</a></li>
           <li><a routerLink="/wishlist" class="footer__link">{{ 'WISHLIST' | translate }}</a></li>
           <li><a routerLink="/auth/login" class="footer__link">{{ 'LOGIN' | translate }}</a></li>

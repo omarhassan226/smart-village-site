@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
+import { BannerService } from '../../core/services/banner.service';
+import { SocialLinks } from '../../core/models/banner.model';
 
 @Component({
   selector: 'app-contact',
@@ -11,18 +13,28 @@ import { LanguageService } from '../../core/services/language.service';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   contactForm: FormGroup;
+  socialLinks: SocialLinks = {};
 
   constructor(
     private fb: FormBuilder,
-    public lang: LanguageService
+    public lang: LanguageService,
+    private bannerService: BannerService
   ) {
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       subject: ['', Validators.required],
       message: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.bannerService.getSocialLinks().subscribe({
+      next: (res) => {
+        this.socialLinks = res;
+      }
     });
   }
 

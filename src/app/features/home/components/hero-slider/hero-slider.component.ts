@@ -27,7 +27,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.banners = res.data;
         this.loading = false;
-        if (this.banners.length > 1) this.startAutoPlay();
+        if (this.banners.length > 1) this.startAutoPlay(800);
       },
       error: () => {
         this.loading = false;
@@ -50,20 +50,28 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
     this.resetTimer();
   }
 
-  private startAutoPlay(): void {
-    this.timer = setInterval(() => this.next(), 5000);
+  private startAutoPlay(delay: number = 5000): void {
+    this.timer = setTimeout(() => this.next(), delay);
   }
 
   private resetTimer(): void {
-    if (this.timer) clearInterval(this.timer);
-    this.startAutoPlay();
+    if (this.timer) clearTimeout(this.timer);
+    this.startAutoPlay(5000);
   }
 
   getBannerImage(banner: Banner): string {
     return banner.image || '';
   }
 
+  getBannerType(banner: Banner): string {
+    const type = banner.banner_type || 'Elite Collection';
+    if (this.lang.current === 'en' && type === 'عروض حصرية') {
+      return 'Exclusive Offers';
+    }
+    return type;
+  }
+
   ngOnDestroy(): void {
-    if (this.timer) clearInterval(this.timer);
+    if (this.timer) clearTimeout(this.timer);
   }
 }

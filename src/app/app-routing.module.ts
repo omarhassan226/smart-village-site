@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'support',
     loadComponent: () => import('./features/support/support.component').then(m => m.SupportComponent)
   },
+  {
+    path: 'policy/:type',
+    loadComponent: () => import('./features/policy/policy.component').then(m => m.PolicyComponent)
+  },
   { path: '**', redirectTo: '' },
 ];
 

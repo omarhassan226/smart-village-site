@@ -16,8 +16,8 @@
             <div class="icon-box"><i class="uil uil-phone"></i></div>
             <div class="text-box">
               <h3>{{ 'PHONE_NUMBER' | translate }}</h3>
-              <p>+968 24XXXXXX</p>
-              <p>+968 9XXXXXXX</p>
+              <p dir="ltr" *ngIf="socialLinks.phone">{{ socialLinks.phone }}</p>
+              <p dir="ltr" *ngIf="socialLinks.whatsapp">{{ socialLinks.whatsapp }} (Whatsapp)</p>
             </div>
           </div>
 
@@ -25,7 +25,6 @@
             <div class="icon-box"><i class="uil uil-envelope"></i></div>
             <div class="text-box">
               <h3>{{ 'EMAIL' | translate }}</h3>
-              <p>support&#64;smartvillageapp.com</p>
               <p>info&#64;smartvillageapp.com</p>
             </div>
           </div>
@@ -51,7 +50,7 @@
         <div class="contact-form-container">
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="elite-form">
             <h2>{{ 'SEND_US_MESSAGE' | translate }}</h2>
-            
+
             <div class="form-group">
               <label>{{ 'NAME' | translate }}</label>
               <input type="text" formControlName="name" placeholder="{{ 'ENTER_YOUR_NAME' | translate }}">
@@ -69,7 +68,8 @@
 
             <div class="form-group">
               <label>{{ 'MESSAGE' | translate }}</label>
-              <textarea formControlName="message" rows="5" placeholder="{{ 'ENTER_YOUR_MESSAGE' | translate }}"></textarea>
+              <textarea formControlName="message" rows="5"
+                placeholder="{{ 'ENTER_YOUR_MESSAGE' | translate }}"></textarea>
             </div>
 
             <button type="submit" [disabled]="contactForm.invalid" class="btn-submit">
