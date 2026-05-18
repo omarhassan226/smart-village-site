@@ -58,12 +58,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       { value: 'desc', label: this.translate.instant('PRICE_DESC') },
     ];
 
-    // Load categories for filter sidebar
-    this.categoryService.getCategories().subscribe({
-      next: (res) => (this.categories = res.data),
-      error: () => { },
-    });
-
     // Load all brands for filter sidebar
     this.bannerService.getAllBrands().subscribe({
       next: (res) => (this.brands = res.data),
@@ -72,8 +66,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     // React to query param changes
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      const prevMainCategory = this.filter.main_category;
+
       this.filter = {
         category_id: params['category_id'] ? +params['category_id'] : undefined,
+        main_category: params['main_category'] ? +params['main_category'] : undefined,
         brand_id: params['brand_id'] ? +params['brand_id'] : undefined,
         key_word: params['key_word'] || undefined,
         status: params['status'] as 'asc' | 'desc' | '' | undefined,
@@ -84,6 +81,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.currentPage = this.filter.page || 1;
       this.loadProducts();
 
+      // Load subcategories if main_category has changed or was never loaded
+      if (this.filter.main_category !== prevMainCategory || !this.categories || this.categories.length === 0) {
+        this.loadCategories(this.filter.main_category);
+      }
+
       // Load keywords when a category is selected
       if (this.filter.category_id) {
         this.loadKeywords(this.filter.category_id);
@@ -91,6 +93,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.keywords = [];
       }
     });
+  }
+
+  loadCategories(mainCategoryId?: number): void {
+    if (mainCategoryId) {
+      this.categoryService.getSubcategories(mainCategoryId).subscribe({
+        next: (cats) => {
+          this.categories = cats;
+        },
+        error: () => {
+          this.categories = [];
+        }
+      });
+    } else {
+      this.categoryService.getCategories().subscribe({
+        next: (res) => (this.categories = res.data),
+        error: () => { },
+      });
+    }
   }
 
   loadProducts(): void {
@@ -126,7 +146,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   onCategorySelect(id: number | null): void {
-    // When category changes, also reset page and brand
+    // When category changes, reset page but keep main_category if it is set!
     this.router.navigate([], {
       queryParams: {
         category_id: id || null,
@@ -166,7 +186,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   get hasActiveFilters(): boolean {
-    return !!(this.filter.category_id || this.filter.brand_id || this.filter.key_word ||
+    return !!(this.filter.category_id || this.filter.main_category || this.filter.brand_id || this.filter.key_word ||
       this.filter.priceFrom || this.filter.priceTo || this.filter.status);
   }
 

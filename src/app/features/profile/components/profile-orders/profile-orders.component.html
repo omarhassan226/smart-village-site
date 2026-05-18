@@ -68,12 +68,12 @@
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
   <!-- Empty State -->
-  <app-empty-state *ngIf="!loading && orders?.length === 0" icon="uil uil-box"
+  <app-empty-state *ngIf="!loading && orders.length === 0" icon="uil uil-box"
     [title]="'ORDERS_EMPTY' | translate"></app-empty-state>
 
   <!-- Pagination -->
   <app-pagination *ngIf="!loading && orders && orders.length > 0" [currentPage]="currentPage" [lastPage]="lastPage"
-    (pageChange)="currentPage = $event; loadOrders()"></app-pagination>
+    (pageChange)="onPageChange($event)"></app-pagination>
 </div>
 
 <!-- Premium Order Details Sidebar -->

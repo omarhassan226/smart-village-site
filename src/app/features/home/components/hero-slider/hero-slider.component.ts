@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BannerService } from '../../../../core/services/banner.service';
 import { Banner } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
+import { Router } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,7 +21,11 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
   loading = true;
   private timer: any = null;
 
-  constructor(private bannerService: BannerService, public lang: LanguageService) { }
+  constructor(
+    private bannerService: BannerService,
+    public lang: LanguageService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.bannerService.getBanners().subscribe({
@@ -69,6 +74,23 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
       return 'Exclusive Offers';
     }
     return type;
+  }
+
+  onBannerClick(banner: Banner, event: Event): void {
+    if (banner.link && (banner.link.startsWith('http://') || banner.link.startsWith('https://'))) {
+      // Let standard anchor tag navigate externally
+      return;
+    }
+    event.preventDefault();
+    if (banner.product_id) {
+      this.router.navigate(['/products', banner.product_id]);
+    } else if (banner.category_id) {
+      this.router.navigate(['/products'], { queryParams: { category_id: banner.category_id } });
+    } else if (banner.link) {
+      this.router.navigate([banner.link]);
+    } else {
+      this.router.navigate(['/products']);
+    }
   }
 
   ngOnDestroy(): void {

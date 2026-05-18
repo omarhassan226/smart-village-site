@@ -34,6 +34,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   paymentReceiptFile: string | null = null;
   paymentReceiptName = '';
   paymentReceiptSize = '';
+  paymentReceiptRawFile: File | null = null;
 
   shippingCompanies: any[] = [];
   selectedCompanyId: number | null = null;
@@ -96,10 +97,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPaymentReceiptConfirmed(event: { base64: string; name: string; size: string }): void {
+  onPaymentReceiptConfirmed(event: { base64: string; name: string; size: string; rawFile?: File }): void {
     this.paymentReceiptFile = event.base64;
     this.paymentReceiptName = event.name;
     this.paymentReceiptSize = event.size;
+    this.paymentReceiptRawFile = event.rawFile || null;
     this.paymentDocModalOpen = false;
   }
 
@@ -107,6 +109,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.paymentReceiptFile = null;
     this.paymentReceiptName = '';
     this.paymentReceiptSize = '';
+    this.paymentReceiptRawFile = null;
   }
 
   loadShippingCompanies(): void {
@@ -160,21 +163,53 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const priceShipping = selectedCompany ? Number(selectedCompany.f_price || selectedCompany.price_shipping || selectedCompany.cost || 0) : 0;
     const cost = this.cart.total + priceShipping; // Grand total including shipping cost
 
-    const payload = {
-      shipping_address_id: String(this.selectedAddressId),
-      company_shipping_id: this.selectedCompanyId,
-      cost: cost,
-      file: this.paymentReceiptFile || "",
-      price_shipping: priceShipping,
-      products: this.cart.items.map(i => ({
-        detail_id: i.detail_id || i.type_id || i.color_id || null,
-        product_id: i.product_id,
-        quantity: i.quantity,
-        productTotalPrice: i.total,
-        selectedOptions: i.selectedOptions || []
-      })),
-      way_pay: this.paymentMethod
-    };
+    const products = this.cart.items.map(i => ({
+      detail_id: i.detail_id || i.type_id || i.color_id || null,
+      product_id: i.product_id,
+      quantity: i.quantity,
+      productTotalPrice: i.total,
+      selectedOptions: i.selectedOptions || []
+    }));
+
+    let payload: any;
+
+    if (this.paymentReceiptRawFile) {
+      const formData = new FormData();
+      formData.append('shipping_address_id', String(this.selectedAddressId));
+      formData.append('company_shipping_id', String(this.selectedCompanyId));
+      formData.append('cost', String(cost));
+      formData.append('file', this.paymentReceiptRawFile);
+      formData.append('price_shipping', String(priceShipping));
+      formData.append('way_pay', this.paymentMethod);
+
+      // Append products array using array notation for PHP automatic parsing
+      products.forEach((item, index) => {
+        if (item.detail_id !== null && item.detail_id !== undefined) {
+          formData.append(`products[${index}][detail_id]`, String(item.detail_id));
+        }
+        formData.append(`products[${index}][product_id]`, String(item.product_id));
+        formData.append(`products[${index}][quantity]`, String(item.quantity));
+        formData.append(`products[${index}][productTotalPrice]`, String(item.productTotalPrice));
+        
+        if (item.selectedOptions && item.selectedOptions.length > 0) {
+          item.selectedOptions.forEach((opt, optIndex) => {
+            formData.append(`products[${index}][selectedOptions][${optIndex}]`, String(opt));
+          });
+        }
+      });
+
+      payload = formData;
+    } else {
+      payload = {
+        shipping_address_id: String(this.selectedAddressId),
+        company_shipping_id: this.selectedCompanyId,
+        cost: cost,
+        file: this.paymentReceiptFile || "",
+        price_shipping: priceShipping,
+        products: products,
+        way_pay: this.paymentMethod
+      };
+    }
 
     this.placing = true;
     this.orderService.saveWebOrder(payload).subscribe({

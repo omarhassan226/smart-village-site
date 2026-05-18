@@ -21,7 +21,7 @@
                 products with highest quality') }}</span>
             </h1>
             <div class="hero__cta-wrap">
-              <a [href]="banner.link || '#'" class="hero__cta">
+              <a [href]="banner.link || '#'" (click)="onBannerClick(banner, $event)" class="hero__cta">
                 {{ 'SHOP_NOW' | translate }}
                 <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
               </a>

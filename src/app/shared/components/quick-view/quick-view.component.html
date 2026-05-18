@@ -43,10 +43,10 @@
       <!-- Price -->
       <div class="qv-info__price">
         <span class="qv-info__price-current">
-          {{ currentPrice }}
+          {{ product.discount_price ? product.discount_price : product.price }}
           <span class="qv-info__currency">{{ 'OMR' | translate }}</span>
         </span>
-        <span class="qv-info__price-old" *ngIf="product.original_price && product.original_price > product.price">
+        <span class="qv-info__price-old" *ngIf="product.discount_price">
           {{ product.original_price }}
         </span>
       </div>

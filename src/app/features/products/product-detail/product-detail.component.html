@@ -86,13 +86,15 @@
     <!-- Price -->
     <div class="detail-info__price">
       <span class="detail-info__price-current">
-        {{ currentPrice }}
+        {{ product.discount_price ? product.discount_price : product.price }}
         <span class="detail-info__currency">{{ 'OMR' | translate }}</span>
       </span>
-      <span class="detail-info__price-old" *ngIf="product.original_price && product.original_price > product.price">
-        {{ product.original_price }} {{ 'OMR' | translate }}
+      <span class="detail-info__price-old" *ngIf="product.discount_price">
+        {{ product.original_price }}
+        <span class="detail-info__currency">{{ 'OMR' | translate }}</span>
       </span>
-      <span class="badge badge--sale" *ngIf="discount > 0">{{ 'SAVE' | translate }} {{ discount }}%</span>
+      <span class="badge badge--sale" *ngIf="product.discount_percentage && product.discount_percentage > 0">{{ 'SAVE' |
+        translate }} {{product.discount_percentage }}%</span>
     </div>
 
     <!-- Stock -->
@@ -154,21 +156,47 @@
     </div>
 
     <!-- Total price display -->
-    <div class="detail-info__total" *ngIf="quantity > 1">
+    <div class="detail-info__total" *ngIf="quantity > 1 && isAllOptionsSelected">
       {{ 'TOTAL' | translate }}:
       <strong>{{ (currentPrice * quantity) }} {{ 'OMR' | translate }}</strong>
+    </div>
+
+    <!-- Pricing Hint Banner -->
+    <div class="price-hint-banner" *ngIf="product.options && product.options.length > 0">
+      <div class="price-hint-banner__icon">
+        <i class="uil uil-info-circle"></i>
+      </div>
+      <div class="price-hint-banner__content">
+        <p class="price-hint-banner__text">
+          {{ 'PRICE_HINT_TEXT' | translate }}
+        </p>
+
+        <!-- New price shown next to hint if all options selected -->
+        <div class="price-hint-banner__price-wrap" *ngIf="isAllOptionsSelected && dynamicPrice">
+          <span class="price-hint-banner__label">{{ 'NEW_PRICE' | translate }}:</span>
+          <strong class="price-hint-banner__price">{{ (dynamicPrice * quantity) }} {{ 'OMR' | translate }}</strong>
+        </div>
+
+        <!-- Reminder if not all options selected -->
+        <div class="price-hint-banner__reminder" *ngIf="!isAllOptionsSelected">
+          <span class="text-danger">
+            <i class="uil uil-exclamation-triangle"></i>
+            {{ 'SELECT_OPTIONS_REMINDER' | translate }}
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- Actions -->
     <div class="detail-info__actions">
       <button class="btn btn-primary btn-lg" (click)="addToCart()"
-        [disabled]="!product.in_stock || addingToCart || calculatingPrice">
+        [disabled]="!product.in_stock || addingToCart || calculatingPrice || !isAllOptionsSelected">
         <i class="uil uil-cart" *ngIf="!addingToCart"></i>
         <i class="uil uil-spinner-alt spin" *ngIf="addingToCart || calculatingPrice"></i>
         {{ 'ADD_TO_CART' | translate }}
       </button>
 
-      <button class="btn btn-outline" (click)="shippingModalOpen = true">
+      <button class="btn btn-outline" routerLink="/policy/shipping">
         <i class="uil uil-truck"></i>
         {{ 'SHIPPING_DELIVERY' | translate }}
       </button>

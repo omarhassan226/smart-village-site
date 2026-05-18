@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Order, OrderStatus } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -32,12 +32,14 @@ export class ProfileOrdersComponent implements OnInit {
     private notify: NotificationService,
     private translate: TranslateService,
     private route: ActivatedRoute,
+    private router: Router,
     public lang: LanguageService
   ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.status = params['status'] || null;
+      this.currentPage = params['page'] ? +params['page'] : 1;
       this.loadOrders();
     });
   }
@@ -48,12 +50,45 @@ export class ProfileOrdersComponent implements OnInit {
     this.loading = true;
     this.orderService.getOrders(this.currentPage, this.status || undefined).subscribe({
       next: (res: any) => {
-        this.orders = res.orders || res.data || [];
-        this.lastPage = res.last_page || 1;
+        let ordersList: any[] = [];
+        let lastPageVal = 1;
+
+        if (res) {
+          if (res.orders) {
+            if (Array.isArray(res.orders)) {
+              ordersList = res.orders;
+            } else if (res.orders.data && Array.isArray(res.orders.data)) {
+              ordersList = res.orders.data;
+              if (res.orders.last_page !== undefined) {
+                lastPageVal = res.orders.last_page;
+              }
+            }
+          } else if (res.data && Array.isArray(res.data)) {
+            ordersList = res.data;
+          }
+
+          if (res.last_page !== undefined) {
+            lastPageVal = res.last_page;
+          } else if (res.orders && res.orders.last_page !== undefined) {
+            lastPageVal = res.orders.last_page;
+          }
+        }
+
+        this.orders = ordersList;
+        this.lastPage = lastPageVal || 1;
         this.loading = false;
       },
       error: () => { this.loading = false; },
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.router.navigate([], {
+      queryParams: { page: page },
+      queryParamsHandling: 'merge'
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   toggleOrderDetails(order: any): void {

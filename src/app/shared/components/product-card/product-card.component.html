@@ -41,10 +41,10 @@
     <!-- Price -->
     <div class="product-card__price">
       <span class="product-card__price-current">
-        {{ product.price }}
+        {{ product.discount_price ? product.discount_price : product.price }}
         <span class="product-card__currency">{{ 'OMR' | translate }}</span>
       </span>
-      <span class="product-card__price-old" *ngIf="product.original_price && product.original_price > product.price">
+      <span class="product-card__price-old" *ngIf="product.discount_price">
         {{ product.original_price }}
       </span>
     </div>

@@ -27,7 +27,7 @@ export class CartSidebarComponent implements OnInit, OnDestroy {
     public lang: LanguageService,
     private notify: NotificationService,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cartService.sidebarOpen$.pipe(takeUntil(this.destroy$)).subscribe((open) => {
@@ -37,6 +37,8 @@ export class CartSidebarComponent implements OnInit, OnDestroy {
 
     this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe((cart) => {
       this.cart = cart;
+      console.log(cart);
+
     });
   }
 

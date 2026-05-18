@@ -30,7 +30,10 @@ export class CartService {
   }
 
   private recalculate(items: CartItem[]): Cart {
-    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const total = items.reduce((sum, i) => {
+      const itemPrice = i.price;
+      return sum + itemPrice * i.quantity;
+    }, 0);
     const items_count = items.length;
     return { items, total, items_count, price_sale: total };
   }
@@ -67,7 +70,7 @@ export class CartService {
       (i) => i.product_id === product.id && (detailId ? i.detail_id === detailId : (i.color_id === colorId && i.type_id === typeId))
     );
 
-    const price = unitPrice ?? product.price;
+    const price = unitPrice ?? (product.discount_price ? product.discount_price : product.price);
 
     if (idx > -1) {
       items[idx] = { ...items[idx], quantity: items[idx].quantity + quantity, total: price * (items[idx].quantity + quantity) };

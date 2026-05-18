@@ -31,9 +31,10 @@ export class CategoryService {
    * Subcategories for a specific main category (used in filter sidebar)
    */
   getSubcategories(mainCategoryId: number): Observable<Category[]> {
+    const url = `${this.base}/show/category/${this.lang.current}?main_category=${mainCategoryId}`;
     return this.http
-      .get<Category[]>(`${this.base}/show/category/${this.lang.current}?main_category=${mainCategoryId}`)
-      .pipe(map((res) => res || []));
+      .post<{ categories: Category[] }>(url, { main_category: mainCategoryId })
+      .pipe(map((res) => res.categories || []));
   }
 
   /**

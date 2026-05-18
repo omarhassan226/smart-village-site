@@ -28,6 +28,14 @@ export class FooterComponent implements OnInit {
       next: (links) => (this.socialLinks = links),
       error: () => { }
     });
+  }
 
+  getWhatsAppLink(phone?: string): string {
+    if (!phone) return '#';
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('968') || cleanPhone.length > 8) {
+      return `https://wa.me/${cleanPhone}`;
+    }
+    return `https://wa.me/968${cleanPhone}`;
   }
 }

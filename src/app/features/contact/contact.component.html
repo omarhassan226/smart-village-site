@@ -10,74 +10,56 @@
   <section class="contact-content">
     <div class="container">
       <div class="contact-grid">
-        <!-- Contact Info Cards -->
-        <div class="contact-info">
-          <div class="info-card">
-            <div class="icon-box"><i class="uil uil-phone"></i></div>
-            <div class="text-box">
-              <h3>{{ 'PHONE_NUMBER' | translate }}</h3>
-              <p dir="ltr" *ngIf="socialLinks.phone">{{ socialLinks.phone }}</p>
-              <p dir="ltr" *ngIf="socialLinks.whatsapp">{{ socialLinks.whatsapp }} (Whatsapp)</p>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="icon-box"><i class="uil uil-envelope"></i></div>
-            <div class="text-box">
-              <h3>{{ 'EMAIL' | translate }}</h3>
-              <p>info&#64;smartvillageapp.com</p>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="icon-box"><i class="uil uil-location-point"></i></div>
-            <div class="text-box">
-              <h3>{{ 'ADDRESS' | translate }}</h3>
-              <p>{{ 'STORE_ADDRESS_DESC' | translate }}</p>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="icon-box"><i class="uil uil-clock"></i></div>
-            <div class="text-box">
-              <h3>{{ 'WORKING_HOURS' | translate }}</h3>
-              <p>{{ 'WORKING_HOURS_DESC' | translate }}</p>
-            </div>
+        
+        <!-- Phone & WhatsApp Card -->
+        <div class="info-card">
+          <div class="icon-box"><i class="uil uil-phone"></i></div>
+          <div class="text-box">
+            <h3>{{ 'PHONE_NUMBER' | translate }}</h3>
+            <p dir="ltr" *ngIf="socialLinks.phone" class="contact-link-wrap">
+              <a [href]="'tel:' + socialLinks.phone" class="contact-link tel-link">
+                <i class="uil uil-outgoing-call"></i> {{ socialLinks.phone }}
+              </a>
+            </p>
+            <p dir="ltr" *ngIf="socialLinks.whatsapp" class="contact-link-wrap">
+              <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener" class="contact-link whatsapp-link">
+                <i class="uil uil-whatsapp"></i> {{ socialLinks.whatsapp }}
+              </a>
+            </p>
           </div>
         </div>
 
-        <!-- Contact Form -->
-        <div class="contact-form-container">
-          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="elite-form">
-            <h2>{{ 'SEND_US_MESSAGE' | translate }}</h2>
-
-            <div class="form-group">
-              <label>{{ 'NAME' | translate }}</label>
-              <input type="text" formControlName="name" placeholder="{{ 'ENTER_YOUR_NAME' | translate }}">
-            </div>
-
-            <div class="form-group">
-              <label>{{ 'EMAIL' | translate }}</label>
-              <input type="email" formControlName="email" placeholder="{{ 'ENTER_YOUR_EMAIL' | translate }}">
-            </div>
-
-            <div class="form-group">
-              <label>{{ 'SUBJECT' | translate }}</label>
-              <input type="text" formControlName="subject" placeholder="{{ 'ENTER_SUBJECT' | translate }}">
-            </div>
-
-            <div class="form-group">
-              <label>{{ 'MESSAGE' | translate }}</label>
-              <textarea formControlName="message" rows="5"
-                placeholder="{{ 'ENTER_YOUR_MESSAGE' | translate }}"></textarea>
-            </div>
-
-            <button type="submit" [disabled]="contactForm.invalid" class="btn-submit">
-              {{ 'SEND_MESSAGE' | translate }}
-              <i class="uil uil-message"></i>
-            </button>
-          </form>
+        <!-- Email Card -->
+        <div class="info-card">
+          <div class="icon-box"><i class="uil uil-envelope"></i></div>
+          <div class="text-box">
+            <h3>{{ 'EMAIL' | translate }}</h3>
+            <p class="contact-link-wrap">
+              <a href="mailto:info@smartvillageapp.com" class="contact-link email-link">
+                <i class="uil uil-envelope-alt"></i> info&#64;smartvillageapp.com
+              </a>
+            </p>
+          </div>
         </div>
+
+        <!-- Address Card -->
+        <div class="info-card">
+          <div class="icon-box"><i class="uil uil-location-point"></i></div>
+          <div class="text-box">
+            <h3>{{ 'ADDRESS' | translate }}</h3>
+            <p class="desc-text">{{ 'STORE_ADDRESS_DESC' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Working Hours Card -->
+        <div class="info-card">
+          <div class="icon-box"><i class="uil uil-clock"></i></div>
+          <div class="text-box">
+            <h3>{{ 'WORKING_HOURS' | translate }}</h3>
+            <p class="desc-text">{{ 'WORKING_HOURS_DESC' | translate }}</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>

@@ -58,6 +58,11 @@ export class BannerService {
       .pipe(map((res) => res.social));
   }
 
+  /** GET /api/shipping */
+  getShippingPolicy(): Observable<any> {
+    return this.http.get<any>(`${this.base}/shipping`);
+  }
+
   private mapBanners(raw: any[]): Banner[] {
     const lang = this.lang.current;
     return raw.map((b) => ({

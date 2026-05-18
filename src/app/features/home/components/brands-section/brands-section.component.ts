@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 import { BannerService } from '../../../../core/services/banner.service';
 import { Brand } from '../../../../core/models';
 import { LanguageService } from '../../../../core/services/language.service';
@@ -8,7 +9,7 @@ import { LanguageService } from '../../../../core/services/language.service';
 @Component({
   selector: 'app-brands-section',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterModule],
   template: `
     <section class="brands-section" *ngIf="brands.length > 0">
       <div class="container">
@@ -19,7 +20,7 @@ import { LanguageService } from '../../../../core/services/language.service';
 
         <div class="brands-wrapper">
           <div #slider class="brands-slider">
-            <div class="brand-card" *ngFor="let brand of brands">
+            <div class="brand-card" *ngFor="let brand of brands" [routerLink]="['/products']" [queryParams]="{ brand_id: brand.id }">
               <div class="brand-logo">
                 <img [src]="getBrandLogo(brand)" [alt]="brand.name" loading="lazy" 
                      onerror="this.onerror=null;this.src='assets/images/placeholder.svg'">

@@ -33,6 +33,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   selectedOptions: { [optionId: number]: any } = {};
   dynamicPrice: number | null = null;
+  dynamicOriginalPrice: number | undefined = undefined;
   dynamicDetailId: number | null = null;
   calculatingPrice = false;
 
@@ -81,6 +82,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           return;
         }
         this.product = res.data;
+        console.log(this.product);
+
         const p = res.data;
 
         // Handle images
@@ -97,16 +100,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         if (this.allImages.length === 0) this.allImages.push('assets/images/placeholder.svg');
         this.selectedImage = this.allImages[0];
 
-        // Initialize options
+        // Initialize options (do not auto-select by default)
         this.selectedOptions = {};
-        if (p.options && Array.isArray(p.options)) {
-          p.options.forEach((opt: any) => {
-            if (opt.values && opt.values.length > 0) {
-              this.selectedOptions[opt.id] = opt.values[0];
-            }
-          });
-        }
-
         this.checkWishlist();
         this.loadSimilar(p.category_id);
         this.calculateDynamicPrice();
@@ -150,6 +145,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  get isAllOptionsSelected(): boolean {
+    if (!this.product || !this.product.options || this.product.options.length === 0) {
+      return true;
+    }
+    return this.product.options.every(opt => !!this.selectedOptions[opt.id]);
+  }
+
   selectOption(optionId: number, val: any): void {
     this.selectedOptions[optionId] = val;
     this.calculateDynamicPrice();
@@ -157,6 +159,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   calculateDynamicPrice(): void {
     if (!this.product || !this.product.options || this.product.options.length === 0) {
+      return;
+    }
+
+    if (!this.isAllOptionsSelected) {
+      this.dynamicPrice = null;
+      this.dynamicOriginalPrice = undefined;
       return;
     }
 
@@ -170,13 +178,25 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.productService.getProductPrice(this.product.id, values).subscribe({
       next: (res: any) => {
         if (res) {
+          console.log(res);
+
           const detail = res.detail || res;
-          if (detail.price_sale !== undefined && detail.price_sale !== null) {
-            this.dynamicPrice = Number(detail.price_sale);
-          } else if (res.price !== undefined && res.price !== null) {
-            this.dynamicPrice = Number(res.price);
-          } else if (detail.price !== undefined && detail.price !== null) {
-            this.dynamicPrice = Number(detail.price);
+          const priceSale = detail.price_sale !== undefined && detail.price_sale !== null ? Number(detail.price_sale) : 0;
+          const priceBase = detail.price !== undefined && detail.price !== null ? Number(detail.price) : 0;
+          const discountPrice = detail.discount_price !== undefined && detail.discount_price !== null ? Number(detail.discount_price) : 0;
+
+          if (priceSale > 0 && discountPrice == 0) {
+            this.dynamicPrice = priceSale;
+            this.dynamicOriginalPrice = priceBase > priceSale ? priceBase : undefined;
+          } else if (discountPrice > 0) {
+            this.dynamicPrice = discountPrice;
+            this.dynamicOriginalPrice = undefined;
+          } else {
+            const resPrice = res.price !== undefined && res.price !== null ? Number(res.price) : 0;
+            if (resPrice > 0) {
+              this.dynamicPrice = resPrice;
+            }
+            this.dynamicOriginalPrice = undefined;
           }
 
           this.dynamicDetailId = detail.id || res.detail_id || res.id || null;
@@ -289,9 +309,18 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     return this.product?.price || 0;
   }
 
+  get currentOriginalPrice(): number | undefined {
+    if (this.dynamicPrice !== null) {
+      return this.dynamicOriginalPrice;
+    }
+    return this.product?.original_price;
+  }
+
   get discount(): number {
-    if (!this.product?.original_price || this.product.original_price <= this.product.price) return 0;
-    return Math.round(((this.product.original_price - this.product.price) / this.product.original_price) * 100);
+    const current = this.currentPrice;
+    const original = this.currentOriginalPrice;
+    if (!original || original <= current) return 0;
+    return Math.round(((original - current) / original) * 100);
   }
 
   ngOnDestroy(): void {

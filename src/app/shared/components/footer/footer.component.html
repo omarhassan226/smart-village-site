@@ -15,7 +15,7 @@
             <i class="uil uil-envelope"></i>
             <span>info&#64;smartvillage.com</span>
           </a>
-          <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener"
+          <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener"
             class="footer__contact-item" *ngIf="socialLinks.whatsapp">
             <i class="uil uil-whatsapp"></i>
             <span dir="ltr">{{ socialLinks.whatsapp }}</span>
@@ -39,7 +39,7 @@
             aria-label="Twitter" *ngIf="socialLinks.twitter">
             <i class="uil uil-twitter-alt"></i>
           </a>
-          <a [href]="'https://wa.me/' + socialLinks.whatsapp" target="_blank" rel="noopener" class="footer__social-link"
+          <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener" class="footer__social-link"
             aria-label="WhatsApp" *ngIf="socialLinks.whatsapp">
             <i class="uil uil-whatsapp"></i>
           </a>

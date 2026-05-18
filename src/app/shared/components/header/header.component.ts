@@ -91,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.searchQuery.trim() || this.searchCategoryId) {
       const queryParams: any = {};
       if (this.searchQuery.trim()) queryParams.key_word = this.searchQuery.trim();
-      if (this.searchCategoryId) queryParams.category_id = this.searchCategoryId;
+      if (this.searchCategoryId) queryParams.main_category = this.searchCategoryId;
 
       this.router.navigate(['/products'], { queryParams });
 
@@ -136,6 +136,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   openCart(e: Event): void {
     e.preventDefault();
     this.cart.openSidebar();
+  }
+
+  getWhatsAppLink(phone?: string): string {
+    if (!phone) return '#';
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('968') || cleanPhone.length > 8) {
+      return `https://wa.me/${cleanPhone}`;
+    }
+    return `https://wa.me/968${cleanPhone}`;
   }
 
   ngOnDestroy(): void {

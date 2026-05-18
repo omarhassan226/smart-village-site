@@ -3,16 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Order, OrderRequest, OrderListResponse, ReturnOrderRequest } from '../models';
+import { LanguageService } from './language.service';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private base = environment.apiUrl;
   private baseUrlWithDoubleSlash = environment.baseUrlWithDoubleSlash;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private lang: LanguageService) { }
 
-  getOrders(page = 1, status?: string): Observable<OrderListResponse> {
-    let url = `${this.base}/get/orders/ar?page=${page}`;
+  getOrders(page = 1, status?: string, lang?: string): Observable<OrderListResponse> {
+    let url = `${this.base}/get/orders/${lang || this.lang.current}?page=${page}`;
     if (status) url += `&status=${status}`;
     return this.http.get<OrderListResponse>(url);
   }

@@ -14,13 +14,14 @@ import { TranslateService } from '@ngx-translate/core';
 export class PaymentDocumentModalComponent {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
-  @Output() confirmed = new EventEmitter<{ base64: string; name: string; size: string }>();
+  @Output() confirmed = new EventEmitter<{ base64: string; name: string; size: string; rawFile?: File }>();
 
   isDragOver = false;
   fileBase64: string | null = null;
   fileName = '';
   fileSize = '';
   isImage = true;
+  rawFile: File | null = null;
 
   constructor(
     private notify: NotificationService,
@@ -65,6 +66,7 @@ export class PaymentDocumentModalComponent {
     this.fileName = file.name;
     this.fileSize = this.formatBytes(file.size);
     this.isImage = file.type.startsWith('image/');
+    this.rawFile = file;
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -90,6 +92,7 @@ export class PaymentDocumentModalComponent {
     this.fileName = '';
     this.fileSize = '';
     this.isImage = true;
+    this.rawFile = null;
   }
 
   onCancel(): void {
@@ -102,7 +105,8 @@ export class PaymentDocumentModalComponent {
       this.confirmed.emit({
         base64: this.fileBase64,
         name: this.fileName,
-        size: this.fileSize
+        size: this.fileSize,
+        rawFile: this.rawFile || undefined
       });
       this.clearFile();
     }

@@ -17,14 +17,26 @@ export class ProductService {
    * The main search/filter endpoint used by the products listing page.
    */
   searchProducts(filter: ProductFilter = {}): Observable<ProductListResponse> {
+    let categoryIdParam = '';
+    let filterMainParam = '';
+
+    if (filter.main_category) {
+      categoryIdParam = String(filter.main_category);
+      filterMainParam = '1';
+    } else if (filter.category_id) {
+      categoryIdParam = String(filter.category_id);
+      filterMainParam = '';
+    }
+
     let params = new HttpParams()
       .set('brand_id', String(filter.brand_id || ''))
       .set('name', filter.key_word || filter.name || '')
       .set('priceFrom', String(filter.priceFrom ?? 0))
       .set('priceTo', String(filter.priceTo ?? 1000000))
-      .set('category_id', String(filter.category_id || ''))
+      .set('category_id', categoryIdParam)
+      .set('main_category', String(filter.main_category || ''))
       .set('banner', '')
-      .set('filter_main', '1')
+      .set('filter_main', filterMainParam)
       .set('status', filter.status || '')
       .set('key_word', String(filter.key_word || ''))
       .set('is_paginated', '1')

@@ -31,22 +31,15 @@
       <!-- Image -->
       <div class="cart-sidebar__item-img-wrap">
         <a [routerLink]="['/products', item.product_id]" (click)="close()">
-          <img
-            class="cart-sidebar__item-img"
-            [src]="getProductImage(item)"
-            [alt]="getProductName(item)"
-            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'"
-          />
+          <img class="cart-sidebar__item-img" [src]="getProductImage(item)" [alt]="getProductName(item)"
+            onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
         </a>
       </div>
 
       <!-- Info -->
       <div class="cart-sidebar__item-info">
-        <a
-          class="cart-sidebar__item-name"
-          [routerLink]="['/products', item.product_id]"
-          (click)="close()"
-        >{{ getProductName(item) }}</a>
+        <a class="cart-sidebar__item-name" [routerLink]="['/products', item.product_id]" (click)="close()">{{
+          getProductName(item) }}</a>
 
         <div class="cart-sidebar__item-meta" *ngIf="item.color_name">
           <span class="cart-sidebar__item-meta-label">{{ 'COLOR' | translate }}:</span>
@@ -71,8 +64,10 @@
 
           <!-- Price -->
           <span class="cart-sidebar__item-price">
-            {{ (item.price * item.quantity) }}
-            <small>{{ 'OMR' | translate }}</small>
+            {{ item.price * item.quantity }}
+            <small>{{ 'OMR' |
+              translate
+              }}</small>
           </span>
         </div>
       </div>

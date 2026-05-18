@@ -19,8 +19,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
           <div [innerHTML]="content"></div>
         </div>
 
-        <!-- Static Shipping Page -->
-        <div class="policy-page__content" *ngIf="type === 'shipping'">
+        <!-- Static Shipping Page Fallback -->
+        <div class="policy-page__content" *ngIf="!content && type === 'shipping'">
           <div class="static-policy">
             <h2>{{ 'SHIPPING_DELIVERY' | translate }}</h2>
             <p>{{ 'SHIPPING_DESC_1' | translate }}</p>
@@ -55,27 +55,40 @@ export class PolicyComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.type = params.get('type') || '';
-      if (this.type !== 'shipping') {
-        this.loadContent();
-      }
+      this.content = null; // Reset content
+      this.loadContent();
     });
   }
 
   loadContent(): void {
-    this.bannerService.getSocialLinks().subscribe({
-      next: (links) => {
-        let rawHtml = '';
-        if (this.type === 'secure') {
-          rawHtml = links.Secure_policy || '';
-        } else if (this.type === 'sales') {
-          rawHtml = links.Sales_policy || '';
+    if (this.type === 'shipping') {
+      this.bannerService.getShippingPolicy().subscribe({
+        next: (res) => {
+          if (res && res.status && res.shipping && res.shipping.shipping) {
+            const rawHtml = res.shipping.shipping;
+            this.content = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+          }
+        },
+        error: () => {
+          // Keep content null to allow elegant static fallback
         }
-        
-        if (rawHtml) {
-          this.content = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+      });
+    } else {
+      this.bannerService.getSocialLinks().subscribe({
+        next: (links) => {
+          let rawHtml = '';
+          if (this.type === 'secure') {
+            rawHtml = links.Secure_policy || '';
+          } else if (this.type === 'sales') {
+            rawHtml = links.Sales_policy || '';
+          }
+          
+          if (rawHtml) {
+            this.content = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   getTitle(): string {

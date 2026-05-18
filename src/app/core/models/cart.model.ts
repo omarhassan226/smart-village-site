@@ -10,6 +10,10 @@ export interface CartItem {
   type_id?: number;
   type_name?: string;
   price: number;
+  discount_price?: number;
+  original_price?: number;
+  discount?: number;
+  discount_percentage?: number;
   total?: number;
   detail_id?: number;
   selectedOptions?: any[];
