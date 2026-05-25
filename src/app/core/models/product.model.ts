@@ -94,6 +94,7 @@ export interface ProductFilter {
   key_word?: string;
   page?: number;
   most_selling?: string;
+  banner?: string;
 }
 
 export interface ProductListResponse {

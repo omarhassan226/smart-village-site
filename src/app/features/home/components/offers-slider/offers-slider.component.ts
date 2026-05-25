@@ -117,6 +117,6 @@ export class OffersSliderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   viewAll(): void {
-    this.router.navigate(['/offers']);
+    this.router.navigate(['/products'], { queryParams: { banner: 'عروض حصرية' } });
   }
 }

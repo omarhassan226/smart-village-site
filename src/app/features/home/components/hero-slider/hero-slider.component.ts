@@ -89,7 +89,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy {
     } else if (banner.link) {
       this.router.navigate([banner.link]);
     } else {
-      this.router.navigate(['/offers']);
+      this.router.navigate(['/products'], { queryParams: { banner: 'عروض حصرية' } });
     }
   }
 

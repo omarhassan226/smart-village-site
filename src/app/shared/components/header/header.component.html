@@ -194,8 +194,8 @@
         </li>
         <li class="nav__item nav__item--dropdown" *ngFor="let cat of categories" (mouseenter)="setDropdown(cat.id)"
           (mouseleave)="setDropdown(null)">
-          <a *ngIf="!isOffersCategory(cat)"
-            [routerLink]="['/products']" [queryParams]="{ main_category_id: cat.id }" class="nav__link">
+          <a *ngIf="!isOffersCategory(cat)" [routerLink]="['/products']" [queryParams]="{ main_category_id: cat.id }"
+            class="nav__link">
             {{ getCategoryName(cat) }}
             <i class="uil uil-angle-down" *ngIf="(cat.sub_categories || cat.categories)?.length"></i>
           </a>
@@ -212,7 +212,8 @@
           </div>
         </li>
         <li class="nav__item">
-          <a routerLink="/offers" class="nav__link nav__link--highlight">
+          <a [routerLink]="['/products']" [queryParams]="{ banner: 'عروض حصرية' }"
+            class="nav__link nav__link--highlight">
             <i class="uil uil-percentage nav__link-icon"></i>
             {{ 'DEALS' | translate }}
           </a>
@@ -303,7 +304,8 @@
             </a>
           </li>
           <li>
-            <a routerLink="/offers" class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
+            <a [routerLink]="['/products']" [queryParams]="{ banner: 'عروض حصرية' }"
+              class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
               <i class="uil uil-percentage"></i>
               {{ 'DEALS' | translate }}
             </a>

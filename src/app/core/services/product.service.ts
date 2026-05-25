@@ -46,16 +46,17 @@ export class ProductService {
       params = params.set('category_id', String(filter.category_id));
     }
 
-    // Price filters always apply regardless of keyword/category
-    if (filter.priceFrom !== undefined && filter.priceFrom > 0) {
-      params = params.set('priceFrom', String(filter.priceFrom));
-    }
-    if (filter.priceTo !== undefined) {
-      params = params.set('priceTo', String(filter.priceTo));
-    }
+    // NOTE: priceFrom/priceTo are NOT sent to the API because the API filters by
+    // original price (before discount). Price filtering is done client-side on
+    // the discounted price inside applyClientFilters() below.
 
     if (filter.status) {
       params = params.set('status', filter.status);
+    }
+
+    // Banner filter (e.g. 'عروض حصرية') — sends filter_main=1 as required by the API
+    if (filter.banner) {
+      params = params.set('banner', filter.banner).set('filter_main', '1');
     }
 
     return this.http
