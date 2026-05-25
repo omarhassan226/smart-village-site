@@ -194,12 +194,17 @@
         </li>
         <li class="nav__item nav__item--dropdown" *ngFor="let cat of categories" (mouseenter)="setDropdown(cat.id)"
           (mouseleave)="setDropdown(null)">
-          <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="nav__link">
+          <a *ngIf="!isOffersCategory(cat)"
+            [routerLink]="['/products']" [queryParams]="{ main_category_id: cat.id }" class="nav__link">
             {{ getCategoryName(cat) }}
             <i class="uil uil-angle-down" *ngIf="(cat.sub_categories || cat.categories)?.length"></i>
           </a>
+          <a *ngIf="isOffersCategory(cat)" routerLink="/offers" class="nav__link nav__link--offers">
+            <i class="uil uil-fire"></i>
+            {{ getCategoryName(cat) }}
+          </a>
           <div class="nav__dropdown"
-            *ngIf="(cat.sub_categories || cat.categories)?.length && activeDropdown === cat.id">
+            *ngIf="!isOffersCategory(cat) && (cat.sub_categories || cat.categories)?.length && activeDropdown === cat.id">
             <a class="nav__dropdown-item" *ngFor="let sub of (cat.sub_categories || cat.categories || [])"
               [routerLink]="['/products']" [queryParams]="{ category_id: sub.id }">
               {{ getCategoryName(sub) }}
@@ -207,7 +212,7 @@
           </div>
         </li>
         <li class="nav__item">
-          <a routerLink="/products" [queryParams]="{ status: 'offers' }" class="nav__link nav__link--highlight">
+          <a routerLink="/offers" class="nav__link nav__link--highlight">
             <i class="uil uil-percentage nav__link-icon"></i>
             {{ 'DEALS' | translate }}
           </a>
@@ -298,8 +303,7 @@
             </a>
           </li>
           <li>
-            <a routerLink="/products" [queryParams]="{ status: 'offers' }"
-              class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
+            <a routerLink="/offers" class="mobile-menu__link mobile-menu__link--highlight" (click)="toggleMobileMenu()">
               <i class="uil uil-percentage"></i>
               {{ 'DEALS' | translate }}
             </a>

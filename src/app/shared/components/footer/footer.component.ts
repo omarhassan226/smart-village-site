@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { InstagramGridComponent } from './instagram-grid.component';
 import { BannerService } from '../../../core/services/banner.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { SocialLinks } from '../../../core/models';
 
 @Component({
@@ -20,7 +21,8 @@ export class FooterComponent implements OnInit {
 
   constructor(
     public lang: LanguageService,
-    private bannerService: BannerService
+    private bannerService: BannerService,
+    public auth: AuthService
   ) { }
 
   ngOnInit(): void {

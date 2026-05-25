@@ -204,10 +204,11 @@
 
     <!-- Info chips -->
     <div class="detail-info__chips" *ngIf="product.seller || product.salesman || product.unit">
-      <span class="detail-info__chip" *ngIf="product.salesman">
+      <a class="detail-info__chip detail-info__chip--link" [routerLink]="['/products']" *ngIf="product.salesman">
         <i class="uil uil-store"></i>
         {{ product.salesman.name }}
-      </span>
+        <i class="uil uil-arrow-up-right detail-info__chip-arrow"></i>
+      </a>
       <span class="detail-info__chip" *ngIf="product.unit">
         <i class="uil uil-package"></i>
         {{ lang.current === 'ar' ? product.unit.unit_ar : product.unit.unit_en }}

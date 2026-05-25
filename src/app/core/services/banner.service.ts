@@ -47,7 +47,7 @@ export class BannerService {
   /** POST /api/product/banners/{lang} – product-based banners */
   getProductBanners(): Observable<{ data: any[] }> {
     return this.http
-      .post<{ products: any[] }>(`${this.base}/product/banners/${this.lang.current}`, {})
+      .post<{ products: any[] }>(`${this.base}/product/banners/${this.lang.current}`, { banner_type: 'عروض حصرية' })
       .pipe(map((res) => ({ data: res.products || [] })));
   }
 
@@ -61,6 +61,16 @@ export class BannerService {
   /** GET /api/shipping */
   getShippingPolicy(): Observable<any> {
     return this.http.get<any>(`${this.base}/shipping`);
+  }
+
+  /** GET /api/privacy_policy */
+  getPrivacyPolicy(): Observable<any> {
+    return this.http.get<any>(`${this.base}/privacy_policy`);
+  }
+
+  /** GET /api/term_use */
+  getTermsOfUse(): Observable<any> {
+    return this.http.get<any>(`${this.base}/term_use`);
   }
 
   private mapBanners(raw: any[]): Banner[] {

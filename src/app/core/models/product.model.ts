@@ -85,6 +85,7 @@ export interface ProductType {
 export interface ProductFilter {
   category_id?: number;
   main_category?: number;
+  main_category_id?: number;
   brand_id?: number | number[];
   name?: string;
   priceFrom?: number;

@@ -50,7 +50,7 @@ import { LanguageService } from '../../../../core/services/language.service';
   `,
   styles: [`
     .categories-section {
-      padding: 6rem 0;
+      padding: 4rem 0;
       background: #ffffff;
     }
 

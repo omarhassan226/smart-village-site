@@ -47,6 +47,10 @@ const routes: Routes = [
     path: 'policy/:type',
     loadComponent: () => import('./features/policy/policy.component').then(m => m.PolicyComponent)
   },
+  {
+    path: 'offers',
+    loadComponent: () => import('./features/offers/offers-page.component').then(m => m.OffersPageComponent)
+  },
   { path: '**', redirectTo: '' },
 ];
 

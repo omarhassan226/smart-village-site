@@ -10,7 +10,7 @@
   <section class="contact-content">
     <div class="container">
       <div class="contact-grid">
-        
+
         <!-- Phone & WhatsApp Card -->
         <div class="info-card">
           <div class="icon-box"><i class="uil uil-phone"></i></div>
@@ -22,7 +22,8 @@
               </a>
             </p>
             <p dir="ltr" *ngIf="socialLinks.whatsapp" class="contact-link-wrap">
-              <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener" class="contact-link whatsapp-link">
+              <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener"
+                class="contact-link whatsapp-link">
                 <i class="uil uil-whatsapp"></i> {{ socialLinks.whatsapp }}
               </a>
             </p>
@@ -30,7 +31,7 @@
         </div>
 
         <!-- Email Card -->
-        <div class="info-card">
+        <!-- <div class="info-card">
           <div class="icon-box"><i class="uil uil-envelope"></i></div>
           <div class="text-box">
             <h3>{{ 'EMAIL' | translate }}</h3>
@@ -40,25 +41,25 @@
               </a>
             </p>
           </div>
-        </div>
+        </div> -->
 
         <!-- Address Card -->
-        <div class="info-card">
+        <!-- <div class="info-card">
           <div class="icon-box"><i class="uil uil-location-point"></i></div>
           <div class="text-box">
             <h3>{{ 'ADDRESS' | translate }}</h3>
             <p class="desc-text">{{ 'STORE_ADDRESS_DESC' | translate }}</p>
           </div>
-        </div>
+        </div> -->
 
         <!-- Working Hours Card -->
-        <div class="info-card">
+        <!-- <div class="info-card">
           <div class="icon-box"><i class="uil uil-clock"></i></div>
           <div class="text-box">
             <h3>{{ 'WORKING_HOURS' | translate }}</h3>
             <p class="desc-text">{{ 'WORKING_HOURS_DESC' | translate }}</p>
           </div>
-        </div>
+        </div> -->
 
       </div>
     </div>

@@ -20,37 +20,74 @@ export class ProductService {
     let categoryIdParam = '';
     let filterMainParam = '';
 
-    if (filter.main_category) {
-      categoryIdParam = String(filter.main_category);
-      filterMainParam = '1';
-    } else if (filter.category_id) {
-      categoryIdParam = String(filter.category_id);
-      filterMainParam = '';
-    }
+    const mainCatId = filter.main_category_id || filter.main_category;
 
+
+    // Start with required params only
     let params = new HttpParams()
-      .set('brand_id', String(filter.brand_id || ''))
-      .set('name', filter.key_word || filter.name || '')
-      .set('priceFrom', String(filter.priceFrom ?? 0))
-      .set('priceTo', String(filter.priceTo ?? 1000000))
-      .set('category_id', categoryIdParam)
-      .set('main_category', String(filter.main_category || ''))
-      .set('banner', '')
-      .set('filter_main', filterMainParam)
-      .set('status', filter.status || '')
-      .set('key_word', String(filter.key_word || ''))
       .set('is_paginated', '1')
       .set('page', String(filter.page || 1));
+
+    // Only append optional params when they have real values
+    if (filter.brand_id) {
+      params = params.set('brand_id', String(filter.brand_id));
+    }
+
+    const keyword = filter.key_word || filter.name || '';
+    if (keyword) {
+      params = params.set('name', keyword);
+    }
+
+    if (mainCatId) {
+      params = params.set('main_category_id', String(mainCatId));
+    }
+
+    if (filter.category_id) {
+      params = params.set('category_id', String(filter.category_id));
+    }
+
+    // Price filters always apply regardless of keyword/category
+    if (filter.priceFrom !== undefined && filter.priceFrom > 0) {
+      params = params.set('priceFrom', String(filter.priceFrom));
+    }
+    if (filter.priceTo !== undefined) {
+      params = params.set('priceTo', String(filter.priceTo));
+    }
+
+    if (filter.status) {
+      params = params.set('status', filter.status);
+    }
 
     return this.http
       .get<{ products: any }>(`${this.base}/search/product/${this.lang.current}`, { params })
       .pipe(
         map((res) => {
           const p = res.products;
+
+          // Helper: apply client-side price filter & sort by discounted price
+          const applyClientFilters = (data: Product[]): Product[] => {
+            let result = data;
+            // Filter by discounted price (product.price is already the discounted price after mapProduct)
+            if (filter.priceFrom !== undefined && filter.priceFrom > 0) {
+              result = result.filter(prod => prod.price >= filter.priceFrom!);
+            }
+            if (filter.priceTo !== undefined) {
+              result = result.filter(prod => prod.price <= filter.priceTo!);
+            }
+            // Sort by discounted price
+            if (filter.status === 'asc') {
+              result = [...result].sort((a, b) => a.price - b.price);
+            } else if (filter.status === 'desc') {
+              result = [...result].sort((a, b) => b.price - a.price);
+            }
+            return result;
+          };
+
           // Handle paginated response: { data: [...], total, current_page, last_page }
           if (p && p.data && Array.isArray(p.data)) {
+            const mapped = applyClientFilters(this.mapProducts(p.data));
             return {
-              data: this.mapProducts(p.data),
+              data: mapped,
               total: p.total || p.data.length,
               per_page: p.per_page || 20,
               current_page: p.current_page || 1,
@@ -59,10 +96,11 @@ export class ProductService {
           }
           // Handle direct array response: [...]
           if (Array.isArray(p)) {
+            const mapped = applyClientFilters(this.mapProducts(p));
             return {
-              data: this.mapProducts(p),
-              total: p.length,
-              per_page: p.length || 20,
+              data: mapped,
+              total: mapped.length,
+              per_page: mapped.length || 20,
               current_page: 1,
               last_page: 1,
             };

@@ -1,0 +1,110 @@
+// Inherits product-section styles via shared CSS classes
+:host { display: block; }
+
+.product-section {
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+
+  &--danger { background: #fff; }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3.5rem;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  &__icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    &--danger { color: var(--danger); }
+  }
+
+  &__view-all {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    font-weight: 700;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.35);
+    }
+  }
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--secondary);
+  margin: 0;
+  letter-spacing: -0.02em;
+  padding-inline-start: 1rem;
+  border-inline-start: 4px solid var(--primary);
+
+  &--danger { border-color: var(--danger); }
+}
+
+.product-slider {
+  display: flex;
+  overflow-x: hidden;
+  gap: 1.25rem;
+  padding: 0.5rem 0.5rem 1.5rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+
+  &::-webkit-scrollbar { height: 6px; }
+  &::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+  &::-webkit-scrollbar-thumb { background: #fca5a5; border-radius: 10px; }
+
+  app-product-card { flex: 0 0 200px; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 576px) {
+  .section-title { font-size: 1.4rem; }
+  .product-slider app-product-card { flex: 0 0 160px; }
+}

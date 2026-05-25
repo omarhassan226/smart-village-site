@@ -11,7 +11,7 @@
       <!-- Real Content -->
       <ng-container *ngIf="!loading">
         <!-- Main Large Banner -->
-        <a *ngIf="products[0]" class="bento-item bento-item--large" [routerLink]="['/products', products[0].id]">
+        <a *ngIf="products[0]" class="bento-item bento-item--large" [routerLink]="['/offers', products[0].id]">
           <div class="bento-content">
             <span class="badge-glass">{{ 'SPECIAL_OFFER' | translate }}</span>
             <h2 class="bento-title">{{ getProductName(products[0]) }}</h2>
@@ -24,28 +24,32 @@
             </div>
           </div>
           <div class="bento-visual">
-            <img [src]="getProductImage(products[0])" [alt]="getProductName(products[0])" 
-                 onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
+            <img [src]="getProductImage(products[0])" [alt]="getProductName(products[0])"
+              onerror="this.onerror=null;this.src='assets/images/placeholder.svg'" />
             <div class="glow-effect"></div>
           </div>
         </a>
 
         <!-- Smaller Banners -->
         <div class="bento-column">
-          <a *ngIf="products[1]" class="bento-item bento-item--small bento-item--blue" [routerLink]="['/products', products[1].id]">
+          <a *ngIf="products[1]" class="bento-item bento-item--small bento-item--blue"
+            [routerLink]="['/products', products[1].id]">
             <div class="bento-content">
               <h3>{{ getProductName(products[1]) | truncate:30 }}</h3>
-              <span class="price-tag">{{ products[1].discount_price || products[1].price }} {{ 'OMR' | translate }}</span>
+              <span class="price-tag">{{ products[1].discount_price || products[1].price }} {{ 'OMR' | translate
+                }}</span>
             </div>
             <div class="bento-visual-small">
               <img [src]="getProductImage(products[1])" />
             </div>
           </a>
 
-          <a *ngIf="products[2]" class="bento-item bento-item--small bento-item--orange" [routerLink]="['/products', products[2].id]">
+          <a *ngIf="products[2]" class="bento-item bento-item--small bento-item--orange"
+            [routerLink]="['/products', products[2].id]">
             <div class="bento-content">
               <h3>{{ getProductName(products[2]) | truncate:30 }}</h3>
-              <span class="price-tag">{{ products[2].discount_price || products[2].price }} {{ 'OMR' | translate }}</span>
+              <span class="price-tag">{{ products[2].discount_price || products[2].price }} {{ 'OMR' | translate
+                }}</span>
             </div>
             <div class="bento-visual-small">
               <img [src]="getProductImage(products[2])" />

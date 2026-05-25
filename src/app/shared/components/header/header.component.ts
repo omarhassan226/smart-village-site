@@ -91,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.searchQuery.trim() || this.searchCategoryId) {
       const queryParams: any = {};
       if (this.searchQuery.trim()) queryParams.key_word = this.searchQuery.trim();
-      if (this.searchCategoryId) queryParams.main_category = this.searchCategoryId;
+      if (this.searchCategoryId) queryParams.main_category_id = this.searchCategoryId;
 
       this.router.navigate(['/products'], { queryParams });
 
@@ -128,9 +128,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const name = this.lang.current === 'ar'
       ? cat.category_ar || cat.name_ar || cat.name || ''
       : cat.category_en || cat.name_en || cat.name || '';
-      
+
     if (this.lang.current === 'en' && name === 'عروض حصرية') return 'Exclusive Offers';
     return name;
+  }
+
+  isOffersCategory(cat: MainCategory | any): boolean {
+    const ar = cat.category_ar || cat.name_ar || cat.name || '';
+    return ar === 'عروض حصرية';
   }
 
   openCart(e: Event): void {

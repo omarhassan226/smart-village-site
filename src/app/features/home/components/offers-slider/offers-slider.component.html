@@ -1,0 +1,31 @@
+<section class="product-section product-section--danger">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header__left">
+        <div class="section-header__icon section-header__icon--danger">
+          <i class="uil uil-percentage"></i>
+        </div>
+        <h2 class="section-title section-title--danger">{{ 'OFFERS_DISCOUNTS' | translate }}</h2>
+      </div>
+      <button class="section-header__view-all" (click)="viewAll()">
+        {{ 'VIEW_ALL' | translate }}
+        <i class="uil" [ngClass]="lang.isRtl ? 'uil-arrow-left' : 'uil-arrow-right'"></i>
+      </button>
+    </div>
+
+    <!-- Skeletons -->
+    <div class="product-slider" *ngIf="loading">
+      <div class="skeleton" style="flex: 0 0 200px; height: 300px; border-radius: 20px;"
+        *ngFor="let i of [1,2,3,4,5,6]"></div>
+    </div>
+
+    <!-- Products Slider -->
+    <div #slider class="product-slider" *ngIf="!loading && products.length > 0" (mouseenter)="stopAutoScroll()"
+      (mouseleave)="startAutoScroll()">
+      <app-product-card *ngFor="let product of products" [product]="product" [compact]="true"></app-product-card>
+    </div>
+
+    <app-empty-state *ngIf="!loading && products.length === 0" icon="uil uil-percentage"
+      [title]="'NO_PRODUCTS' | translate"></app-empty-state>
+  </div>
+</section>

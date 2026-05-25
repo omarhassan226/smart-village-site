@@ -447,6 +447,7 @@
     font-weight: 600;
     color: var(--text);
     transition: all 0.3s;
+    text-decoration: none;
 
     &:hover {
       border-color: var(--primary);
@@ -456,6 +457,16 @@
     i {
       font-size: 16px;
       color: var(--primary);
+    }
+
+    &--link {
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(43, 188, 191, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(43, 188, 191, 0.15);
+      }
     }
   }
 
@@ -771,7 +782,7 @@
   &__reminder {
     font-size: 13px;
     font-weight: 600;
-    
+
     i {
       font-size: 15px;
       margin-inline-end: 4px;

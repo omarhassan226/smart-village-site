@@ -66,11 +66,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     // React to query param changes
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const prevMainCategory = this.filter.main_category;
+      const prevMainCatId = this.filter.main_category_id || this.filter.main_category;
 
       this.filter = {
         category_id: params['category_id'] ? +params['category_id'] : undefined,
-        main_category: params['main_category'] ? +params['main_category'] : undefined,
+        // main_category: params['main_category'] ? +params['main_category'] : undefined,
+        main_category_id: params['main_category_id'] ? +params['main_category_id'] : undefined,
         brand_id: params['brand_id'] ? +params['brand_id'] : undefined,
         key_word: params['key_word'] || undefined,
         status: params['status'] as 'asc' | 'desc' | '' | undefined,
@@ -81,12 +82,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.currentPage = this.filter.page || 1;
       this.loadProducts();
 
-      // Load subcategories if main_category has changed or was never loaded
-      if (this.filter.main_category !== prevMainCategory || !this.categories || this.categories.length === 0) {
-        this.loadCategories(this.filter.main_category);
-      }
 
-      // Load keywords when a category is selected
+      const main_category_id = this.filter.main_category_id;
+      this.loadCategories(main_category_id);
       if (this.filter.category_id) {
         this.loadKeywords(this.filter.category_id);
       } else {
@@ -167,7 +165,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   onKeywordSelect(keyword: string): void {
-    this.updateQueryParam('key_word', keyword);
+    this.updateQueryParam('name', keyword);
   }
 
   onPriceFilter(from: number, to: number): void {
@@ -186,7 +184,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   get hasActiveFilters(): boolean {
-    return !!(this.filter.category_id || this.filter.main_category || this.filter.brand_id || this.filter.key_word ||
+    return !!(this.filter.category_id || this.filter.main_category_id || this.filter.brand_id || this.filter.key_word ||
       this.filter.priceFrom || this.filter.priceTo || this.filter.status);
   }
 

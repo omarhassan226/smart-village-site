@@ -15,8 +15,8 @@
             <i class="uil uil-envelope"></i>
             <span>info&#64;smartvillage.com</span>
           </a>
-          <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener"
-            class="footer__contact-item" *ngIf="socialLinks.whatsapp">
+          <a [href]="getWhatsAppLink(socialLinks.whatsapp)" target="_blank" rel="noopener" class="footer__contact-item"
+            *ngIf="socialLinks.whatsapp">
             <i class="uil uil-whatsapp"></i>
             <span dir="ltr">{{ socialLinks.whatsapp }}</span>
           </a>
@@ -59,6 +59,8 @@
           <li><a routerLink="/policy/secure" class="footer__link">{{ 'WARRANTY' | translate }}</a></li>
           <li><a routerLink="/policy/sales" class="footer__link">{{ 'SELL_POLICY' | translate }}</a></li>
           <li><a routerLink="/policy/shipping" class="footer__link">{{ 'SHIPPING_POLICY' | translate }}</a></li>
+          <li><a routerLink="/policy/privacy" class="footer__link">{{ 'PRIVACY_POLICY' | translate }}</a></li>
+          <li><a routerLink="/policy/terms" class="footer__link">{{ 'TERMS_OF_USE' | translate }}</a></li>
         </ul>
       </div>
 
@@ -70,8 +72,10 @@
           <li><a routerLink="/profile/orders" class="footer__link">{{ 'ORDER_HISTORY' | translate }}</a></li>
           <li><a routerLink="/cart" class="footer__link">{{ 'CART' | translate }}</a></li>
           <li><a routerLink="/wishlist" class="footer__link">{{ 'WISHLIST' | translate }}</a></li>
-          <li><a routerLink="/auth/login" class="footer__link">{{ 'LOGIN' | translate }}</a></li>
-          <li><a routerLink="/auth/register" class="footer__link">{{ 'REGISTER' | translate }}</a></li>
+          <li *ngIf="!(auth.user$ | async)"><a routerLink="/auth/login" class="footer__link">{{ 'LOGIN' | translate
+              }}</a></li>
+          <li *ngIf="!(auth.user$ | async)"><a routerLink="/auth/register" class="footer__link">{{ 'REGISTER' |
+              translate }}</a></li>
         </ul>
       </div>
 

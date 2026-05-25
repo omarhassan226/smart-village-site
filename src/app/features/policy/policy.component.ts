@@ -65,13 +65,26 @@ export class PolicyComponent implements OnInit {
       this.bannerService.getShippingPolicy().subscribe({
         next: (res) => {
           if (res && res.status && res.shipping && res.shipping.shipping) {
-            const rawHtml = res.shipping.shipping;
-            this.content = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+            this.content = this.sanitizer.bypassSecurityTrustHtml(res.shipping.shipping);
           }
         },
-        error: () => {
-          // Keep content null to allow elegant static fallback
-        }
+        error: () => {}
+      });
+    } else if (this.type === 'privacy') {
+      this.bannerService.getPrivacyPolicy().subscribe({
+        next: (res) => {
+          const html = res?.Privacy_policy?.Privacy_policy || '';
+          if (html) this.content = this.sanitizer.bypassSecurityTrustHtml(html);
+        },
+        error: () => {}
+      });
+    } else if (this.type === 'terms') {
+      this.bannerService.getTermsOfUse().subscribe({
+        next: (res) => {
+          const html = res?.terms?.terms_of_use || '';
+          if (html) this.content = this.sanitizer.bypassSecurityTrustHtml(html);
+        },
+        error: () => {}
       });
     } else {
       this.bannerService.getSocialLinks().subscribe({
@@ -82,7 +95,6 @@ export class PolicyComponent implements OnInit {
           } else if (this.type === 'sales') {
             rawHtml = links.Sales_policy || '';
           }
-          
           if (rawHtml) {
             this.content = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
           }
@@ -93,10 +105,12 @@ export class PolicyComponent implements OnInit {
 
   getTitle(): string {
     switch (this.type) {
-      case 'secure': return 'WARRANTY';
-      case 'sales': return 'SELL_POLICY';
+      case 'secure':   return 'WARRANTY';
+      case 'sales':    return 'SELL_POLICY';
       case 'shipping': return 'SHIPPING_POLICY';
-      default: return 'POLICY';
+      case 'privacy':  return 'PRIVACY_POLICY';
+      case 'terms':    return 'TERMS_OF_USE';
+      default:         return 'POLICY';
     }
   }
 }

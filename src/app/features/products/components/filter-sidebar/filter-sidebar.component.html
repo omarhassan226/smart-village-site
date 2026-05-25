@@ -42,7 +42,7 @@
     <!-- Brand Search -->
     <div class="sidebar__search" *ngIf="brands.length > 6">
       <i class="uil uil-search sidebar__search-icon"></i>
-      <input type="text" [(ngModel)]="brandSearch" class="sidebar__search-input"
+      <input dir="ltr" type="text" [(ngModel)]="brandSearch" class="sidebar__search-input"
         [placeholder]="lang.current === 'ar' ? 'ابحث عن علامة تجارية...' : 'Search brands...'" />
     </div>
 
@@ -54,8 +54,7 @@
         </button>
       </li>
       <li class="sidebar__item" *ngFor="let brand of filteredBrands">
-        <button class="sidebar__btn" [class.active]="isBrandSelected(brand.id)"
-          (click)="brandSelect.emit(brand.id)">
+        <button class="sidebar__btn" [class.active]="isBrandSelected(brand.id)" (click)="brandSelect.emit(brand.id)">
           <i class="uil uil-pricetag-alt"></i>
           {{ getBrandName(brand) }}
         </button>

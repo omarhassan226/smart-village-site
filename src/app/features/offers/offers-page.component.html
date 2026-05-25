@@ -1,0 +1,79 @@
+<!-- Hero Banner -->
+<div class="offers-hero">
+  <div class="offers-hero__bg"></div>
+  <div class="offers-hero__particles">
+    <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="particle"></span>
+  </div>
+  <div class="container offers-hero__content">
+    <div class="offers-hero__badge">
+      <i class="uil uil-fire"></i>
+      {{ lang.current === 'ar' ? 'عروض حصرية' : 'Exclusive Offers' }}
+    </div>
+    <h1 class="offers-hero__title">
+      {{ lang.current === 'ar' ? 'التخفيضات والعروض' : 'Deals & Discounts' }}
+    </h1>
+    <p class="offers-hero__sub">
+      {{ lang.current === 'ar'
+        ? 'أفضل الأسعار والعروض الحصرية على منتجاتنا المختارة'
+        : 'Best prices and exclusive deals on our curated products' }}
+    </p>
+
+    <!-- Inline Search -->
+    <div class="offers-hero__search">
+      <i class="uil uil-search offers-hero__search-icon"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="applyFilters()"
+        [placeholder]="lang.current === 'ar' ? 'ابحث في العروض...' : 'Search offers...'"
+        class="offers-hero__search-input"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="offers-toolbar">
+  <div class="container offers-toolbar__inner">
+    <p class="offers-toolbar__count" *ngIf="!loading">
+      <i class="uil uil-box"></i>
+      <span>{{ products.length }}</span>
+      {{ lang.current === 'ar' ? 'منتج' : 'products' }}
+    </p>
+
+    <div class="offers-toolbar__sort">
+      <label>{{ lang.current === 'ar' ? 'ترتيب:' : 'Sort:' }}</label>
+      <select [(ngModel)]="sortOrder" (ngModelChange)="applyFilters()" class="offers-toolbar__select">
+        <option value="">{{ lang.current === 'ar' ? 'الافتراضي' : 'Default' }}</option>
+        <option value="asc">{{ lang.current === 'ar' ? 'السعر: الأقل أولاً' : 'Price: Low to High' }}</option>
+        <option value="desc">{{ lang.current === 'ar' ? 'السعر: الأعلى أولاً' : 'Price: High to Low' }}</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Products Grid -->
+<section class="offers-section">
+  <div class="container">
+
+    <!-- Skeletons -->
+    <div class="offers-grid" *ngIf="loading">
+      <div class="skeleton offers-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
+    </div>
+
+    <!-- Products -->
+    <div class="offers-grid" *ngIf="!loading && products.length > 0">
+      <app-product-card *ngFor="let p of products" [product]="p"></app-product-card>
+    </div>
+
+    <!-- Empty -->
+    <div class="offers-empty" *ngIf="!loading && products.length === 0">
+      <div class="offers-empty__icon">
+        <i class="uil uil-percentage"></i>
+      </div>
+      <h3>{{ lang.current === 'ar' ? 'لا توجد عروض' : 'No offers found' }}</h3>
+      <p>{{ lang.current === 'ar' ? 'تفقد لاحقاً للمزيد من العروض' : 'Check back later for more deals' }}</p>
+    </div>
+
+  </div>
+</section>
