@@ -22,8 +22,14 @@ export class CategoryService {
   /** GET /admin/category – main categories (for header nav) */
   getMainCategories(): Observable<{ data: MainCategory[] }> {
     return this.http
-      .get<{ maincategories: { data: MainCategory[] } }>(`${this.baseWithoutApi}/admin/category`)
-      .pipe(map((res) => ({ data: res.maincategories?.data || [] })));
+      .get<{ categories: MainCategory[] }>(`${this.base}/show/main/category/${this.lang.current}`)
+      .pipe(
+        map((res) => {
+          const cats = res.categories || [];
+          cats.sort((a, b) => (a.sortnumber ?? 0) - (b.sortnumber ?? 0));
+          return { data: cats };
+        })
+      );
   }
 
   /**

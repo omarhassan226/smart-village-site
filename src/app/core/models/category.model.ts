@@ -21,6 +21,7 @@ export interface MainCategory {
   category_ar?: string;
   category_en?: string;
   image?: string;
+  sortnumber?: number;
   sub_categories?: Category[];
   categories?: Category[];
 }

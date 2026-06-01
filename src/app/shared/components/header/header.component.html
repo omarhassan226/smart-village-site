@@ -297,7 +297,7 @@
             </a>
           </li>
           <li *ngFor="let cat of categories">
-            <a [routerLink]="['/products']" [queryParams]="{ category_id: cat.id }" class="mobile-menu__link"
+            <a [routerLink]="['/products']" [queryParams]="{ main_category_id: cat.id }" class="mobile-menu__link"
               (click)="toggleMobileMenu()">
               <i class="uil uil-tag-alt"></i>
               {{ getCategoryName(cat) }}
